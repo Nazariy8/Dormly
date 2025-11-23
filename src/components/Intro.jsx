@@ -33,7 +33,7 @@ const Intro = () => {
 				</div>
 				<div className="arrow-down">
 					<a href="#advantage-heading" className="text-dark">
-						<i class="bi bi-arrow-down fs-1"></i>
+						<i className="bi bi-arrow-down fs-1"></i>
 					</a>
 				</div>
 			</section>

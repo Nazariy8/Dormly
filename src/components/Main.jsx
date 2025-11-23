@@ -8,15 +8,15 @@ const Main = () => {
   return (
 		<div>
 			<header>
-				<nav class="navbar navbar-expand-lg bg-body-tertiary rounded-4">
-					<div class="container-fluid">
+				<nav className="navbar navbar-expand-lg bg-body-tertiary rounded-4">
+					<div className="container-fluid">
 						<h1 className="title m-0">
-							<a class="" href="/">
+							<a className="" href="/">
 								Dormly
 							</a>
 						</h1>
 						<button
-							class="navbar-toggler"
+							className="navbar-toggler"
 							type="button"
 							data-bs-toggle="collapse"
 							data-bs-target="#navbarSupportedContent"
@@ -24,43 +24,43 @@ const Main = () => {
 							aria-expanded="false"
 							aria-label="Toggle navigation"
 						>
-							<span class="navbar-toggler-icon"></span>
+							<span className="navbar-toggler-icon"></span>
 						</button>
 						<div
-							class="navbar-collapse collapse text-end"
+							className="navbar-collapse collapse text-end"
 							id="navbarSupportedContent"
 						>
-							<ul class="navbar-nav text-start mb-2 mb-lg-0">
-								<li class="nav-item">
+							<ul className="navbar-nav text-start mb-2 mb-lg-0">
+								<li className="nav-item">
 									<a
-										class="nav-link link px-3"
+										className="nav-link link px-3"
 										aria-current="page"
 										href="/aboutUs"
 									>
 										Питання
 									</a>
 								</li>
-								<li class="nav-item">
+								<li className="nav-item">
 									<a
-										class="nav-link link px-3"
+										className="nav-link link px-3"
 										aria-current="page"
 										href="#advantage-heading"
 									>
 										Переваги
 									</a>
 								</li>
-								<li class="nav-item">
-									<a class="nav-link link px-3" href="#feedbacks-heading">
+								<li className="nav-item">
+									<a className="nav-link link px-3" href="#feedbacks-heading">
 										Відгуки
 									</a>
 								</li>
-								<li class="nav-item">
-									<a class="nav-link login link px-3" href="/userinit/login">
+								<li className="nav-item">
+									<a className="nav-link login link px-3" href="/login">
 										Ввійти
 									</a>
 								</li>
-								<li class="nav-item">
-									<a class="nav-link signup link px-3 rounded-4" href="/userinit/regist">
+								<li className="nav-item">
+									<a className="nav-link signup link px-3 rounded-4" href="/regist">
 										Зареєструватись
 									</a>
 								</li>
@@ -69,9 +69,9 @@ const Main = () => {
 					</div>
 				</nav>
 				<div
-					class="modal fade"
+					className="modal fade"
 					id="loginModal"
-					tabindex="-1"
+					tabIndex="-1"
 					aria-labelledby="exampleModalLabel"
 					aria-hidden="true"
 				>

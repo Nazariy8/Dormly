@@ -10,6 +10,9 @@ const ResultOfTest = () => {
   // Використовуємо "через або" (|| {}), щоб код не впав, якщо хтось зайде на сторінку напряму
   const { userAnswers, questions } = location.state || {};
 
+   const handleSubmitForSearch = () => {
+    navigate('/search-roommate', { state: { userAnswers: userAnswers, questions: questions } });;
+  };
   // Якщо даних немає (наприклад, користувач просто ввів посилання в браузер)
   if (!userAnswers || !questions) {
     return (
@@ -77,14 +80,10 @@ const ResultOfTest = () => {
 
         <div className="col-6 d-flex justify-content-end">
           <button
-            className="gotoprofile-btn"
-            onClick={() => {
-
-              // if()
-
-            }} // Кнопка, щоб пройти тест заново
+            className="next-btn"
+            onClick={() => {handleSubmitForSearch()}} 
           >
-            До профілю
+            Знайти співжителя
           </button>
         </div>
 

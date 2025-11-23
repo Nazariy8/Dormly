@@ -5,6 +5,9 @@ const Advan = () => {
 		<div>
 			<section className="advantages-section">
 				<h6 className="section-pretitle">Переваги платформи</h6>
+				<div className="row">
+					<div className="col"></div>
+				</div>
 				<h2 className="section-title" id="advantage-heading">
 					Чому обирають <span className="accent">Dormly?</span>
 				</h2>
@@ -15,7 +18,7 @@ const Advan = () => {
 					<div className="row advantages d-flex justify-content-center">
 						<div className="col-9 col-xl-4 col-xxl-3 my-3 col-lg-4 col-md-4 col-sm-5 advantage-card mx-3 p-5">
 							<div className="icon mx-auto">
-								<i class=" bi bi-shield-check"></i>
+								<i className=" bi bi-shield-check"></i>
 							</div>
 							<h4>Безпека</h4>
 							<p>
@@ -25,7 +28,7 @@ const Advan = () => {
 						</div>
 						<div className="col-9 col-xl-4 col-xxl-3 my-3 col-lg-4 col-md-4 col-sm-5 advantage-card mx-3 p-5">
 							<div className="icon mx-auto">
-								<i class=" bi bi-person-check-fill"></i>
+								<i className=" bi bi-person-check-fill"></i>
 							</div>
 							<h4>Сумісність</h4>
 							<p>
@@ -35,7 +38,7 @@ const Advan = () => {
 						</div>
 						<div className="col-9 col-xl-8 col-xxl-3  my-3 col-lg-9 col-md-9 col-sm-5 advantage-card mx-3 p-5">
 							<div className="icon mx-auto">
-								<i class=" bi bi-people-fill"></i>
+								<i className=" bi bi-people-fill"></i>
 							</div>
 							<h4>Спільнота</h4>
 							<p>

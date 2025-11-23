@@ -5,166 +5,205 @@
     --primary-purple-light: #e6d8f7;
     --primary-puple: #8a4fff;
 }
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;700&display=swap');
-@import 'bootstrap/scss/functions';
-@import 'bootstrap/scss/variables';
-@import 'bootstrap/scss/mixins';
 
-body.body-test-page {
-    margin: 0;
-    font-family: 'Nunito', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    background-color: var(--primary-purple-light);
-    display: flex;
-    // align-items: center;
-    justify-content: center;
+// Основні кольори
+$bg-color: #2f4f4f; // Темно-зелений фон (як на фото)
+$card-bg: #ffffff;
+$primary-color: #2f4f4f;
+$accent-color: #e0e0e0;
+$text-color: #333;
+
+.body-test-page {
+  background-color: var(--primary-purple-light);
+  margin: 0;
+  font-family: 'Helvetica Neue', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
-@include media-breakpoint-up(xs) {
-    h1, li{
-        word-break: break-word;
-    }
-    
-    .Test {
-        width: 300px;
-        // transform: scale(1);
-       
-    }
+
+.test-page-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
-@include media-breakpoint-up(sm) {
-    .Test {
-        width: 400px;
-    }
+
+.link-to-index-btn{
+  padding: 10px 20px;
+  border-radius: 20px;
+  background: #fff;
 }
-@include media-breakpoint-up(md) {
-    .Test{
-        width:650px;
-    }
+
+.test-container-card {
+  margin-top: 30px;
+  background-color: $card-bg;
+  width: 100%;
+  max-width: 600px; // Ширина картки
+  min-height: 400px;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden; // Для прогрес-бару
 }
-@include media-breakpoint-up(xl) {
-//     .Test {
-//     }
+
+// Смужка прогресу
+.progress-bar-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background-color: #f0f0f0;
 }
-.Test {
-    margin-top: 40px;
-    max-width: 700px;
-    border-radius: 30px;
-    padding: 40px;
-    background-color: #fff;
-    position: relative;
 
-    .result {
-        text-align: center;
-
-        button {
-            font-weight: bold;
-            font-family: 'Nunito', sans-serif;
-            border-radius: 30px;
-            border: 0;
-            padding: 15px 30px;
-            font-size: 20px;
-            background-color: #97B067;
-            color: #fff;
-            margin-top:20px;
-            cursor: pointer;
-        }
-
-        h2 {
-            margin-bottom: 0;
-        }
-
-        img {
-            width: 150px;
-        }
-    }
-
-    .progress {
-        height: 10px;
-        border-radius: 30px;
-        background-color: rgb(232, 232, 232);
-        margin-bottom: 25px;
-
-        &__inner {
-            height: 100%;
-            border-radius: 30px;
-            width: 80%;
-            transition: all 0.3s ease-in-out;
-            background: linear-gradient(90deg, rgba(18, 231, 48, 1) 0%, rgba(0, 212, 255, 1) 100%);
-        }
-    }
-
-    &:before,
-    &:after {
-        content: '';
-        display: block;
-        height: 50px;
-        border-bottom-left-radius: 30px;
-        border-bottom-right-radius: 30px;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    &:before {
-        width: 95%;
-        bottom: -10px;
-        background-color: rgba(255, 255, 255, 0.8);
-    }
-
-    &:after {
-        width: 90%;
-        bottom: -20px;
-        background-color: rgba(255, 255, 255, 0.3);
-    }
-
-    h1 {
-        margin: 0;
-    }
-
-    ul {
-        list-style: none;
-        padding: 0;
-
-        li {
-            padding: 15px;
-            border: 2px solid rgba(0, 0, 0, 0.1);
-            border-radius: 15px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.1s ease-in-out;
-
-            &:hover {
-                border: 2px solid rgba(0, 0, 0, 0.3);
-            }
-        }
-    }
-    h1.question-title{
-        font-size: 30px;
-        padding: 0 0 20px 0;
-    }
-    .finish-test-btn{
-        background: var(--primary-puple);
-        color: var(--primary-white);
-        padding: 5px 20px;
-        border-radius: 10px;
-    }
-    input{
-        border: 2px solid var(--primary-grey);
-        border-radius: 10px;
-    }
-
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(var(--primary-puple), var(--primary-info)); // Зелений прогрес
+  transition: width 0.4s ease;
 }
-.testagain-btn, .gotoprofile-btn{
-    padding: 10px;
+
+// Питання
+.question-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 30px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  
+  &.fade-out {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  
+  &.fade-in {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.question-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: $text-color;
+}
+
+// Опції (кнопки відповідей)
+.options-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.option-card {
+  border: 2px solid $accent-color;
+  border-radius: 12px;
+  padding: 18px 25px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+  color: #555;
+  background: white;
+
+  &:hover {
+    background-color: #f9f9f9;
+    border-color:var(--primary-puple);
+  }
+
+  &.selected {
+    border-color: #000;
+    background-color: rgba($primary-color, 0.05);
+    color: #000;
     font-weight: 700;
-    border-radius: 10px;
-}
-.testagain-btn{
-    background: var(--primary-white);
-    color: var(--primary-puple);
+    transform: scale(1.02);
+  }
 
+  .check-icon {
+    color: var(--primary-puple);
+    font-weight: bold;
+  }
 }
-.gotoprofile-btn{
-    background-color: var(--primary-puple);
-    color: var(--primary-white);
+
+// Стилізація текстового інпуту
+.text-input-styled {
+  width: 100%;
+  padding: 15px;
+  font-size: 18px;
+  border: 2px solid $accent-color;
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.3s;
+
+  &:focus {
+    border-color: $primary-color;
+  }
+}
+
+// Кнопки навігації знизу
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.nav-btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  transition: background 0.8s;
+  font-weight: 600;
+}
+
+.testagain-btn {
+  background-color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  color: #000;
+  transition: .5s;
+  
+  &:hover {
+    color: #333;
+    background-color: #f0f0f0;
+  }
+  
+  &:disabled {
+    opacity: 0;
+    cursor: default;
+  }
+}
+
+.next-btn {
+  background-color: var(--primary-puple);
+  color: white;
+  padding: 12px 35px;
+  transition: .5s;
+  border-radius: 20px;
+  
+  &:hover {
+    background-color: darken(#000, 10%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+}
+
+.step-indicator {
+  text-align: center;
+  font-size: 14px;
+  color: #aaa;
+  margin-top: 15px;
 }

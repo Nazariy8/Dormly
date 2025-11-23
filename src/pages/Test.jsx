@@ -1,56 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import "../css/test.scss";
+import "../css/test.scss"; // Переконайся, що оновив цей файл (код нижче)
 
 const Test = () => {
+  const navigate = useNavigate();
 
-	useEffect(() => {
-    // Коли компонент "монтується" (з'являється)
+  // --- СТАН ---
+  // Індекс поточного питання (починаємо з 0)
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  // Збережені відповіді
+  const [answers, setAnswers] = useState({});
+  // Анімація переходу (опціонально)
+  const [isExiting, setIsExiting] = useState(false);
+
+  useEffect(() => {
     document.body.classList.add('body-test-page');
-
-    // Функція очищення:
-    // Ця функція виконається, коли компонент "розмонтується" (зникне)
     return () => {
       document.body.classList.remove('body-test-page');
     };
   }, []);
-  // Стан для збереження відповідей: { 1: "Текст відповіді", 2: "2.1", ... }
-  const [answers, setAnswers] = useState({});
-  const navigate = useNavigate();
 
-  // Функція для оновлення стану
-  const handleAnswerChange = (questionId, value) => {
-    setAnswers(prev => ({
-      ...prev,
-      [questionId]: value
-    }));
-  };
-
- const handleSubmit = () => {
-    // 1. Створюємо список ID питань, на які немає відповіді
-    const missingAnswers = questions.filter(q => {
-      const answer = answers[q.id];
-      // Перевіряємо: чи відповіді взагалі немає, або вона є порожнім рядком (після видалення пробілів)
-      return !answer || answer.trim() === '';
-    });
-
-    // 2. Якщо список пропущених питань не порожній — показуємо помилку
-    if (missingAnswers.length > 0) {
-      // Можна просто сказати "Заповніть все"
-      alert("Будь ласка, дайте відповідь на всі запитання перед завершенням!");
-      
-      // АБО (більш просунутий варіант) — підказати, які саме питання пропущені:
-      // const missingIds = missingAnswers.map(q => q.id).join(', ');
-      // alert(`Ви пропустили питання: ${missingIds}`);
-      return; // Зупиняємо виконання функції, нічого не відправляємо
-    }
-
-	 navigate('/resultoftest', { state: { userAnswers: answers, questions: questions } })
-    console.log("Всі відповіді:", answers);
-    alert("Тест успішно завершено! Відповіді в консолі.");
-  };
-
-  // МАСИВ ПИТАНЬ З ФАЙЛУ
+  // --- ДАНІ (Питання) ---
   const questions = [
     {
       id: 1,
@@ -60,7 +30,7 @@ const Test = () => {
     },
     {
       id: 2,
-      type: 'radio', 
+      type: 'radio',
       questionText: "Як ви ставитеся до поділу/спільного використання продуктів?",
       options: [
         { id: '2.1', text: "Все має бути розділене, нічого не беру без дозволу." },
@@ -79,182 +49,282 @@ const Test = () => {
       ]
     },
     {
-      id: 4,
-      type: 'radio',
-      questionText: "Яка ваша частота прибирання власного простору?",
-      options: [
-        { id: '4.1', text: "Щоденне прибирання / Перфекціоніст." },
-        { id: '4.2', text: "Раз на кілька днів / Коли помітний безлад." },
-        { id: '4.3', text: "Раз на тиждень / Генеральне прибирання." },
-        { id: '4.4', text: "Рідко, я схильний до творчого безладу." }
-      ]
-    },
-    {
-      id: 5,
-      type: 'radio',
-      questionText: "Який ваш типовий режим сну у будні дні?",
-      options: [
-        { id: '5.1', text: "Жайворонок: Лягаю до 23:00, встаю до 8:00." },
-        { id: '5.2', text: "Сова: Лягаю після 00:00, встаю після 9:00." },
-        { id: '5.3', text: "Гнучкий: Адаптуюся." }
-      ]
-    },
-    {
-      id: 6,
-      type: 'text', 
-      questionText: "Чи є у вас підтверджена алергія на щось?",
-      placeholder: "Напишіть 'Ні' або вкажіть на що..."
-    },
-    {
-      id: 7,
-      type: 'radio',
-      questionText: "Який ваш улюблений спосіб релаксу?",
-      options: [
-        { id: '7.1', text: "Абсолютна тиша і лежання у ліжку." },
-        { id: '7.2', text: "Активне хобі (тренування, ігри)." },
-        { id: '7.3', text: "Спілкування з друзями." }
-      ]
-    },
-    {
-      id: 8,
-      type: 'radio',
-      questionText: "Як часто ви плануєте запрошувати гостей?",
-      options: [
-        { id: '8.1', text: "Дуже рідко." },
-        { id: '8.2', text: "Кілька разів на місяць." },
-        { id: '8.3', text: "1-2 рази на тиждень." },
-        { id: '8.4', text: "Досить часто." }
-      ]
-    },
-    {
-      id: 9,
-      type: 'radio',
-      questionText: "Як організувати прибирання спільних зон?",
-      options: [
-        { id: '9.1', text: "Чіткий графік чергувань." },
-        { id: '9.2', text: "Разом, коли бачимо бруд." },
-        { id: '9.3', text: "Хто вільний, той і прибирає." }
-      ]
-    },
-    {
-      id: 10,
-      type: 'radio',
-      questionText: "Спільні витрати на побутові речі?",
-      options: [
-        { id: '10.1', text: "Скидатися 50/50." },
-        { id: '10.2', text: "Домовляємося по ситуації." },
-        { id: '10.3', text: "Кожен купує своє." }
-      ]
-    },
-    {
-      id: 11,
-      type: 'radio',
-      questionText: "Ставлення до розмов по телефону в кімнаті?",
-      options: [
-        { id: '11.1', text: "Це нормально." },
-        { id: '11.2', text: "Тільки короткі розмови." },
-        { id: '11.3', text: "Це дратує, треба виходити." }
-      ]
-    },
-    {
-      id: 12,
-      type: 'radio',
-      questionText: "Улюблений жанр музики?",
-      options: [
-        { id: '12.1', text: "Поп / Електроніка" },
-        { id: '12.2', text: "Рок / Метал" },
-        { id: '12.3', text: "Хіп-хоп / Реп" },
-        { id: '12.4', text: "Класика / Джаз" },
-        { id: '12.5', text: "Інді / Фолк" },
-        { id: '12.6', text: "Я всеїдний" },
-        { id: '12.7', text: "Слухаю тільки в навушниках" }
-      ]
-    },
-    {
-      id: 13,
-      type: 'radio',
-      questionText: "Атмосфера для навчання?",
-      options: [
-        { id: '13.1', text: "Абсолютна тиша." },
-        { id: '13.2', text: "Тиха музика." },
-        { id: '13.3', text: "Фоновий шум не заважає." }
-      ]
-    },
-    {
-      id: 14,
-      type: 'radio',
-      questionText: "Умови для сну?",
-      options: [
-        { id: '14.1', text: "Темрява і повна тиша." },
-        { id: '14.2', text: "Темрява, але шум не заважає." },
-        { id: '14.3', text: "Тиша, але можна зі світлом." },
-        { id: '14.4', text: "Сплю в будь-яких умовах." }
-      ]
-    },
-    {
-      id: 15,
-      type: 'radio',
-      questionText: "Вільний вечір у будній день?",
-      options: [
-        { id: '15.1', text: "Навчання / Робота." },
-        { id: '15.2', text: "Фільми / Ігри." },
-        { id: '15.3', text: "Читання." },
-        { id: '15.4', text: "Спорт / Прогулянка." },
-        { id: '15.5', text: "Спілкування з друзями." },
-        { id: '15.6', text: "Хобі." }
-      ]
-    }
+        id: 4,
+        type: 'radio',
+        questionText: "Яка ваша частота прибирання власного простору?",
+        options: [
+          { id: '4.1', text: "Щоденне прибирання / Перфекціоніст." },
+          { id: '4.2', text: "Раз на кілька днів / Коли помітний безлад." },
+          { id: '4.3', text: "Раз на тиждень / Генеральне прибирання." },
+          { id: '4.4', text: "Рідко, я схильний до творчого безладу." }
+        ]
+      },
+      {
+        id: 5,
+        type: 'radio',
+        questionText: "Який ваш типовий режим сну у будні дні?",
+        options: [
+          { id: '5.1', text: "Жайворонок: Лягаю до 23:00, встаю до 8:00." },
+          { id: '5.2', text: "Сова: Лягаю після 00:00, встаю після 9:00." },
+          { id: '5.3', text: "Гнучкий: Адаптуюся." }
+        ]
+      },
+      {
+        id: 6,
+        type: 'text', 
+        questionText: "Чи є у вас підтверджена алергія на щось?",
+        placeholder: "Напишіть 'Ні' або вкажіть на що..."
+      },
+      {
+        id: 7,
+        type: 'radio',
+        questionText: "Який ваш улюблений спосіб релаксу?",
+        options: [
+          { id: '7.1', text: "Абсолютна тиша і лежання у ліжку." },
+          { id: '7.2', text: "Активне хобі (тренування, ігри)." },
+          { id: '7.3', text: "Спілкування з друзями." }
+        ]
+      },
+      {
+        id: 8,
+        type: 'radio',
+        questionText: "Як часто ви плануєте запрошувати гостей?",
+        options: [
+          { id: '8.1', text: "Дуже рідко." },
+          { id: '8.2', text: "Кілька разів на місяць." },
+          { id: '8.3', text: "1-2 рази на тиждень." },
+          { id: '8.4', text: "Досить часто." }
+        ]
+      },
+      {
+        id: 9,
+        type: 'radio',
+        questionText: "Як організувати прибирання спільних зон?",
+        options: [
+          { id: '9.1', text: "Чіткий графік чергувань." },
+          { id: '9.2', text: "Разом, коли бачимо бруд." },
+          { id: '9.3', text: "Хто вільний, той і прибирає." }
+        ]
+      },
+      {
+        id: 10,
+        type: 'radio',
+        questionText: "Спільні витрати на побутові речі?",
+        options: [
+          { id: '10.1', text: "Скидатися 50/50." },
+          { id: '10.2', text: "Домовляємося по ситуації." },
+          { id: '10.3', text: "Кожен купує своє." }
+        ]
+      },
+      {
+        id: 11,
+        type: 'radio',
+        questionText: "Ставлення до розмов по телефону в кімнаті?",
+        options: [
+          { id: '11.1', text: "Це нормально." },
+          { id: '11.2', text: "Тільки короткі розмови." },
+          { id: '11.3', text: "Це дратує, треба виходити." }
+        ]
+      },
+      {
+        id: 12,
+        type: 'radio',
+        questionText: "Улюблений жанр музики?",
+        options: [
+          { id: '12.1', text: "Поп / Електроніка" },
+          { id: '12.2', text: "Рок / Метал" },
+          { id: '12.3', text: "Хіп-хоп / Реп" },
+          { id: '12.4', text: "Класика / Джаз" },
+          { id: '12.5', text: "Інді / Фолк" },
+          { id: '12.6', text: "Я всеїдний" },
+          { id: '12.7', text: "Слухаю тільки в навушниках" }
+        ]
+      },
+      {
+        id: 13,
+        type: 'radio',
+        questionText: "Атмосфера для навчання?",
+        options: [
+          { id: '13.1', text: "Абсолютна тиша." },
+          { id: '13.2', text: "Тиха музика." },
+          { id: '13.3', text: "Фоновий шум не заважає." }
+        ]
+      },
+      {
+        id: 14,
+        type: 'radio',
+        questionText: "Умови для сну?",
+        options: [
+          { id: '14.1', text: "Темрява і повна тиша." },
+          { id: '14.2', text: "Темрява, але шум не заважає." },
+          { id: '14.3', text: "Тиша, але можна зі світлом." },
+          { id: '14.4', text: "Сплю в будь-яких умовах." }
+        ]
+      },
+      {
+        id: 15,
+        type: 'radio',
+        questionText: "Вільний вечір у будній день?",
+        options: [
+          { id: '15.1', text: "Навчання / Робота." },
+          { id: '15.2', text: "Фільми / Ігри." },
+          { id: '15.3', text: "Читання." },
+          { id: '15.4', text: "Спорт / Прогулянка." },
+          { id: '15.5', text: "Спілкування з друзями." },
+          { id: '15.6', text: "Хобі." }
+        ]
+      }
   ];
 
+  // --- ЛОГІКА ---
+
+  // Поточне питання
+  const currentQ = questions[currentQuestionIndex];
+  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+
+
+
+
+ const handleInputText = (event, questionId) => {
+    const inputValue = event.target.value;
+
+    // Регулярний вираз дозволяє:
+    // 1. Українські літери (А-Яа-яЄєІіЇїҐґ)
+    // 2. Пробіли (\s)
+    // 3. Основну пунктуацію: , . : ; ! ? ' -
+    // Усі інші символи будуть видалені.
+    const sentenceRegex = /[^А-Яа-яЄєІіЇїҐґ\s.,:;!?'"-]/g; 
+
+    const cleanedValue = inputValue.replace(sentenceRegex, "");
+
+    // Оновлюємо загальний об'єкт відповідей (answers)
+    setAnswers(prev => ({
+      ...prev,
+      [questionId]: cleanedValue
+    }));
+};
+
+  // Оновлення відповіді
+  const handleAnswerSelect = (value) => {
+    setAnswers(prev => ({
+      ...prev,
+      [currentQ.id]: value
+    }));
+  };
+
+  // Перехід до наступного
+  const handleNext = () => {
+    // Валідація: чи дали відповідь?
+    if (!answers[currentQ.id] || answers[currentQ.id].trim() === '') {
+      alert("Будь ласка, дайте відповідь, щоб продовжити!");
+      return;
+    }
+
+    if (isLastQuestion) {
+      handleSubmit();
+    } else {
+      setIsExiting(true);
+      setTimeout(() => {
+        setCurrentQuestionIndex(prev => prev + 1);
+        setIsExiting(false);
+      }, 300); // Затримка для анімації (має співпадати з CSS transition)
+    }
+  };
+
+  // Перехід назад
+  const handlePrev = () => {
+    if (currentQuestionIndex > 0) {
+      setIsExiting(true);
+      setTimeout(() => {
+        setCurrentQuestionIndex(prev => prev - 1);
+        setIsExiting(false);
+      }, 300);
+    }
+  };
+
+  const handleSubmit = () => {
+    navigate('/resultoftest', { state: { userAnswers: answers, questions: questions } });
+    console.log("Всі відповіді:", answers);
+  };
+
+  // Обчислення прогресу (для смужки зверху)
+  const progressPercentage = ((currentQuestionIndex + 1) / questions.length) * 100;
+
   return (
-    <div className="test-container Test">
-      <h1>Анкета сусіда</h1>
-      
-      {questions.map((q) => (
-        <div key={q.id} className="answers-card" style={{ marginBottom: '25px', padding: '15px', borderRadius: '8px' }}>
-          <h3>{q.id}. {q.questionText}</h3>
-          
-          {/* ЛОГІКА ВИБОРУ ВІДОБРАЖЕННЯ */}
-          
-          {q.type === 'text' ? (
-            <input 
-              type="text"
-              className="text-input"
-              placeholder={q.placeholder}
-              value={answers[q.id] || ''}
-              onChange={(e) => handleAnswerChange(q.id, e.target.value)}
-              style={{ width: '100%', padding: '8px', marginTop: '10px' }}
-			  required
-            />
-          ) : (
-            
-            <div className="options-list">
-              {q.options.map((opt) => (
-                <div key={opt.id} className="option" style={{ margin: '5px 0' }}>
-                  <input
-                    type="radio"
-                    name={`question-${q.id}`} // Унікальне ім'я для групи
-                    id={opt.id}
-                    value={opt.id}
-                    checked={answers[q.id] === opt.text}
-                    onChange={() => handleAnswerChange(q.id, opt.text)}
-					required
-                  />
-                  <label htmlFor={opt.id} className='p-2' style={{ marginLeft: '8px' }}>{opt.text}</label>
-                </div>
-              ))}
-            </div>
-          )}
+    <div className="test-page-wrapper">
 
+      <div className="link-to-index ">
+      <a href="/" className='link-to-index-btn'>На головну</a>
+      </div>
+      <div className="test-container-card">
+        
+        {/* Смужка прогресу */}
+        <div className="progress-bar-container">
+          <div 
+            className="progress-bar-fill" 
+            style={{ width: `${progressPercentage}%` }}
+          ></div>
         </div>
-      ))}
 
-      <button 
-        className='px-3 py-2 m-2 ms-0 finish-test-btn'
-		onClick={handleSubmit}
-      >
-        Завершити тест
-      </button>
+        <div className={`question-content ${isExiting ? 'fade-out' : 'fade-in'}`}>
+          <h2 className="question-title">
+            {currentQ.questionText}
+          </h2>
+
+          <div className="options-area">
+            {currentQ.type === 'text' ? (
+              <input 
+                pattern="[А-Яа-яЄєІіЇїҐґ'-\s]+"
+                title="Можна вводити лише українські літери, пробіл, апостроф або дефіс."
+                type="text"
+                className="text-input-styled"
+                placeholder={currentQ.placeholder}
+                value={answers[currentQ.id] || ''}
+                onChange={(e) => handleInputText(e, currentQ.id)}
+                autoFocus
+              />
+            ) : (
+              <div className="options-grid">
+                {currentQ.options.map((opt) => {
+                  const isSelected = answers[currentQ.id] === opt.text;
+                  return (
+                    <div 
+                      key={opt.id} 
+                      className={`option-card ${isSelected ? 'selected' : ''}`}
+                      onClick={() => handleAnswerSelect(opt.text)}
+                    >
+                      <span className="option-text">{opt.text}</span>
+                      {isSelected && <span className="check-icon">✔</span>}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Кнопки навігації */}
+        <div className="navigation-buttons">
+          <button 
+            className="nav-btn prev-btn" 
+            onClick={handlePrev}
+            disabled={currentQuestionIndex === 0}
+          >
+            Назад
+          </button>
+          
+          <button 
+            className="nav-btn next-btn" 
+            onClick={handleNext}
+          >
+            {isLastQuestion ? 'Завершити' : 'Далі'}
+          </button>
+        </div>
+
+        <div className="step-indicator">
+            Питання {currentQuestionIndex + 1} з {questions.length}
+        </div>
+      </div>
     </div>
   );
 };
