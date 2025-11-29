@@ -8,10 +8,17 @@ const ResultOfTest = () => {
 
   // Дістаємо дані, які ми передали через navigate
   // Використовуємо "через або" (|| {}), щоб код не впав, якщо хтось зайде на сторінку напряму
-  const { userAnswers, questions } = location.state || {};
+  const { userAnswers, userAnswerIds, questions } = location.state || {};
 
    const handleSubmitForSearch = () => {
-    navigate('/search-roommate', { state: { userAnswers: userAnswers, questions: questions } });;
+    // ✅ ЗМІНЕНО: Передаємо обидва об'єкти на search-roommate
+    navigate('/search-roommate', { 
+        state: { 
+            userAnswers: userAnswers, // Текст
+            userAnswerIds: userAnswerIds, // ID
+            questions: questions 
+        } 
+    });
   };
   // Якщо даних немає (наприклад, користувач просто ввів посилання в браузер)
   if (!userAnswers || !questions) {
