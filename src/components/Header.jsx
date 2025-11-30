@@ -1,4 +1,6 @@
 import React from "react";
+// 👇 1. Імпортуємо Link
+import { Link } from "react-router-dom";
 
 const Header = () => {
 	return (
@@ -7,9 +9,10 @@ const Header = () => {
 				<nav className="navbar navbar-expand-lg bg-body-tertiary rounded-4">
 					<div className="container-fluid">
 						<h1 className="title m-0">
-							<a className="" href="/">
+							{/* 👇 2. Замінюємо <a> на <Link>, а href на to */}
+							<Link className="" to="/">
 								Dormly
-							</a>
+							</Link>
 						</h1>
 						<button
 							className="navbar-toggler"
@@ -28,37 +31,41 @@ const Header = () => {
 						>
 							<ul className="navbar-nav text-start mb-2 mb-lg-0">
 								<li className="nav-item">
-									<a
+									<Link
 										className="nav-link link px-3"
 										aria-current="page"
-										href="/aboutUs"
+										to="/aboutUs"
 									>
 										Питання
-									</a>
+									</Link>
 								</li>
+								{/* ⚠️ Зверни увагу: для якорів (#) Link може працювати некоректно зі скролом.
+                                    Але href="/#..." точно зламає сайт на GitHub Pages (викине на білий екран).
+                                    Я тимчасово замінив їх на перехід на головну. 
+                                    Для плавного скролу краще використати бібліотеку 'react-router-hash-link',
+                                    але щоб прибрати помилку 404 — цей варіант підійде.
+                                */}
 								<li className="nav-item">
-									<a
-										className="nav-link link px-3"
-										aria-current="page"
-										href="/#advantage-heading"
-									>
+									<a className="nav-link link px-3" href="#advantage-heading">
 										Переваги
 									</a>
 								</li>
 								<li className="nav-item">
-									<a className="nav-link link px-3" href="/#feedbacks-heading">
+									<a className="nav-link link px-3" href="#feedbacks-heading">
 										Відгуки
 									</a>
 								</li>
 								<li className="nav-item">
-									<a className="nav-link login link px-3" href="/login">
+									{/* 👇 Головне виправлення для логіну */}
+									<Link className="nav-link login link px-3" to="/login">
 										Ввійти
-									</a>
+									</Link>
 								</li>
 								<li className="nav-item">
-									<a className="nav-link signup link px-3 rounded-4" href="/regist">
+									{/* 👇 Головне виправлення для реєстрації */}
+									<Link className="nav-link signup link px-3 rounded-4" to="/regist">
 										Зареєструватись
-									</a>
+									</Link>
 								</li>
 							</ul>
 						</div>

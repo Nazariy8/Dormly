@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Maincontent from "./components/Main.jsx";
 
@@ -22,10 +22,8 @@ function App() {
 				<Route path="/regist" element={<UserInit goal="reg"/>} />
 				<Route path="/test" element={<Test />} />
 				<Route path="/resultoftest" element={<ResultOfTest />} />
-				<Route path="/setprofile" element={<setProfile />} />
 				<Route path="/search-roommate" element={<SearchRoommate />} />
 				<Route path="/aboutus" element={<Aboutus />} />
-
 			</Routes>
 		</div>
 	);
