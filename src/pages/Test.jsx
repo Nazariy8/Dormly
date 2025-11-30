@@ -257,7 +257,7 @@ const Test = () => {
 
   const handleSubmit = () => {
     // ✅ ЗМІНЕНО: Передаємо обидва об'єкти через state
-    navigate("/Dormly/resultoftest", {
+    navigate("/resultoftest", {
       state: {
         userAnswers: answers, // ТЕКСТ (для відображення)
         userAnswerIds: answerIds, // ID (для обчислення)

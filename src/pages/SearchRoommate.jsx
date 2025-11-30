@@ -278,7 +278,7 @@ const SearchRoommate = () => {
   };
 
   const handleGoTest = () => {
-    navigate("/Dormly/test");
+    navigate("/test");
   };
 
   // Функція для зміни стану при кліку

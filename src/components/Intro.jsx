@@ -20,7 +20,7 @@ const Intro = () => {
 								</p>
 
 								<button type="button" className="button-test">
-									<a href="/Dormly/test" className="test-btn text-white">
+									<a href="/test" className="test-btn text-white">
 										Почати тест
 									</a>
 								</button>

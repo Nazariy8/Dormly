@@ -18,13 +18,13 @@ function App() {
 			{/* <Header /> */}
 			<Routes>
 				<Route path="/" element={<Homepage />} />
-				<Route path="/Dormly/login" element={<UserInit goal="log"/>} />
-				<Route path="/Dormly/regist" element={<UserInit goal="reg"/>} />
-				<Route path="/Dormly/test" element={<Test />} />
-				<Route path="/Dormly/resultoftest" element={<ResultOfTest />} />
-				<Route path="/Dormly/setprofile" element={<setProfile />} />
-				<Route path="/Dormly/search-roommate" element={<SearchRoommate />} />
-				<Route path="/Dormly/aboutus" element={<Aboutus />} />
+				<Route path="/login" element={<UserInit goal="log"/>} />
+				<Route path="/regist" element={<UserInit goal="reg"/>} />
+				<Route path="/test" element={<Test />} />
+				<Route path="/resultoftest" element={<ResultOfTest />} />
+				<Route path="/setprofile" element={<setProfile />} />
+				<Route path="/search-roommate" element={<SearchRoommate />} />
+				<Route path="/aboutus" element={<Aboutus />} />
 
 			</Routes>
 		</div>
