@@ -9,7 +9,7 @@ const Header = () => {
 				<nav className="navbar navbar-expand-lg bg-body-tertiary rounded-4">
 					<div className="container-fluid">
 						<h1 className="title m-0">
-							{/* 👇 2. Замінюємо <a> на <Link>, а href на to */}
+							
 							<Link className="" to="/">
 								Dormly
 							</Link>
