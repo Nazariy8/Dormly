@@ -1,7 +1,7 @@
 import React from "react";
 // 👇 1. Імпортуємо Link
 import { Link } from "react-router-dom";
-
+import { HashLink } from "react-router-hash-link";
 const Header = () => {
 	return (
 		<div>
@@ -46,14 +46,14 @@ const Header = () => {
                                     але щоб прибрати помилку 404 — цей варіант підійде.
                                 */}
 								<li className="nav-item">
-									<a className="nav-link link px-3" href="#advantage-heading">
+									<HashLink className="nav-link link px-3" to="#advantage-heading" smooth>
 										Переваги
-									</a>
+									</HashLink>
 								</li>
 								<li className="nav-item">
-									<a className="nav-link link px-3" href="#feedbacks-heading">
+									<HashLink className="nav-link link px-3" to="#feedbacks-heading" smooth>
 										Відгуки
-									</a>
+									</HashLink>
 								</li>
 								<li className="nav-item">
 									{/* 👇 Головне виправлення для логіну */}
