@@ -12,7 +12,7 @@ const ResultOfTest = () => {
 
    const handleSubmitForSearch = () => {
     // ✅ ЗМІНЕНО: Передаємо обидва об'єкти на search-roommate
-    navigate('/search-roommate', { 
+    navigate('/Dormly/search-roommate', { 
         state: { 
             userAnswers: userAnswers, // Текст
             userAnswerIds: userAnswerIds, // ID
@@ -29,7 +29,7 @@ const ResultOfTest = () => {
       >
         <h2>Результатів немає</h2>
         <p>Будь ласка, спочатку пройдіть тест.</p>
-        <button onClick={() => navigate("/")}>Пройти тест</button>
+        <button onClick={() => navigate("/Dormly/test")}>Пройти тест</button>
       </div>
     );
   }
@@ -79,7 +79,7 @@ const ResultOfTest = () => {
         <div className="col-6  d-flex justify-content-start">
           <button
             className="testagain-btn"
-            onClick={() => navigate("/test")} // Кнопка, щоб пройти тест заново
+            onClick={() => navigate("/Dormly/test")} // Кнопка, щоб пройти тест заново
           >
             Пройти знову
           </button>

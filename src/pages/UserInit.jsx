@@ -77,7 +77,7 @@ function UserInit(props) {
       console.log("Валідація успішна, відправляємо дані:", { email, password });
 
       // 5. Перенаправляємо користувача на сторінку профілю
-      navigate("/search-roommate");
+      navigate("/Dormly/search-roommate");
     } else {
       // Якщо валідація не пройдена, помилки (emailError, passwordError)
       // автоматично з'являться на сторінці

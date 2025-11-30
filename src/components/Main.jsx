@@ -11,7 +11,7 @@ const Main = () => {
 				<nav className="navbar navbar-expand-lg bg-body-tertiary rounded-4">
 					<div className="container-fluid">
 						<h1 className="title m-0">
-							<a className="" href="/">
+							<a className="" href="/Dormly">
 								Dormly
 							</a>
 						</h1>
@@ -35,7 +35,7 @@ const Main = () => {
 									<a
 										className="nav-link link px-3"
 										aria-current="page"
-										href="/aboutUs"
+										href="/Dormly/aboutUs"
 									>
 										Питання
 									</a>
@@ -44,23 +44,23 @@ const Main = () => {
 									<a
 										className="nav-link link px-3"
 										aria-current="page"
-										href="#advantage-heading"
+										href="/Dormly/#advantage-heading"
 									>
 										Переваги
 									</a>
 								</li>
 								<li className="nav-item">
-									<a className="nav-link link px-3" href="#feedbacks-heading">
+									<a className="nav-link link px-3" href="/Dormly/#feedbacks-heading">
 										Відгуки
 									</a>
 								</li>
 								<li className="nav-item">
-									<a className="nav-link login link px-3" href="/login">
+									<a className="nav-link login link px-3" href="/Dormly/login">
 										Ввійти
 									</a>
 								</li>
 								<li className="nav-item">
-									<a className="nav-link signup link px-3 rounded-4" href="/regist">
+									<a className="nav-link signup link px-3 rounded-4" href="/Dormly/regist">
 										Зареєструватись
 									</a>
 								</li>
