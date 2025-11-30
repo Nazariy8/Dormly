@@ -1,6 +1,6 @@
 import React from "react";
 import findimg from "../img/findmate.png";
-
+import { Link } from "react-router-dom";
 const Intro = () => {
 	return (
 		<div>
@@ -20,9 +20,9 @@ const Intro = () => {
 								</p>
 
 								<button type="button" className="button-test">
-									<a href="/test" className="test-btn text-white">
+									<Link to="/test" className="test-btn text-white">
 										Почати тест
-									</a>
+									</Link>
 								</button>
 							</div>
 						</div>

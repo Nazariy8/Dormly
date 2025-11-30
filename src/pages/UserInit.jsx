@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import googleicon from "../img/icons/google.png";
 import Advan from "./../components/Advan";
 
@@ -88,10 +88,10 @@ function UserInit(props) {
   return (
     <div>
       <section className="login-section px-3">
-        <a href="/" className="back-btn d-flex align-items-center">
+        <Link to="/" className="back-btn d-flex align-items-center">
           <i className="bi bi-arrow-left fs-5 me-2"></i>
           На головну
-        </a>
+        </Link>
 
         {/* 6. Використовуємо onSubmit для форми */}
         <form onSubmit={handleSubmit} className="">
@@ -127,7 +127,7 @@ function UserInit(props) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <a href="#" className="text-dark showpass-btn-block">
+            <Link to="#" className="text-dark showpass-btn-block">
               <i
                 className={`bi ${
                   showPassword ? "bi-eye" : "bi-eye-slash"
@@ -135,7 +135,7 @@ function UserInit(props) {
                 id="showpass-btn"
                 onClick={changeShowPassword}
               ></i>
-            </a>
+            </Link>
           </div>
           <div className="row after-password-spans d-flex justify-content-between align-items-center">
             <span className="col-6 mb-4 range text-secondary">
@@ -160,7 +160,7 @@ function UserInit(props) {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
-                <a href="#" className="text-dark showpass-btn-block">
+                <Link to="#" className="text-dark showpass-btn-block">
                   <i
                     className={`bi ${
                       showPassword ? "bi-eye" : "bi-eye-slash"
@@ -168,7 +168,7 @@ function UserInit(props) {
                     id="showpass-btn"
                     onClick={changeShowPassword}
                   ></i>
-                </a>
+                </Link>
               </div>
             </>
           ) : (
@@ -186,19 +186,19 @@ function UserInit(props) {
           <div className="or-span">
             <span className="fw-normal text-center ">або</span>
           </div>
-          <a href="" className="text-dark googlelogin-btn p-2">
+          <Link to="" className="text-dark googlelogin-btn p-2">
             <span className="p-0 m-0">
               <img src={googleicon} className="googleicon" alt="" />
             </span>
             Продовжити з <span className="p-0 m-0 ms-1">Google</span>
-          </a>
+          </Link>
           <p className="question">
             {props.goal === "log" ? (
               <>
                 Ще немаєте аккаунту?
-                <a href="/userinit/regist" className="regist-link ms-2">
+                <Link to="/userinit/regist" className="regist-link ms-2">
                   Реєстрація
-                </a>
+                </Link>
               </>
             ) : (
               <>

@@ -275,9 +275,9 @@ const Test = () => {
   return (
     <div className="test-page-wrapper">
       <div className="link-to-index ">
-        <a href="/" className="link-to-index-btn">
+        <Link to="/" className="link-to-index-btn">
           На головну
-        </a>
+        </Link>
       </div>
       <div className="test-container-card">
         {/* Смужка прогресу */}
