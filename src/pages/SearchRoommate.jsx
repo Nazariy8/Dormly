@@ -583,13 +583,29 @@ const SearchRoommate = () => {
           <div className="col-12 col-xxl-6 col-xl-6 col-md-12 col-sm-12 justify-content-end simil-block">
             <h3 className="text-end">Спільні інтереси:</h3>
             <div className="list-of-users">
-              {users.map((user) => (
+              <>
+              {
+               userAnswers ? (<div>
+                 {users.map((user) => (
                 <UserForRoom
                   key={user.id}
                   userAnswers={userAnswers}
                   user={user}
                 />
               ))}
+               </div>) : (
+
+                <div className="d-flex flex-column justify-content-end text-end">
+                  <h3>У вас немає спільних інтересів, так як ви не пройшли тест!</h3>
+                   <button className="start-test" onClick={handleGoTest}>
+                    Пройти тест
+                  </button>
+                </div>
+
+               )
+              }
+              
+              </>
             </div>
           </div>
         </div>
