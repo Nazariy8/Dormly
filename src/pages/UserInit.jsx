@@ -22,6 +22,28 @@ function UserInit(props) {
     setShowPassword(!showPassword);
   }
 
+
+const [emailInput, setEmailInput] = useState('');
+  const [status, setStatus] = useState('idle'); // idle, valid, invalid
+
+  const validateEmail = (input) => {
+    setEmailInput(input);
+    
+    if (!input) {
+      setStatus('idle');
+      return;
+    }
+
+    // Regex to match strictly @gmail.com or @lpnu.ua at the end
+    const pattern = /^[a-zA-Z0-9._%+-]+@(gmail\.com|lpnu\.ua)$/i;
+
+    if (pattern.test(input)) {
+      setStatus('valid');
+    } else {
+      setStatus('invalid');
+    }
+  };
+
   // --- 3. Потужна функція валідації ---
   const validateInputs = () => {
     // Скидаємо старі помилки

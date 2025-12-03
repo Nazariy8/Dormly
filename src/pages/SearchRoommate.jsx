@@ -595,9 +595,9 @@ const SearchRoommate = () => {
               ))}
                </div>) : (
 
-                <div className="d-flex flex-column justify-content-end text-end">
-                  <h3>У вас немає спільних інтересів, так як ви не пройшли тест!</h3>
-                   <button className="start-test" onClick={handleGoTest}>
+                <div className="text-end">
+                  <h5>У вас немає спільних інтересів, так як ви не пройшли тест!</h5>
+                   <button className="start-test w-50" onClick={handleGoTest}>
                     Пройти тест
                   </button>
                 </div>

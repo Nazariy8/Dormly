@@ -1,0 +1,79 @@
+.search-quest{
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+} 
+.list-of-btns{
+    justify-content: center;
+    display: flex;
+    align-items: start;
+}
+.connect-to-us{
+    background: #3CC8A1;
+}
+
+.not-found-quest > i{
+    background: #3CC8A1;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    color: white;
+}
+    @media (min-width: 500px) {
+        
+        .search-quest{
+            width: 450px;
+        }
+        
+    }
+
+    
+    @media (min-width:400px) and (max-width:599px){
+        .help-header-text{
+            width: 95%;
+        }
+        .askquest{
+            text-align: center;
+            width: 85%;
+        }
+    }
+    
+    @media (min-width:600px) and (max-width:750px){
+        .askquest{
+            text-align: center;
+            width: 90%;
+        }
+    }
+
+    @media (min-width: 700px) {
+        
+        .search-quest{
+            width: 650px;
+        }
+        
+    }
+
+    
+    @media (min-width: 1000px) {
+        
+        .search-quest{
+            margin-top: 20px;
+            width: 700px;
+        }
+        
+    }
+
+
+    @media (min-width: 1400px) and (max-width: 2560px) {
+        
+        .search-quest{
+            margin-top: 20px;
+            width: 50%;
+        }
+        
+    }
+
+    

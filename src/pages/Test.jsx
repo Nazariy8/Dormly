@@ -5,6 +5,12 @@ import "../css/test.scss"; // Переконайся, що оновив цей �
 const Test = () => {
   const navigate = useNavigate();
 
+
+  
+
+  
+
+
   // --- СТАН ---
   // Індекс поточного питання (починаємо з 0)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -244,6 +250,22 @@ const Test = () => {
     }
   };
 
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+        if (event.key === "Enter"){
+          event.preventDefault();
+          handleNext();
+        }
+    }
+    
+    window.addEventListener("keydown", handleKeyDown);
+
+  return () => {
+    window.removeEventListener("keydown", handleKeyDown)
+  }
+  }, [handleNext])
+  
   // Перехід назад
   const handlePrev = () => {
     if (currentQuestionIndex > 0) {
