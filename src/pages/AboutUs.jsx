@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import Header from "../components/Header";
 import Questions from "../components/Questions";
 import "../css/about.scss";
-
+import { Navigate, useNavigate } from "react-router-dom";
 const AboutUs = () => {
+  const navigate = useNavigate();
   return (
     <div>
       <Header />
@@ -15,17 +16,18 @@ const AboutUs = () => {
           Знаходьте відповіді на свої запитання нижче або скористайтеся пошуком.
         </p>
       </div>
-      <div className="d-flex justify-content-center">
+      <div className=" align-items-center search-input-block text-center">
+        <i class="bi bi-search"></i>
         <input
           type="text"
           name=""
-          className="ps-5 px-3 py-3 rounded-5 border border-0 search-quest"
+          className="ps-5 px-3 py-3 rounded-5 search-quest"
           placeholder="Як знайти відповідь на своє запитання"
           id=""
         />
       </div>
-      <div className="row mx-5 mt-5">
-        <div className="col-3 border">
+      <div className="row mx-5 mt-5 justify-content-center">
+        <div className="col-12 col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-12 border">
           <div className="list-of-btns w-100">
             <div
               className="btn-group-vertical w-100"
@@ -44,7 +46,7 @@ const AboutUs = () => {
                 className="btn btn-light mb-3 text-start rounded-5 align-items-center"
                 htmlFor="vbtn-radio1"
               >
-                <i class="bi bi-question-circle fs-5 me-2"></i> Часті запитання
+                <i className="bi bi-question-circle fs-5 me-2"></i> Часті запитання
               </label>
 
               <input
@@ -57,8 +59,9 @@ const AboutUs = () => {
               <label
                 className="btn btn-light mb-3 text-start rounded-5 align-items-center"
                 htmlFor="vbtn-radio2"
+                onClick={() => navigate("/regist")}
               >
-                <i class="bi bi-person fs-5 me-2"></i> Реєстрація та профіль
+                <i className="bi bi-person fs-5 me-2"></i> Реєстрація та профіль
               </label>
 
               <input
@@ -71,8 +74,9 @@ const AboutUs = () => {
               <label
                 className="btn btn-light mb-3 text-start rounded-5 align-items-center"
                 htmlFor="vbtn-radio3"
+                onClick={() => navigate("/test")}
               >
-                <i class="bi bi-person-check-fill fs-5 me-2"></i> Тест на
+                <i className="bi bi-person-check-fill fs-5 me-2"></i> Тест на
                 сумісність
               </label>
 
@@ -87,7 +91,7 @@ const AboutUs = () => {
                 className="btn btn-light mb-3 text-start rounded-5 align-items-center"
                 htmlFor="vbtn-radio4"
               >
-                <i class="bi bi-shield-check fs-5 me-2"></i> Безпека та
+                <i className="bi bi-shield-check fs-5 me-2"></i> Безпека та
                 конфінденційність
               </label>
 
@@ -102,21 +106,147 @@ const AboutUs = () => {
                 className="btn btn-light mb-3 text-start rounded-5 align-items-center"
                 htmlFor="vbtn-radio5"
               >
-                <i class="bi bi-wrench fs-5 me-2"></i> Технічні питання
+                <i className="bi bi-wrench fs-5 me-2"></i> Технічні питання
               </label>
             </div>
           </div>
 
           <div className="not-found-quest bg-white d-flex flex-column text-center rounded-5 mb-5 p-4">
-              <i class="bi bi-patch-question fs-4"></i>
-              <h5>Не знайшли відповідь?</h5>
-              <p>Наша команда підтримки завжди готова допомогти.</p>
-              <button className="text-center rounded-5 py-2 text-white connect-to-us">
-                Зв'язатися з нами
-              </button>
+            <i className="bi bi-patch-question fs-4"></i>
+            <h5>Не знайшли відповідь?</h5>
+            <p>Наша команда підтримки завжди готова допомогти.</p>
+            <button className="text-center rounded-5 py-2 text-white connect-to-us">
+              Зв'язатися з нами
+            </button>
           </div>
         </div>
-        <Questions />
+
+
+        <div className="col-12 col-xxl-7 col-xl-9 col-lg-6 col-md-6 col-sm-12 ">
+        <div className="accordion" id="accordionPanelsStayOpenExample">
+          <div className="accordion-item mb-4 rounded-5">
+            <h2 className="accordion-header">
+              <button
+                className="accordion-button rounded-5"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseOne"
+                aria-expanded="true"
+                aria-controls="panelsStayOpen-collapseOne"
+              >
+                Що таке Dormly?
+              </button>
+            </h2>
+            <div
+              id="panelsStayOpen-collapseOne"
+              className="accordion-collapse collapse show"
+            >
+              <div className="accordion-body">
+                Dormly — це платформа, створена, щоб допомогти студентам знайти
+                ідеального сусіда по кімнаті в гуртожитку на основі тесту на
+                сумісність особистості та способу життя, забезпечуючи кращий
+                досвід спільного проживання.
+              </div>
+            </div>
+          </div>
+          <div className="accordion-item mb-4 rounded-5">
+            <h2 className="accordion-header">
+              <button
+                className="accordion-button collapsed rounded-5"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseTwo"
+                aria-expanded="false"
+                aria-controls="panelsStayOpen-collapseTwo"
+              >
+                Як працює тест на сумісність?
+              </button>
+            </h2>
+            <div
+              id="panelsStayOpen-collapseTwo"
+              className="accordion-collapse collapse"
+            >
+              <div className="accordion-body">
+                Наш тест аналізує ваші відповіді на питання про звички, стиль
+                життя, соціальну активність та особисті вподобання, щоб знайти
+                користувачів з найвищим відсотком сумісності.
+              </div>
+            </div>
+          </div>
+          <div className="accordion-item mb-4 rounded-5">
+            <h2 className="accordion-header">
+              <button
+                className="accordion-button collapsed rounded-5"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseThree"
+                aria-expanded="false"
+                aria-controls="panelsStayOpen-collapseThree"
+              >
+                Чи є Dormly безкоштовним?
+              </button>
+            </h2>
+            <div
+              id="panelsStayOpen-collapseThree"
+              className="accordion-collapse collapse"
+            >
+              <div className="accordion-body">
+                Так, базові функції Dormly, включаючи створення профілю,
+                проходження тесту та пошук сусідів, є абсолютно безкоштовними.
+                Ми можемо запропонувати додаткові преміум-функції в майбутньому.
+              </div>
+            </div>
+          </div>
+          <div className="accordion-item mb-4 rounded-5">
+            <h2 className="accordion-header">
+              <button
+                className="accordion-button collapsed rounded-5"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseFour"
+                aria-expanded="false"
+                aria-controls="panelsStayOpen-collapseFour"
+              >
+                Як створити обліковий запис?
+              </button>
+            </h2>
+            <div
+              id="panelsStayOpen-collapseFour"
+              className="accordion-collapse collapse"
+            >
+              <div className="accordion-body">
+                Просто натисніть кнопку "Реєстрація" у верхньому правому куті,
+                заповніть необхідні поля, і ви готові розпочати пошук ідеального
+                сусіда!
+              </div>
+            </div>
+          </div>
+          <div className="accordion-item mb-4 rounded-5">
+            <h2 className="accordion-header">
+              <button
+                className="accordion-button collapsed rounded-5"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseFive"
+                aria-expanded="false"
+                aria-controls="panelsStayOpen-collapseFive"
+              >
+                Чи можу я змінити інформацію профілю пізніше?
+              </button>
+            </h2>
+            <div
+              id="panelsStayOpen-collapseFive"
+              className="accordion-collapse collapse"
+            >
+              <div className="accordion-body">
+                Звісно! Ви можете будь-коли оновити свою інформацію, фотографії
+                та відповіді на тест у налаштуваннях свого профілю, щоб вони
+                завжди були актуальними.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       </div>
     </div>
   );
