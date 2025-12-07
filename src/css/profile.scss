@@ -84,11 +84,12 @@
 
 /* roommate component */
 .roommate-card{
-    max-width: 400px;
+    flex-wrap: wrap;
+    max-width: 500px;   
     width: 100%;
     border-radius: 20px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    margin: 10px 0;
+    margin: 10px;
     @media (max-width: 1200px){
        max-width: 100%;
     }
@@ -100,10 +101,12 @@
 }
 .list-of-users{
     width: 100%;
-    display: flex;
+    max-height: 110vh;
+    display: flex; 
+    flex-wrap: wrap;
     flex-direction: column;
     align-items: flex-end;
-
+    overflow-y: auto;
     @media (max-width: 1200px){
         align-items: stretch;
     }

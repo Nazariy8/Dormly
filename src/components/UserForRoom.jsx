@@ -64,6 +64,8 @@ const UserForRoom = ({ userAnswers, user }) => {
             <div className="user-info_block text-end">
               <h5 className="user-name">{user.name}</h5>
               <p className="bio">{user.bio}</p>
+              <p><b>Inst:</b> {user.instagram}</p>
+              <p><b>Tg:</b> {user.telegram}</p>
               <div className="similarity w-100">
                 <div className="sim-bar">
                   <div

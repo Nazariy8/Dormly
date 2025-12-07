@@ -208,10 +208,13 @@ const Test = () => {
 
     const sentenceRegex = /[^А-Яа-яЄєІіЇїҐґ\s.,:;!?'"-]/g; 
 
-    // ✅ ОГОЛОШЕННЯ ПОВИННО БУТИ З const/let
-    const cleanedValue = inputValue.replace(sentenceRegex, "");
-
     const questionIdStr = String(questionId); // ✅ Перетворення ID на рядок
+
+    // ✅ ОГОЛОШЕННЯ ПОВИННО БУТИ З const/let
+    
+    const cleanedValue = inputValue.replace(sentenceRegex, "");
+    
+
 
     setAnswers((prev) => ({
       ...prev,

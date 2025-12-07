@@ -218,16 +218,16 @@ const [emailInput, setEmailInput] = useState('');
             {props.goal === "log" ? (
               <>
                 Ще немаєте аккаунту?
-                <Link to="/userinit/regist" className="regist-link ms-2">
+                <Link to="/regist" className="regist-link ms-2">
                   Реєстрація
                 </Link>
               </>
             ) : (
               <>
                 Вже маєте аккаунт?
-                <a href="/userinit/login" className="regist-link ms-2">
+                <Link to="/login" className="regist-link ms-2">
                   Увійти
-                </a>
+                </Link>
               </>
             )}
           </p>

@@ -105,4 +105,41 @@
         
     }
 
-    
+.about-us .row .col-3{
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+.about-us{
+
+    .title{
+        width: 300px;
+    }
+}
+
+.teammate-card{
+    background: var(--primary-white);
+    width: 350px;
+    padding: 20px;
+    border-radius: 30px;
+
+    h4{
+        font-size: 20px;
+    }
+    h6{
+        font-size: 15px;
+        color: var(--primary-puple);
+    }
+    img{
+        width: 150px;
+    }
+}
+
+.ready-to-find{
+    text-align: center;
+    height: 70px;
+    padding: 0 20px;
+    color: var(--primary-white);
+    border-radius: 20px 20px 0 0;
+    background:var(--primary-puple);
+}

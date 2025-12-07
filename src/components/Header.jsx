@@ -46,12 +46,12 @@ const Header = () => {
                                     але щоб прибрати помилку 404 — цей варіант підійде.
                                 */}
 								<li className="nav-item">
-									<HashLink className="nav-link link px-3" to="#advantage-heading" smooth>
+									<HashLink className="nav-link link px-3" to="/#advantage-heading" smooth>
 										Переваги
 									</HashLink>
 								</li>
 								<li className="nav-item">
-									<HashLink className="nav-link link px-3" to="#feedbacks-heading" smooth>
+									<HashLink className="nav-link link px-3" to="/#feedbacks-heading" smooth>
 										Відгуки
 									</HashLink>
 								</li>
