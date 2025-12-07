@@ -1,17 +1,22 @@
 {
   "files": {
-    "main.css": "/Dormly/static/css/main.593d93d2.css",
-    "main.js": "/Dormly/static/js/main.06eeb4a3.js",
+    "main.css": "/Dormly/static/css/main.e0b0d9b6.css",
+    "main.js": "/Dormly/static/js/main.dd6579ec.js",
     "static/media/findmate.png": "/Dormly/static/media/findmate.b8b52ce15a199f1e3887.png",
     "static/media/user1.png": "/Dormly/static/media/user1.b5797f3ff0e2fc46f62d.png",
     "static/media/user2.png": "/Dormly/static/media/user2.d9a5b3c2ec150ad2345d.png",
     "static/media/user3.png": "/Dormly/static/media/user3.fc692e814eb831425ea8.png",
+    "static/media/julia.webp": "/Dormly/static/media/julia.d19e3eab985f8fb496fa.webp",
+    "static/media/olena.webp": "/Dormly/static/media/olena.acf475d9f5e0caccb526.webp",
+    "static/media/zlata.webp": "/Dormly/static/media/zlata.3c93a70fcbd1347720ce.webp",
+    "static/media/maks.webp": "/Dormly/static/media/maks.fa30b2b1117135a865d7.webp",
+    "static/media/nazar.webp": "/Dormly/static/media/nazar.efbda36809f68c8e4cfe.webp",
     "index.html": "/Dormly/index.html",
-    "main.593d93d2.css.map": "/Dormly/static/css/main.593d93d2.css.map",
-    "main.06eeb4a3.js.map": "/Dormly/static/js/main.06eeb4a3.js.map"
+    "main.e0b0d9b6.css.map": "/Dormly/static/css/main.e0b0d9b6.css.map",
+    "main.dd6579ec.js.map": "/Dormly/static/js/main.dd6579ec.js.map"
   },
   "entrypoints": [
-    "static/css/main.593d93d2.css",
-    "static/js/main.06eeb4a3.js"
+    "static/css/main.e0b0d9b6.css",
+    "static/js/main.dd6579ec.js"
   ]
 }
