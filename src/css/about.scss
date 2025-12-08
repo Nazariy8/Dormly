@@ -1,0 +1,145 @@
+:root{
+    --primary-white: #fff;
+    --primary-info: #0dcaf0;
+    --primary-grey: #adb5bd;;
+    --primary-purple-light: #e6d8f7;
+    --primary-puple: #8a4fff;
+}
+
+.search-input-block{
+    margin: 0 auto;
+}
+.search-quest{
+    transition: 1s;
+    border: none;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+} 
+
+.search-quest:focus{
+    outline:1px solid var(--primary-puple);
+}
+.list-of-btns{
+    justify-content: center;
+    display: flex;
+    align-items: start;
+}
+.connect-to-us{
+    background: #3CC8A1;
+}
+
+.not-found-quest > i{
+    background: #3CC8A1;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.bi-search{
+    position: relative;
+    left: 35px;
+}
+    @media (min-width: 200px) {
+        
+        .search-quest{
+            width:75%;
+        }
+        
+    }
+    @media (min-width: 500px) {
+        
+        .search-quest{
+            width: 450px;
+        }
+        
+    }
+
+    
+    @media (min-width:400px) and (max-width:599px){
+        .help-header-text{
+            width: 95%;
+        }
+        .askquest{
+            text-align: center;
+            width: 85%;
+        }
+    }
+    
+    @media (min-width:600px) and (max-width:750px){
+        .askquest{
+            text-align: center;
+            width: 90%;
+        }
+    }
+
+    @media (min-width: 700px) {
+        
+        .search-quest{
+            width: 650px;
+        }
+        
+    }
+
+    
+    @media (min-width: 1000px) {
+        
+        .search-quest{
+            margin-top: 20px;
+            width: 700px;
+        }
+        
+    }
+
+
+    @media (min-width: 1400px) and (max-width: 2560px) {
+        
+        .search-quest{
+            margin-top: 20px;
+            width: 50%;
+        }
+        
+    }
+
+.about-us .row .col-3{
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+.about-us{
+
+    .title{
+        width: 300px;
+    }
+}
+
+.teammate-card{
+    background: var(--primary-white);
+    width: 350px;
+    padding: 20px;
+    border-radius: 30px;
+
+    h4{
+        font-size: 20px;
+    }
+    h6{
+        font-size: 15px;
+        color: var(--primary-puple);
+    }
+    img{
+        width: 150px;
+    }
+}
+
+.ready-to-find{
+    text-align: center;
+    height: 70px;
+    padding: 0 20px;
+    color: var(--primary-white);
+    border-radius: 20px 20px 0 0;
+    background:var(--primary-puple);
+}
