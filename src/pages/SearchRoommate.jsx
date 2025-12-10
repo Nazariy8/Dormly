@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "../css/profile.scss";
 import defaultUser from "../img/profile/user.jpg";
 import UserForRoom from "../components/UserForRoom";
-import "../css/forms.scss";
 import { Link } from "react-router-dom";
 const users = [
   // ІСНУЮЧІ КОРИСТУВАЧІ (З НЕЗНАЧНИМИ КОРЕКЦІЯМИ ВІДПОВІДЕЙ)
