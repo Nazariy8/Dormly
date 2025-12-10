@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import googleicon from "../img/icons/google.png";
-import Advan from "./../components/Advan";
 
 function UserInit(props) {
   const [showPassword, setShowPassword] = useState(false);
