@@ -108,7 +108,6 @@ const users = [
       15: "Фільми / Ігри.", // Змінено на 15.2
     },
   },
-  // НОВІ КОРИСТУВАЧІ ДЛЯ МАКСИМАЛЬНОЇ РІЗНОМАНІТНОСТІ
   {
     id: 105,
     name: "Наталія",
@@ -387,8 +386,11 @@ const SearchRoommate = () => {
 
   const fileInputRef = useRef(null);
 
+  // Передача даних з іншого файлу
   const { userAnswers, questions } = location.state || {};
 
+
+  // Збереження інстаграму та телеграму користувача
   const [instagram, setInstagram] = useState(
     localStorage.getItem(STORAGE_KEY_INST)
   );
@@ -414,7 +416,7 @@ const SearchRoommate = () => {
     localStorage.getItem(STORAGE_KEY_FILE_NAME) || "Файл не вибрано"
   );
 
-  // стан тумблерів налаштувань сповіщень
+  // стан тумблерів налаштувань конфінденційності
   const [photoAccess, setPhotoAccess] = useState(
     localStorage.getItem(STORAGE_KEY_PHOTO_ACCESS) === "true"
   );
@@ -701,9 +703,9 @@ const SearchRoommate = () => {
           <div className="col-12 col-xxl-6 col-xl-6 col-md-12 col-sm-12 flex-wrap mb-4">
             <>
               <h3>Мої звички:</h3>
+              {/* Вивід звичок користувача після тесту */}
               {userAnswers ? (
                 <div className="d-flex flex-wrap">
-                  {/* ✅ ЗМІНЕНО: Ітеруємо по ключах (ID питань) userAnswers */}
                   {Object.keys(userAnswers).map((questionId) => {
                     const answer = userAnswers[questionId];
                     // Знаходимо повний об'єкт питання за його ID

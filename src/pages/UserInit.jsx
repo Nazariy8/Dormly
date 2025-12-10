@@ -202,7 +202,6 @@ const [emailInput, setEmailInput] = useState('');
             {props.goal === "log" ? "Увійти" : "Зареєструватися"}
           </button>
 
-          {/* ... Решта вашого коду ... */}
 
           <hr></hr>
           <div className="or-span">

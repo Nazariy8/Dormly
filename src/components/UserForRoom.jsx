@@ -89,6 +89,7 @@ const UserForRoom = ({ userAnswers, user }) => {
           </div>
           <div className="buttons-for-mate">
             <div className="friend-button">
+              {/* Вивід кнопки залежно від стану кнопки */}
               {
                 friendRequest ? (
 
