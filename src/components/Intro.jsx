@@ -1,6 +1,7 @@
 import React from "react";
 import findimg from "../img/findmate.png";
 import { Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 const Intro = () => {
 	return (
 		<div>
