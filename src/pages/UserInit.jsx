@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import googleicon from "../img/icons/google.png";
-import Advan from "./../components/Advan";
 
 function UserInit(props) {
   const [showPassword, setShowPassword] = useState(false);
@@ -202,7 +201,6 @@ const [emailInput, setEmailInput] = useState('');
             {props.goal === "log" ? "Увійти" : "Зареєструватися"}
           </button>
 
-          {/* ... Решта вашого коду ... */}
 
           <hr></hr>
           <div className="or-span">

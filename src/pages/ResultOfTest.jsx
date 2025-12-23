@@ -44,6 +44,7 @@ const ResultOfTest = () => {
       </h1>
 
       <div className="results-list">
+        {/* Вивід результатів тесту */}
         {questions.map((q) => (
           <div
             key={q.id}

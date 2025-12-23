@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Header from "../components/Header";
-import Questions from "../components/Questions";
 import "../css/about.scss";
 import { Navigate, useNavigate } from "react-router-dom";
 import nazar from "../img/team/nazar.webp"
@@ -33,7 +32,7 @@ const AboutUs = () => {
         />
       </div>
       <div className="row mx-5 mt-5 justify-content-center">
-        <div className="col-12 col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-12 border">
+        <div className="col-12 col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-12">
           <div className="list-of-btns w-100">
             <div
               className="btn-group-vertical w-100"

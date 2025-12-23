@@ -1,6 +1,7 @@
 import React from "react";
 import findimg from "../img/findmate.png";
 import { Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 const Intro = () => {
 	return (
 		<div>
@@ -32,9 +33,9 @@ const Intro = () => {
 					</div>
 				</div>
 				<div className="arrow-down">
-					<a href="#advantage-heading" className="text-dark">
+					<HashLink to="/#advantage-heading" className="text-dark">
 						<i className="bi bi-arrow-down fs-1"></i>
-					</a>
+					</HashLink>
 				</div>
 			</section>
 		</div>
