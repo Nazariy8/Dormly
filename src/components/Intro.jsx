@@ -32,9 +32,9 @@ const Intro = () => {
 					</div>
 				</div>
 				<div className="arrow-down">
-					<Link to="/#advantage-heading" className="text-dark">
+					<HashLink to="/#advantage-heading" className="text-dark">
 						<i className="bi bi-arrow-down fs-1"></i>
-					</Link>
+					</HashLink>
 				</div>
 			</section>
 		</div>
