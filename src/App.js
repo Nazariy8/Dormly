@@ -11,6 +11,7 @@ import ResultOfTest from "./pages/ResultOfTest.jsx"
 import SearchRoommate from "./pages/SearchRoommate.jsx"
 import Aboutus from "./pages/AboutUs.jsx"
 import Chat from "./components/Chat.jsx";
+import ResetPass from "./pages/ResetPass.jsx"
 
 import "./css/main.css";
 
@@ -32,8 +33,11 @@ function App() {
         <div className="App">
             <Routes>
                 <Route path="/" element={<Homepage user={user} />} />
+
                 <Route path="/login" element={<UserInit goal="log" user={user} />} />
                 <Route path="/regist" element={<UserInit goal="reg" user={user} />} />
+                <Route path="/resetPass" element={<ResetPass />} />
+
                 <Route path="/test" element={<Test user={user} />} />
                 <Route path="/resultoftest" element={<ResultOfTest user={user} />} />
                 <Route path="/search-roommate" element={<SearchRoommate user={user} />} />

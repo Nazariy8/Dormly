@@ -7,10 +7,10 @@ import UserForRoom from "../components/UserForRoom";
 import { Link } from "react-router-dom";
 
 import { auth, db } from "../firebase"; // Перевір, щоб шлях був правильним
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+
 const users = [
-  // ІСНУЮЧІ КОРИСТУВАЧІ (З НЕЗНАЧНИМИ КОРЕКЦІЯМИ ВІДПОВІДЕЙ)
   {
     id: 101,
     name: "Олександр",
@@ -362,30 +362,22 @@ const users = [
     },
   },
 ];
-// Ключі для localStorage
-
-const STORAGE_KEY_AVATAR = "userAvatarBase64";
-const STORAGE_KEY_FIRST_NAME = "userFirstName";
-const STORAGE_KEY_LAST_NAME = "userLastName";
-
-const STORAGE_KEY_PHOTO_ACCESS = "userPhotoAccess";
-const STORAGE_KEY_SEND_ALLOW = "userSendAllow";
-const STORAGE_KEY_HIDE_ACTIVITY = "userHideActivity";
-
-const STORAGE_KEY_FRIENDS_ACTIVITY = "userFriendsActivity";
-const STORAGE_KEY_FRIENDS_QUERY = "userFriendsQuery";
-const STORAGE_KEY_SHOW_MESSAGES = "userShowMessages";
-
-// Новий ключ для збереження назви файлу
-const STORAGE_KEY_FILE_NAME = "userFileName";
-
-const STORAGE_KEY_INST = "instagram";
-const STORAGE_KEY_TG = "telegram";
 
 const questions = [
-  { id: 1, questionText: "Чи є у вас якась звичка, яка може бути незвичною/дратівливою для інших?" },
-  { id: 2, questionText: "Як ви ставитеся до поділу/спільного використання продуктів?" },
-  { id: 3, questionText: "Як ви ставитеся до накопичення особистих речей та одягу у кімнаті?" },
+  {
+    id: 1,
+    questionText:
+      "Чи є у вас якась звичка, яка може бути незвичною/дратівливою для інших?",
+  },
+  {
+    id: 2,
+    questionText: "Як ви ставитеся до поділу/спільного використання продуктів?",
+  },
+  {
+    id: 3,
+    questionText:
+      "Як ви ставитеся до накопичення особистих речей та одягу у кімнаті?",
+  },
   { id: 4, questionText: "Яка ваша частота прибирання власного простору?" },
   { id: 5, questionText: "Який ваш типовий режим сну у будні дні?" },
   { id: 6, questionText: "Чи є у вас підтверджена алергія на щось?" },
@@ -397,7 +389,7 @@ const questions = [
   { id: 12, questionText: "Улюблений жанр музики?" },
   { id: 13, questionText: "Атмосфера для навчання?" },
   { id: 14, questionText: "Умови для сну?" },
-  { id: 15, questionText: "Вільний вечір у будній день?" }
+  { id: 15, questionText: "Вільний вечір у будній день?" },
 ];
 
 const SearchRoommate = ({ user }) => {
@@ -410,52 +402,24 @@ const SearchRoommate = ({ user }) => {
   );
   const [loading, setLoading] = useState(true);
 
-
-  // Збереження інстаграму та телеграму користувача
-  const [instagram, setInstagram] = useState(
-    localStorage.getItem(STORAGE_KEY_INST),
-  );
-  const [telegram, setTelegram] = useState(
-    localStorage.getItem(STORAGE_KEY_TG),
-  );
-
   // 1. Стан для аватара
-  const [avatar, setAvatar] = useState(
-    localStorage.getItem(STORAGE_KEY_AVATAR),
-  );
+  const [avatar, setAvatar] = useState("");
   // 2. Стан для імені та прізвища
-  const [firstName, setFirstName] = useState(
-    localStorage.getItem(STORAGE_KEY_FIRST_NAME) || "",
-  );
-  const [lastName, setLastName] = useState(
-    localStorage.getItem(STORAGE_KEY_LAST_NAME) || "",
-  );
-  // 3. Стан для назви файлу (тепер читаємо з localStorage)
-  const [fileName, setFileName] = useState(
-    localStorage.getItem(STORAGE_KEY_FILE_NAME) || "Файл не вибрано",
-  );
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [telegram, setTelegram] = useState("");
+  
+  const [fileName, setFileName] = useState(""  );
 
-  // стан тумблерів налаштувань конфінденційності
-  const [photoAccess, setPhotoAccess] = useState(
-    localStorage.getItem(STORAGE_KEY_PHOTO_ACCESS) === "true",
-  );
-  const [sendAllow, setSendAllow] = useState(
-    localStorage.getItem(STORAGE_KEY_SEND_ALLOW) === "true",
-  );
-  const [hideActivity, setHideActivity] = useState(
-    localStorage.getItem(STORAGE_KEY_HIDE_ACTIVITY) === "true",
-  );
+  const [photoAccess, setPhotoAccess] = useState("");
+  const [sendAllow, setSendAllow] = useState("");
+  const [hideActivity, setHideActivity] = useState("");
 
-  // стан тумблерів налаштувань сповіщень
-  const [friendsQuery, setFriendsQuery] = useState(
-    localStorage.getItem(STORAGE_KEY_FRIENDS_QUERY) === "true",
-  );
-  const [friendsActivity, setFriendsActivity] = useState(
-    localStorage.getItem(STORAGE_KEY_FRIENDS_ACTIVITY) === "true",
-  );
-  const [showMessages, setShowMessages] = useState(
-    localStorage.getItem(STORAGE_KEY_SHOW_MESSAGES) === "true",
-  );
+  
+  const [friendsQuery, setFriendsQuery] = useState("");
+  const [friendsActivity, setFriendsActivity] = useState("");
+  const [showMessages, setShowMessages] = useState("");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -466,9 +430,22 @@ const SearchRoommate = ({ user }) => {
             const userDoc = await getDoc(doc(db, "users", currentUser.uid));
             if (userDoc.exists()) {
               const data = userDoc.data();
-              if (data.answers) {
-                setUserAnswers(data.answers);
-              }
+              if (data.answers) setUserAnswers(data.answers);
+
+              if (data.firstName) setFirstName(data.firstName);
+              if (data.lastName) setLastName(data.lastName);
+              if (data.instagram) setInstagram(data.instagram);
+              if (data.telegram) setTelegram(data.telegram);
+              if (data.avatar) setAvatar(data.avatar || null);
+
+
+              if (data.photoAccess !== undefined) setPhotoAccess(data.photoAccess);
+              if (data.sendAllow !== undefined) setSendAllow(data.sendAllow);
+              if (data.hideActivity !== undefined) setHideActivity(data.hideActivity);
+
+              if (data.friendsQuery !== undefined) setFriendsQuery(data.friendsQuery);
+              if (data.friendsActivity !== undefined) setFriendsActivity(data.friendsActivity);
+              if (data.showMessages !== undefined) setShowMessages(data.showMessages);
             }
           } catch (error) {
             console.error("Помилка завантаження даних користувача:", error);
@@ -517,141 +494,85 @@ const SearchRoommate = ({ user }) => {
     }
   }, [userAnswers]); // Запускаємо, коли змінюються дані userAnswers (і відповідно перемальовується HTML)
 
-  // Хуки для синхронізації імені/прізвища
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY_FIRST_NAME, firstName);
-  }, [firstName]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY_LAST_NAME, lastName);
-  }, [lastName]);
-
-  // Хук для автоматичного збереження при зміні стану
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY_PHOTO_ACCESS, photoAccess);
-  }, [photoAccess]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY_SEND_ALLOW, sendAllow);
-  }, [sendAllow]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY_HIDE_ACTIVITY, hideActivity);
-  }, [hideActivity]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY_FRIENDS_ACTIVITY, friendsActivity);
-  }, [friendsActivity]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY_FRIENDS_QUERY, friendsQuery);
-  }, [friendsQuery]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY_SHOW_MESSAGES, showMessages);
-  }, [showMessages]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY_TG, telegram);
-  }, [telegram]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY_INST, instagram);
-  }, [instagram]);
-
   // Видаляч файлу аватара профілю
   const deleteFile = () => {
     setAvatar(null);
-    localStorage.removeItem(STORAGE_KEY_AVATAR);
     setFileName("Файл не вибрано"); // Повертаємо текст за замовчуванням
-    localStorage.removeItem(STORAGE_KEY_FILE_NAME);
+    localStorage.removeItem("");
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
   };
-  // Обробник змін для текстових інпутів
-  const handleNameChange = (event, setter) => {
+
+  const handleProfileUpdate = async (event, setter, fieldName) => {
     const inputValue = event.target.value;
+    let cleanedValue = inputValue;
 
-    const cyrillicRegex = /[^А-Яа-яЄєІіЇїҐґ'\s-]/g;
-
-    const cleanedValue = inputValue.replace(cyrillicRegex, "");
+    if (fieldName === "firstName" || fieldName === "lastName") {
+      const cyrillicRegex = /[^А-Яа-яЄєІіЇїҐґ'\s-]/g;
+      cleanedValue = inputValue.replace(cyrillicRegex, "");
+    }
 
     setter(cleanedValue);
+
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      try {
+        const userRef = doc(db, "users", currentUser.uid);
+        await updateDoc(userRef, {
+          [fieldName]: cleanedValue,
+        });
+      } catch (error) {
+        console.error("Помилка збереження в Firestore:", error);
+      }
+    }
   };
 
   // Обробник зміни файлу (оновлено для збереження назви)
-  const handleFileChange = (event) => {
-    const files = event.target.files;
-
-    if (files.length === 0) {
-      return;
-    }
-
-    const file = files[0];
-
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
     if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
+      reader.onload = async () => {
+        const base64Image = reader.result;
 
-      // 1. Оновлюємо стан назви файлу та зберігаємо її
-      setFileName(file.name);
-      localStorage.setItem(STORAGE_KEY_FILE_NAME, file.name);
+        // 1. Оновлюємо на екрані
+        setAvatar(base64Image);
 
+        // 2. Зберігаємо в базу для конкретного юзера
+        const currentUser = auth.currentUser;
+        if (currentUser) {
+          const userRef = doc(db, "users", currentUser.uid);
+          await updateDoc(userRef, { avatar: base64Image });
+        }
+      };
       reader.readAsDataURL(file);
-
-      reader.onload = () => {
-        const base64String = reader.result;
-        setAvatar(base64String);
-        localStorage.setItem(STORAGE_KEY_AVATAR, base64String);
-      };
-
-      reader.onerror = (error) => {
-        console.error("Помилка читання файлу:", error);
-        setFileName("Помилка завантаження");
-        localStorage.removeItem(STORAGE_KEY_FILE_NAME);
-      };
-    } else {
-      // У випадку помилки або якщо файл скасовано/видалено
-      deleteFile();
     }
   };
+
+  const handleToggleChange = async (setter, fieldName, value) => {
+  // 1. Оновлюємо стан у React
+  setter(value);
+
+  // 2. Зберігаємо у Firebase
+  const currentUser = auth.currentUser;
+  if (currentUser) {
+    try {
+      const userRef = doc(db, "users", currentUser.uid);
+      await updateDoc(userRef, {
+        [fieldName]: value
+      });
+    } catch (error) {
+      console.error(`Помилка збереження налаштування ${fieldName}:`, error);
+    }
+  }
+};
 
   const handleGoTest = () => {
     navigate("/test");
   };
 
-  // Функція для зміни стану при кліку
-  const handlePhotoAccessChange = (e) => {
-    setPhotoAccess(e.target.checked);
-  };
-
-  const handleSendAllowChange = (e) => {
-    setSendAllow(e.target.checked);
-  };
-
-  const handleHideActivityChange = (e) => {
-    setHideActivity(e.target.checked);
-  };
-
-  const handleActivityChange = (e) => {
-    setFriendsActivity(e.target.checked);
-  };
-
-  const handleFriendsQueryChange = (e) => {
-    setFriendsQuery(e.target.checked);
-  };
-
-  const handleShowMessagesChange = (e) => {
-    setShowMessages(e.target.checked);
-  };
-
-  const handleTelegram = (e) => {
-    setTelegram(e.target.value);
-  };
-  const handleInstagram = (e) => {
-    setInstagram(e.target.value);
-  };
 
   return (
     <div>
@@ -701,7 +622,9 @@ const SearchRoommate = ({ user }) => {
                   aria-label="First name"
                   className="form-control"
                   value={firstName}
-                  onChange={(e) => handleNameChange(e, setFirstName)}
+                  onChange={(e) =>
+                    handleProfileUpdate(e, setFirstName, "firstName")
+                  }
                 />
               </div>
             </div>
@@ -719,7 +642,9 @@ const SearchRoommate = ({ user }) => {
                   aria-label="Last name"
                   className="form-control"
                   value={lastName}
-                  onChange={(e) => handleNameChange(e, setLastName)}
+                  onChange={(e) =>
+                    handleProfileUpdate(e, setLastName, "lastName")
+                  }
                 />
               </div>
             </div>
@@ -733,7 +658,9 @@ const SearchRoommate = ({ user }) => {
                   aria-label="Last name"
                   className="form-control"
                   value={telegram}
-                  onChange={(e) => handleTelegram(e, setTelegram)}
+                  onChange={(e) =>
+                    handleProfileUpdate(e, setTelegram, "telegram")
+                  }
                 />
               </div>
             </div>
@@ -747,7 +674,9 @@ const SearchRoommate = ({ user }) => {
                   aria-label="Last name"
                   className="form-control"
                   value={instagram}
-                  onChange={(e) => handleInstagram(e, setInstagram)}
+                  onChange={(e) =>
+                    handleProfileUpdate(e, setInstagram, "instagram")
+                  }
                 />
               </div>
             </div>
@@ -834,7 +763,7 @@ const SearchRoommate = ({ user }) => {
                       role="switch"
                       id="switch4"
                       checked={photoAccess}
-                      onChange={handlePhotoAccessChange}
+                      onChange={(e) => handleToggleChange(setPhotoAccess, "photoAccess", e.target.checked)}
                     />
                   </div>
                 </div>
@@ -856,7 +785,7 @@ const SearchRoommate = ({ user }) => {
                       role="switch"
                       id="switch5"
                       checked={sendAllow}
-                      onChange={handleSendAllowChange}
+                      onChange={(e) => handleToggleChange(setSendAllow, "sendAllow", e.target.checked)}
                     />
                   </div>
                 </div>
@@ -878,7 +807,7 @@ const SearchRoommate = ({ user }) => {
                       role="switch"
                       id="switch6"
                       checked={hideActivity}
-                      onChange={handleHideActivityChange}
+                      onChange={(e) => handleToggleChange(setHideActivity, "hideActivity", e.target.checked)}
                     />
                   </div>
                 </div>
@@ -909,7 +838,7 @@ const SearchRoommate = ({ user }) => {
                       role="switch"
                       id="switch1"
                       checked={showMessages}
-                      onChange={handleShowMessagesChange}
+                      onChange={(e) => handleToggleChange(setShowMessages, "showMessages", e.target.checked)}
                     />
                   </div>
                 </div>
@@ -927,7 +856,7 @@ const SearchRoommate = ({ user }) => {
                       role="switch"
                       id="switch2"
                       checked={friendsQuery}
-                      onChange={handleFriendsQueryChange}
+                      onChange={(e) => handleToggleChange(setFriendsQuery, "friendsQuery", e.target.checked)}
                     />
                   </div>
                 </div>
@@ -947,7 +876,7 @@ const SearchRoommate = ({ user }) => {
                       role="switch"
                       id="switch3"
                       checked={friendsActivity}
-                      onChange={handleActivityChange}
+                      onChange={(e) => handleToggleChange(setFriendsActivity, "friendsActivity", e.target.checked)}
                     />
                   </div>
                 </div>

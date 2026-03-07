@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import googleicon from "../img/icons/google.png";
 import { auth, db } from '../firebase'; 
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { signInWithPopup } from "firebase/auth";
 import { googleProvider } from "../firebase";
@@ -116,6 +116,17 @@ function UserInit(props) {
 
     return isValid;
   };
+
+  const handleResetPassword = async (email) => {
+  try {
+    // Firebase сам згенерує унікальне посилання і відправить його
+    await sendPasswordResetEmail(auth, email);
+    alert("Лист для відновлення пароля надіслано! Перевірте пошту.");
+  } catch (error) {
+    console.error("Помилка:", error.code);
+    alert("Не вдалося надіслати лист. Перевірте правильність Email.");
+  }
+};
 
   // --- 4. Функція, що викликається при відправці форми ---
  const handleSubmit = async (e) => {
@@ -242,6 +253,14 @@ function UserInit(props) {
             <span className="col-6 mb-4 range text-secondary">
               Має бути 8-20 символів{" "}
             </span>
+            <span className="col-6 mb-4 range text-secondary text-end">
+                <Link to="/resetPass"
+                 className="resetPass ms-2">
+                  Забули пароль?
+                </Link>
+              
+            </span>
+            
           </div>
           {/* 8. Повідомлення про помилку для Пароля */}
           

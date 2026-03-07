@@ -476,7 +476,7 @@ button.user-block{
         margin-top: 20px;
         font-size: 14px;
    }
-   .question .regist-link{
+   .question .regist-link, .resetPass{
      color: var(--primary-puple);
      font-weight: bold;
    }
