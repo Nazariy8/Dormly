@@ -5,6 +5,10 @@ import "../css/profile.scss";
 import defaultUser from "../img/profile/user.jpg";
 import UserForRoom from "../components/UserForRoom";
 import { Link } from "react-router-dom";
+
+import { auth, db } from "../firebase"; // Перевір, щоб шлях був правильним
+import { doc, getDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 const users = [
   // ІСНУЮЧІ КОРИСТУВАЧІ (З НЕЗНАЧНИМИ КОРЕКЦІЯМИ ВІДПОВІДЕЙ)
   {
@@ -375,79 +379,134 @@ const STORAGE_KEY_SHOW_MESSAGES = "userShowMessages";
 // Новий ключ для збереження назви файлу
 const STORAGE_KEY_FILE_NAME = "userFileName";
 
-
 const STORAGE_KEY_INST = "instagram";
 const STORAGE_KEY_TG = "telegram";
 
-const SearchRoommate = () => {
+const questions = [
+  { id: 1, questionText: "Чи є у вас якась звичка, яка може бути незвичною/дратівливою для інших?" },
+  { id: 2, questionText: "Як ви ставитеся до поділу/спільного використання продуктів?" },
+  { id: 3, questionText: "Як ви ставитеся до накопичення особистих речей та одягу у кімнаті?" },
+  { id: 4, questionText: "Яка ваша частота прибирання власного простору?" },
+  { id: 5, questionText: "Який ваш типовий режим сну у будні дні?" },
+  { id: 6, questionText: "Чи є у вас підтверджена алергія на щось?" },
+  { id: 7, questionText: "Який ваш улюблений спосіб релаксу?" },
+  { id: 8, questionText: "Як часто ви плануєте запрошувати гостей?" },
+  { id: 9, questionText: "Як організувати прибирання спільних зон?" },
+  { id: 10, questionText: "Спільні витрати на побутові речі?" },
+  { id: 11, questionText: "Ставлення до розмов по телефону в кімнаті?" },
+  { id: 12, questionText: "Улюблений жанр музики?" },
+  { id: 13, questionText: "Атмосфера для навчання?" },
+  { id: 14, questionText: "Умови для сну?" },
+  { id: 15, questionText: "Вільний вечір у будній день?" }
+];
+
+const SearchRoommate = ({ user }) => {
   const location = useLocation();
   const navigate = useNavigate();
-
   const fileInputRef = useRef(null);
 
-  // Передача даних з іншого файлу
-  const { userAnswers, questions } = location.state || {};
+  const [userAnswers, setUserAnswers] = useState(
+    location.state?.userAnswers || null,
+  );
+  const [loading, setLoading] = useState(true);
 
 
   // Збереження інстаграму та телеграму користувача
   const [instagram, setInstagram] = useState(
-    localStorage.getItem(STORAGE_KEY_INST)
+    localStorage.getItem(STORAGE_KEY_INST),
   );
   const [telegram, setTelegram] = useState(
-    localStorage.getItem(STORAGE_KEY_TG)
+    localStorage.getItem(STORAGE_KEY_TG),
   );
-
-
 
   // 1. Стан для аватара
   const [avatar, setAvatar] = useState(
-    localStorage.getItem(STORAGE_KEY_AVATAR)
+    localStorage.getItem(STORAGE_KEY_AVATAR),
   );
   // 2. Стан для імені та прізвища
   const [firstName, setFirstName] = useState(
-    localStorage.getItem(STORAGE_KEY_FIRST_NAME) || ""
+    localStorage.getItem(STORAGE_KEY_FIRST_NAME) || "",
   );
   const [lastName, setLastName] = useState(
-    localStorage.getItem(STORAGE_KEY_LAST_NAME) || ""
+    localStorage.getItem(STORAGE_KEY_LAST_NAME) || "",
   );
   // 3. Стан для назви файлу (тепер читаємо з localStorage)
   const [fileName, setFileName] = useState(
-    localStorage.getItem(STORAGE_KEY_FILE_NAME) || "Файл не вибрано"
+    localStorage.getItem(STORAGE_KEY_FILE_NAME) || "Файл не вибрано",
   );
 
   // стан тумблерів налаштувань конфінденційності
   const [photoAccess, setPhotoAccess] = useState(
-    localStorage.getItem(STORAGE_KEY_PHOTO_ACCESS) === "true"
+    localStorage.getItem(STORAGE_KEY_PHOTO_ACCESS) === "true",
   );
   const [sendAllow, setSendAllow] = useState(
-    localStorage.getItem(STORAGE_KEY_SEND_ALLOW) === "true"
+    localStorage.getItem(STORAGE_KEY_SEND_ALLOW) === "true",
   );
   const [hideActivity, setHideActivity] = useState(
-    localStorage.getItem(STORAGE_KEY_HIDE_ACTIVITY) === "true"
+    localStorage.getItem(STORAGE_KEY_HIDE_ACTIVITY) === "true",
   );
 
   // стан тумблерів налаштувань сповіщень
   const [friendsQuery, setFriendsQuery] = useState(
-    localStorage.getItem(STORAGE_KEY_FRIENDS_QUERY) === "true"
+    localStorage.getItem(STORAGE_KEY_FRIENDS_QUERY) === "true",
   );
   const [friendsActivity, setFriendsActivity] = useState(
-    localStorage.getItem(STORAGE_KEY_FRIENDS_ACTIVITY) === "true"
+    localStorage.getItem(STORAGE_KEY_FRIENDS_ACTIVITY) === "true",
   );
   const [showMessages, setShowMessages] = useState(
-    localStorage.getItem(STORAGE_KEY_SHOW_MESSAGES) === "true"
+    localStorage.getItem(STORAGE_KEY_SHOW_MESSAGES) === "true",
   );
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        // Якщо в стейті порожньо, йдемо в базу
+        if (!userAnswers) {
+          try {
+            const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+            if (userDoc.exists()) {
+              const data = userDoc.data();
+              if (data.answers) {
+                setUserAnswers(data.answers);
+              }
+            }
+          } catch (error) {
+            console.error("Помилка завантаження даних користувача:", error);
+          }
+        }
+      }
+      setLoading(false); // Дані завантажені (або юзер не залогінений)
+    });
+
+    return () => unsubscribe();
+  }, [userAnswers]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+        if (userDoc.exists() && userDoc.data().answers) {
+          setUserAnswers(userDoc.data().answers);
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchUserData();
+  }, []);
 
   useEffect(() => {
     // Перевіряємо, чи є глобальний об'єкт bootstrap (з CDN)
     if (window.bootstrap) {
       // Знаходимо всі елементи з атрибутом data-bs-toggle="tooltip"
       const tooltipTriggerList = document.querySelectorAll(
-        '[data-bs-toggle="tooltip"]'
+        '[data-bs-toggle="tooltip"]',
       );
 
       // Ініціалізуємо їх
       const tooltipList = [...tooltipTriggerList].map(
-        (tooltipTriggerEl) => new window.bootstrap.Tooltip(tooltipTriggerEl)
+        (tooltipTriggerEl) => new window.bootstrap.Tooltip(tooltipTriggerEl),
       );
 
       // Функція очищення (Cleanup function)
@@ -492,8 +551,6 @@ const SearchRoommate = () => {
     localStorage.setItem(STORAGE_KEY_SHOW_MESSAGES, showMessages);
   }, [showMessages]);
 
-
-  
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY_TG, telegram);
   }, [telegram]);
@@ -577,7 +634,6 @@ const SearchRoommate = () => {
     setHideActivity(e.target.checked);
   };
 
-
   const handleActivityChange = (e) => {
     setFriendsActivity(e.target.checked);
   };
@@ -590,16 +646,16 @@ const SearchRoommate = () => {
     setShowMessages(e.target.checked);
   };
 
-
   const handleTelegram = (e) => {
     setTelegram(e.target.value);
   };
   const handleInstagram = (e) => {
     setInstagram(e.target.value);
   };
+
   return (
     <div>
-      <Header />
+      <Header user={user} />
 
       <div className="profile row rounded-4 p-3 mb-5">
         <div className="col-12 d-flex justify-content-center flex-column">
@@ -709,7 +765,7 @@ const SearchRoommate = () => {
                     const answer = userAnswers[questionId];
                     // Знаходимо повний об'єкт питання за його ID
                     const currentQuestion = questions.find(
-                      (q) => q.id == questionId
+                      (q) => q.id == questionId,
                     );
 
                     return (
@@ -902,27 +958,26 @@ const SearchRoommate = () => {
             <h3 className="text-end">Спільні інтереси:</h3>
             <div className="list-of-users">
               <>
-              {
-               userAnswers ? (<div className="border border-dark border-top-0 border-bottom-0">
-                 {users.map((user) => (
-                <UserForRoom
-                  key={user.id}
-                  userAnswers={userAnswers}
-                  user={user}
-                />
-              ))}
-               </div>) : (
-
-                <div className="text-end">
-                  <h5>У вас немає спільних інтересів, так як ви не пройшли тест!</h5>
-                   <button className="start-test w-50" onClick={handleGoTest}>
-                    Пройти тест
-                  </button>
-                </div>
-
-               )
-              }
-              
+                {userAnswers ? (
+                  <div className="border border-dark border-top-0 border-bottom-0">
+                    {users.map((user) => (
+                      <UserForRoom
+                        key={user.id}
+                        userAnswers={userAnswers}
+                        user={user}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-end">
+                    <h5>
+                      У вас немає спільних інтересів, так як ви не пройшли тест!
+                    </h5>
+                    <button className="start-test w-50" onClick={handleGoTest}>
+                      Пройти тест
+                    </button>
+                  </div>
+                )}
               </>
             </div>
           </div>

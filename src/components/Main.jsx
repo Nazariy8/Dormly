@@ -3,11 +3,12 @@ import Intro from "./Intro";
 import Advan from "./Advan";
 import Feedbacks from "./Feedbacks";
 import Header from "./Header"
+import { Link } from 'react-router-dom';
 
-const Main = () => {
+const Main = ({ user }) => {
   return (
 		<div>
-			<Header />
+			<Header user={user}/>
 			<Intro />
 			<Advan />
 			<Feedbacks />

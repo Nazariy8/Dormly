@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../css/test.scss"; // Переконайся, що оновив цей файл (код нижче)
+import { db, auth } from "../firebase";
+import { doc, updateDoc } from "firebase/firestore";
 
 const Test = () => {
   const navigate = useNavigate();
-
-
-  
-
-  
-
 
   // --- СТАН ---
   // Індекс поточного питання (починаємо з 0)
@@ -206,15 +202,13 @@ const Test = () => {
     // ... (cleanedValue)
     const inputValue = event.target.value;
 
-    const sentenceRegex = /[^А-Яа-яЄєІіЇїҐґ\s.,:;!?'"-]/g; 
+    const sentenceRegex = /[^А-Яа-яЄєІіЇїҐґ\s.,:;!?'"-]/g;
 
     const questionIdStr = String(questionId); // ✅ Перетворення ID на рядок
 
     // ✅ ОГОЛОШЕННЯ ПОВИННО БУТИ З const/let
-    
-    const cleanedValue = inputValue.replace(sentenceRegex, "");
-    
 
+    const cleanedValue = inputValue.replace(sentenceRegex, "");
 
     setAnswers((prev) => ({
       ...prev,
@@ -225,13 +219,16 @@ const Test = () => {
   // Оновлення відповіді
   const handleAnswerSelect = (textValue, idValue, questionId) => {
     const questionIdStr = String(questionId); // ✅ Перетворення ID на рядок
-    
+
     setAnswers((prev) => ({
       ...prev,
       [questionIdStr]: textValue, // Використовуємо рядок
     }));
 
-
+    setAnswerIds((prev) => ({
+      ...prev,
+      [questionIdStr]: idValue,
+    }));
   };
 
   // Перехід до наступного
@@ -253,22 +250,21 @@ const Test = () => {
     }
   };
 
-
   useEffect(() => {
     const handleKeyDown = (event) => {
-        if (event.key === "Enter"){
-          event.preventDefault();
-          handleNext();
-        }
-    }
-    
+      if (event.key === "Enter") {
+        event.preventDefault();
+        handleNext();
+      }
+    };
+
     window.addEventListener("keydown", handleKeyDown);
 
-  return () => {
-    window.removeEventListener("keydown", handleKeyDown)
-  }
-  }, [handleNext])
-  
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleNext]);
+
   // Перехід назад
   const handlePrev = () => {
     if (currentQuestionIndex > 0) {
@@ -280,18 +276,31 @@ const Test = () => {
     }
   };
 
-  const handleSubmit = () => {
-    // ✅ ЗМІНЕНО: Передаємо обидва об'єкти через state
-    navigate("/resultoftest", {
-      state: {
-        userAnswers: answers, // ТЕКСТ (для відображення)
-        userAnswerIds: answerIds, // ID (для обчислення)
-        questions: questions,
-      },
-    });
-    console.log("Всі відповіді (Текст):", answers);
-    console.log("Всі відповіді (ID):", answerIds);
-  };
+  const handleSubmit = async () => {
+  const currentUser = auth.currentUser;
+
+  if (currentUser) {
+    try {
+      const userRef = doc(db, "users", currentUser.uid);
+
+      // Записуємо дані в Firestore
+      await updateDoc(userRef, {
+        answers: answers, // Використовуємо 'answers' замість 'testResults'
+        answerIds: answerIds,
+        hasPassedTest: true,
+        lastTestDate: new Date(),
+      });
+      console.log("Результати успішно збережено в Firestore!");
+    } catch (error) {
+      console.error("Помилка при збереженні в базу:", error);
+    }
+  }
+  
+  // Переходимо на результати
+  navigate("/resultoftest", {
+    state: { userAnswers: answers, userAnswerIds: answerIds, questions: questions },
+  });
+};
 
   // Обчислення прогресу (для смужки зверху)
   const progressPercentage =

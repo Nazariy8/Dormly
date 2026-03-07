@@ -1,10 +1,10 @@
 import React from "react";
 import Mainpage from "../components/Main";
 
-const Main = () => {
+const Main = ({user}) => {
 	return (
 		<div>
-			<Mainpage />
+			<Mainpage user={user}/>
 		</div>
 	);
 };
