@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/Dormly/static/css/main.36a11918.css",
-    "main.js": "/Dormly/static/js/main.8312aea9.js",
+    "main.css": "/Dormly/static/css/main.a806e5c5.css",
+    "main.js": "/Dormly/static/js/main.9d112235.js",
     "static/media/findmate.png": "/Dormly/static/media/findmate.b8b52ce15a199f1e3887.png",
     "static/media/user1.png": "/Dormly/static/media/user1.b5797f3ff0e2fc46f62d.png",
     "static/media/user2.png": "/Dormly/static/media/user2.d9a5b3c2ec150ad2345d.png",
@@ -12,11 +12,11 @@
     "static/media/maks.webp": "/Dormly/static/media/maks.fa30b2b1117135a865d7.webp",
     "static/media/nazar.webp": "/Dormly/static/media/nazar.efbda36809f68c8e4cfe.webp",
     "index.html": "/Dormly/index.html",
-    "main.36a11918.css.map": "/Dormly/static/css/main.36a11918.css.map",
-    "main.8312aea9.js.map": "/Dormly/static/js/main.8312aea9.js.map"
+    "main.a806e5c5.css.map": "/Dormly/static/css/main.a806e5c5.css.map",
+    "main.9d112235.js.map": "/Dormly/static/js/main.9d112235.js.map"
   },
   "entrypoints": [
-    "static/css/main.36a11918.css",
-    "static/js/main.8312aea9.js"
+    "static/css/main.a806e5c5.css",
+    "static/js/main.9d112235.js"
   ]
 }
