@@ -409,14 +409,13 @@ const SearchRoommate = ({ user }) => {
   const [lastName, setLastName] = useState("");
   const [instagram, setInstagram] = useState("");
   const [telegram, setTelegram] = useState("");
-  
-  const [fileName, setFileName] = useState(""  );
+
+  const [fileName, setFileName] = useState("");
 
   const [photoAccess, setPhotoAccess] = useState("");
   const [sendAllow, setSendAllow] = useState("");
   const [hideActivity, setHideActivity] = useState("");
 
-  
   const [friendsQuery, setFriendsQuery] = useState("");
   const [friendsActivity, setFriendsActivity] = useState("");
   const [showMessages, setShowMessages] = useState("");
@@ -438,14 +437,18 @@ const SearchRoommate = ({ user }) => {
               if (data.telegram) setTelegram(data.telegram);
               if (data.avatar) setAvatar(data.avatar || null);
 
-
-              if (data.photoAccess !== undefined) setPhotoAccess(data.photoAccess);
+              if (data.photoAccess !== undefined)
+                setPhotoAccess(data.photoAccess);
               if (data.sendAllow !== undefined) setSendAllow(data.sendAllow);
-              if (data.hideActivity !== undefined) setHideActivity(data.hideActivity);
+              if (data.hideActivity !== undefined)
+                setHideActivity(data.hideActivity);
 
-              if (data.friendsQuery !== undefined) setFriendsQuery(data.friendsQuery);
-              if (data.friendsActivity !== undefined) setFriendsActivity(data.friendsActivity);
-              if (data.showMessages !== undefined) setShowMessages(data.showMessages);
+              if (data.friendsQuery !== undefined)
+                setFriendsQuery(data.friendsQuery);
+              if (data.friendsActivity !== undefined)
+                setFriendsActivity(data.friendsActivity);
+              if (data.showMessages !== undefined)
+                setShowMessages(data.showMessages);
             }
           } catch (error) {
             console.error("Помилка завантаження даних користувача:", error);
@@ -474,21 +477,21 @@ const SearchRoommate = ({ user }) => {
   }, []);
 
   useEffect(() => {
-    // Перевіряємо, чи є глобальний об'єкт bootstrap (з CDN)
     if (window.bootstrap) {
-      // Знаходимо всі елементи з атрибутом data-bs-toggle="tooltip"
-      const tooltipTriggerList = document.querySelectorAll(
-        '[data-bs-toggle="tooltip"]',
-      );
+      let tooltipList = [];
 
-      // Ініціалізуємо їх
-      const tooltipList = [...tooltipTriggerList].map(
-        (tooltipTriggerEl) => new window.bootstrap.Tooltip(tooltipTriggerEl),
-      );
+      // Даємо React трохи часу, щоб відмалювати елементи в DOM
+      const timeout = setTimeout(() => {
+        const tooltipTriggerList = document.querySelectorAll(
+          '[data-bs-toggle="tooltip"]',
+        );
+        tooltipList = [...tooltipTriggerList].map(
+          (tooltipTriggerEl) => new window.bootstrap.Tooltip(tooltipTriggerEl),
+        );
+      }, 100); // 100 мілісекунд зазвичай достатньо
 
-      // Функція очищення (Cleanup function)
-      // Важливо видаляти тултіпи при розмонтуванні компонента, щоб не було "привидів"
       return () => {
+        clearTimeout(timeout);
         tooltipList.forEach((instance) => instance.dispose());
       };
     }
@@ -552,127 +555,110 @@ const SearchRoommate = ({ user }) => {
   };
 
   const handleToggleChange = async (setter, fieldName, value) => {
-  // 1. Оновлюємо стан у React
-  setter(value);
+    // 1. Оновлюємо стан у React
+    setter(value);
 
-  // 2. Зберігаємо у Firebase
-  const currentUser = auth.currentUser;
-  if (currentUser) {
-    try {
-      const userRef = doc(db, "users", currentUser.uid);
-      await updateDoc(userRef, {
-        [fieldName]: value
-      });
-    } catch (error) {
-      console.error(`Помилка збереження налаштування ${fieldName}:`, error);
+    // 2. Зберігаємо у Firebase
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      try {
+        const userRef = doc(db, "users", currentUser.uid);
+        await updateDoc(userRef, {
+          [fieldName]: value,
+        });
+      } catch (error) {
+        console.error(`Помилка збереження налаштування ${fieldName}:`, error);
+      }
     }
-  }
-};
+  };
 
   const handleGoTest = () => {
     navigate("/test");
   };
 
-
   return (
     <div>
       <Header user={user} />
 
-      <div className="profile row rounded-4 p-3 mb-5">
-        <div className="col-12 d-flex justify-content-center flex-column">
-          <h1 className="mb-3">Ваш профіль</h1>
+      <div className="profile row rounded-5 p-4 p-md-5 mb-5 mt-4 border-0 custom-shadow">
+        <div className="col-12">
+          <h1 className="mb-5 fw-bold text-start">Налаштування профілю</h1>
 
-          <div className="user-avatar-block mb-3">
-            <img src={avatar || defaultUser} alt="Фото користувача" />
-          </div>
-          {/* 4. Оновлена верстка для поля вводу файлу */}
-
-          <div className="row d-flex justify-content-center ">
-            <div className="col-12 file-choose">
-              <div className="input-group  mb-3">
+          {/* Блок Аватара як на макеті */}
+          <div className="d-flex flex-wrap align-items-center mb-5 gap-4">
+            <img
+              src={avatar || defaultUser}
+              alt="Фото користувача"
+              className="rounded-circle custom-avatar border"
+            />
+            <div className="flex-grow-1">
+              <h3 className="mb-1 fw-bold">
+                {firstName || "Ім'я"} {lastName || "Прізвище"}
+              </h3>
+              <span className="text-secondary">Змініть фото профілю</span>
+            </div>
+            <div className="d-flex gap-3">
+              <button
+                className="btn btn-action-light fw-semibold rounded-pill px-4 py-2"
+                onClick={deleteFile}
+              >
+                Видалити
+              </button>
+              <label className="btn btn-action-primary fw-semibold rounded-pill px-4 py-2 m-0 cursor-pointer">
+                Завантажити фото
                 <input
                   type="file"
                   accept="image/*"
-                  className="form-control" // Ховаємо стандартне поле
+                  hidden
                   onChange={handleFileChange}
-                  id="inputGroupFile02"
                   ref={fileInputRef}
                 />
-                <button
-                  className="btn btn-outline-secondary"
-                  type="button"
-                  id="inputGroupFileAddon04"
-                  onClick={deleteFile}
-                >
-                  Видалити фото
-                </button>
-              </div>
+              </label>
             </div>
           </div>
 
-          {/* Ввід прізвища */}
-          <div className="row mb-3">
-            <div className="col-12 col-xxl-3 col-xl-5 col-lg-6 col-md-6 col-sm-7 mx-auto">
-              <div className="input-group mx-auto">
-                <span className="input-group-text">Прізвище</span>
+          {/* Особиста інформація */}
+          <div className="mb-5">
+            <h4 className="fw-bold mb-4">Особиста інформація</h4>
+            <div className="row g-4">
+              <div className="col-md-6">
+                <label className="form-label text-secondary">Ім'я</label>
                 <input
-                  pattern="[А-Яа-яЄєІіЇїҐґ'-\s]+"
-                  title="Можна вводити лише українські літери, пробіл, апостроф або дефіс."
                   type="text"
-                  aria-label="First name"
-                  className="form-control"
+                  className="form-control rounded-4 p-3"
                   value={firstName}
                   onChange={(e) =>
                     handleProfileUpdate(e, setFirstName, "firstName")
                   }
                 />
               </div>
-            </div>
-          </div>
-
-          {/* Ввід імя */}
-          <div className="row">
-            <div className="col-12 col-xxl-3 col-xl-5 col-lg-6 col-md-6 col-sm-7 mb-3 mx-auto">
-              <div className="input-group mx-auto">
-                <span className="input-group-text">Ім'я</span>
+              <div className="col-md-6">
+                <label className="form-label text-secondary">Прізвище</label>
                 <input
-                  pattern="[А-Яа-яЄєІіЇїҐґ'-\s]+"
-                  title="Можна вводити лише українські літери, пробіл, апостроф або дефіс."
                   type="text"
-                  aria-label="Last name"
-                  className="form-control"
+                  className="form-control rounded-4 p-3"
                   value={lastName}
                   onChange={(e) =>
                     handleProfileUpdate(e, setLastName, "lastName")
                   }
                 />
               </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-12 col-xxl-3 col-xl-5 col-lg-6 col-md-6 col-sm-7 mb-3 mx-auto">
-              <div className="input-group mx-auto">
-                <span className="input-group-text">Телеграм</span>
+              <div className="col-md-6">
+                <label className="form-label text-secondary">Телеграм</label>
                 <input
                   type="text"
-                  aria-label="Last name"
-                  className="form-control"
+                  className="form-control rounded-4 p-3"
                   value={telegram}
                   onChange={(e) =>
                     handleProfileUpdate(e, setTelegram, "telegram")
                   }
                 />
               </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-12 col-xxl-3 col-xl-5 col-lg-6 col-md-6 col-sm-7 mb-3 mx-auto">
-              <div className="input-group mx-auto">
-                <span className="input-group-text">Інстаграм</span>
+              <div className="col-md-6">
+                <label className="form-label text-secondary">Інстаграм</label>
                 <input
                   type="text"
-                  aria-label="Last name"
-                  className="form-control"
+                  className="form-control rounded-4 p-3"
                   value={instagram}
                   onChange={(e) =>
                     handleProfileUpdate(e, setInstagram, "instagram")
@@ -684,24 +670,21 @@ const SearchRoommate = ({ user }) => {
         </div>
 
         <div className="row my-features p-2">
+          {/* Звички та налаштування */}
           <div className="col-12 col-xxl-6 col-xl-6 col-md-12 col-sm-12 flex-wrap mb-4">
-            <>
-              <h3>Мої звички:</h3>
-              {/* Вивід звичок користувача після тесту */}
+            <div className="mb-5">
+              <h4 className="fw-bold mb-3">Мої звички:</h4>
               {userAnswers ? (
-                <div className="d-flex flex-wrap">
+                <div className="d-flex flex-wrap gap-2">
                   {Object.keys(userAnswers).map((questionId) => {
                     const answer = userAnswers[questionId];
-                    // Знаходимо повний об'єкт питання за його ID
                     const currentQuestion = questions.find(
                       (q) => q.id == questionId,
                     );
-
                     return (
-                      // Використовуємо questionId як ключ
-                      <div key={questionId} className="m-1">
+                      <div key={questionId} className="m-1 d-inline-block">
                         <span
-                          className="badge fs-6 text-wrap"
+                          className="badge badge-custom fs-6 px-3 py-2 fw-normal"
                           data-bs-toggle="tooltip"
                           data-bs-title={
                             currentQuestion
@@ -709,205 +692,223 @@ const SearchRoommate = ({ user }) => {
                               : "Питання"
                           }
                         >
-                          {answer} {/* Тут виводиться текст відповіді */}
+                          {answer}
                         </span>
                       </div>
                     );
                   })}
-                  <div className="w-100 mt-3">
-                    <h4 className="mb-3">Не подобається результат?</h4>
+                  <div className="w-100 mt-4">
                     <Link
-                      className="rounded-3 test-again fs-5 pe-auto"
+                      className="btn btn-dark rounded-pill px-4"
                       to="/test"
                     >
                       Перепройти тест
                     </Link>
                   </div>
-                </div> /* <--- КІНЕЦЬ ОБГОРТКИ */
+                </div>
               ) : (
-                // Блок, якщо відповідей немає (else)
                 <div>
-                  <h5 className="text-warning">
-                    Ви не пройшли тест на звички{" "}
-                    <i className="bi bi-arrow-down"></i>
+                  <h5 className="text-warning mb-3">
+                    Ви не пройшли тест на звички
                   </h5>
-                  <button className="start-test" onClick={handleGoTest}>
+                  <button
+                    className="btn btn-action-primary rounded-pill px-4 py-2"
+                    onClick={handleGoTest}
+                  >
                     Пройти тест
                   </button>
                 </div>
               )}
-            </>
+            </div>
 
-            <div className="user-settings mt-5">
-              <div className="privacy-sets">
-                <div className="message-sets-header gap-2 d-flex align-items-center align-items-center">
-                  <div className="icon-block p-0 m-0 flex-shrink-0">
-                    <i className="bi bi-file-lock fs-4"></i>
+            <div className="user-settings">
+              {/* Налаштування конфіденційності */}
+              <div className="privacy-sets mb-5">
+                <div className="d-flex align-items-center gap-3 mb-4">
+                  <div className="icon-block">
+                    <i className="bi bi-file-lock fs-5"></i>
                   </div>
-                  <h3 className="m-0">Налаштування конфіденційності</h3>
+                  <h4 className="m-0 fw-bold">Налаштування конфіденційності</h4>
                 </div>
 
-                <div className="set">
-                  <div className="form-check form-switch form-check-reverse d-flex gap-3 justify-content-between align-items-center">
-                    <div className="d-flex flex-column text-start">
-                      <label className="form-check-label" htmlFor="switch4">
-                        Хто може бачити мої фотографії
-                      </label>
-                      <p className="p-0 m-0 text-secondary">
-                        {photoAccess ? "Всі користувачі" : "Ніхто"}
-                      </p>
-                    </div>
+                <div className="set-card d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6 className="mb-1">Хто може бачити мої фотографії</h6>
+                    <small className="text-secondary">
+                      {photoAccess ? "Всі користувачі" : "Ніхто"}
+                    </small>
+                  </div>
+                  <div className="form-check form-switch">
                     <input
-                      className="form-check-input fs-5"
+                      className="form-check-input custom-switch"
                       type="checkbox"
-                      role="switch"
-                      id="switch4"
                       checked={photoAccess}
-                      onChange={(e) => handleToggleChange(setPhotoAccess, "photoAccess", e.target.checked)}
+                      onChange={(e) =>
+                        handleToggleChange(
+                          setPhotoAccess,
+                          "photoAccess",
+                          e.target.checked,
+                        )
+                      }
                     />
                   </div>
                 </div>
-                <div className="set">
-                  <div className="form-check form-switch form-check-reverse d-flex gap-3 justify-content-between align-items-center">
-                    <div className="d-flex flex-column text-start">
-                      <label className="form-check-label" htmlFor="switch5">
-                        Хто може надсилати мені повідомлення
-                      </label>
-                      <p className="p-0 m-0 text-secondary">
-                        {sendAllow
-                          ? "Всі можуть надсилати"
-                          : "Лише взаємні контакти"}
-                      </p>
-                    </div>
+
+                <div className="set-card d-flex justify-content-between align-items-center mt-3">
+                  <div>
+                    <h6 className="mb-1">
+                      Хто може надсилати мені повідомлення
+                    </h6>
+                    <small className="text-secondary">
+                      {sendAllow ? "Всі" : "Лише взаємні контакти"}
+                    </small>
+                  </div>
+                  <div className="form-check form-switch">
                     <input
-                      className="form-check-input fs-5"
+                      className="form-check-input custom-switch"
                       type="checkbox"
-                      role="switch"
-                      id="switch5"
                       checked={sendAllow}
-                      onChange={(e) => handleToggleChange(setSendAllow, "sendAllow", e.target.checked)}
+                      onChange={(e) =>
+                        handleToggleChange(
+                          setSendAllow,
+                          "sendAllow",
+                          e.target.checked,
+                        )
+                      }
                     />
                   </div>
                 </div>
-                <div className="set">
-                  <div className="form-check form-switch form-check-reverse d-flex gap-3 justify-content-between align-items-center">
-                    <div className="d-flex flex-column text-start">
-                      <label className="form-check-label" htmlFor="switch6">
-                        Приховати мою активність
-                      </label>
-                      <p className="p-0 m-0 text-secondary">
-                        {hideActivity
-                          ? "Ваш статус буде невидимим"
-                          : "Ваш статус буде видимим"}
-                      </p>
-                    </div>
+
+                <div className="set-card d-flex justify-content-between align-items-center mt-3">
+                  <div>
+                    <h6 className="mb-1">Приховати мою активність</h6>
+                    <small className="text-secondary">
+                      {hideActivity ? "Статус невидимий" : "Статус видимий"}
+                    </small>
+                  </div>
+                  <div className="form-check form-switch">
                     <input
-                      className="form-check-input fs-5"
+                      className="form-check-input custom-switch"
                       type="checkbox"
-                      role="switch"
-                      id="switch6"
                       checked={hideActivity}
-                      onChange={(e) => handleToggleChange(setHideActivity, "hideActivity", e.target.checked)}
+                      onChange={(e) =>
+                        handleToggleChange(
+                          setHideActivity,
+                          "hideActivity",
+                          e.target.checked,
+                        )
+                      }
                     />
                   </div>
                 </div>
               </div>
 
+              {/* Налаштування повідомлень */}
               <div className="message-sets">
-                <div className="message-sets-header gap-2 d-flex align-items-center">
-                  <div className="icon-block p-0 m-0">
-                    <i className="bi bi-chat-dots fs-4"></i>
+                <div className="d-flex align-items-center gap-3 mb-4">
+                  <div className="icon-block">
+                    <i className="bi bi-bell fs-5"></i>
                   </div>
-                  <h3 className="m-0">Налаштування сповіщень</h3>
+                  <h4 className="m-0 fw-bold">Налаштування повідомлень</h4>
                 </div>
 
-                <div className="set">
-                  <div className="form-check form-switch form-check-reverse d-flex gap-3 justify-content-between align-items-center">
-                    <div className="d-flex flex-column text-start">
-                      <label className="form-check-label" htmlFor="switch1">
-                        Нові повідомлення в чаті
-                      </label>
-                      <p className="m-0 p-0 text-secondary">
-                        Push-сповіщення, E-mail
-                      </p>
-                    </div>
-
+                <div className="set-card d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6 className="mb-1">Нові повідомлення в чаті</h6>
+                    <small className="text-secondary">
+                      Push-сповіщення, E-mail
+                    </small>
+                  </div>
+                  <div className="form-check form-switch">
                     <input
-                      className="form-check-input fs-5"
+                      className="form-check-input custom-switch"
                       type="checkbox"
-                      role="switch"
-                      id="switch1"
                       checked={showMessages}
-                      onChange={(e) => handleToggleChange(setShowMessages, "showMessages", e.target.checked)}
+                      onChange={(e) =>
+                        handleToggleChange(
+                          setShowMessages,
+                          "showMessages",
+                          e.target.checked,
+                        )
+                      }
                     />
                   </div>
                 </div>
-                <div className="set">
-                  <div className="form-check form-switch form-check-reverse d-flex gap-3 justify-content-between align-items-center">
-                    <div className="d-flex flex-column text-start">
-                      <label className="form-check-label" htmlFor="switch2">
-                        Запити на додавання в друзі
-                      </label>
-                      <p className="p-0 m-0 text-secondary">Push-сповіщення</p>
-                    </div>
+
+                <div className="set-card d-flex justify-content-between align-items-center mt-3">
+                  <div>
+                    <h6 className="mb-1">Запити на додавання в друзі</h6>
+                    <small className="text-secondary">Push-сповіщення</small>
+                  </div>
+                  <div className="form-check form-switch">
                     <input
-                      className="form-check-input fs-5"
+                      className="form-check-input custom-switch"
                       type="checkbox"
-                      role="switch"
-                      id="switch2"
                       checked={friendsQuery}
-                      onChange={(e) => handleToggleChange(setFriendsQuery, "friendsQuery", e.target.checked)}
+                      onChange={(e) =>
+                        handleToggleChange(
+                          setFriendsQuery,
+                          "friendsQuery",
+                          e.target.checked,
+                        )
+                      }
                     />
                   </div>
                 </div>
-                <div className="set">
-                  <div className="form-check form-switch form-check-reverse d-flex gap-3 justify-content-between align-items-center">
-                    <div className="d-flex flex-column text-start">
-                      <label className="form-check-label" htmlFor="switch3">
-                        Активність друзів
-                      </label>
-                      <p className="p-0 m-0 text-secondary">
-                        {friendsActivity ? "Увімкнено" : "Вимкнено"}
-                      </p>
-                    </div>
+
+                <div className="set-card d-flex justify-content-between align-items-center mt-3">
+                  <div>
+                    <h6 className="mb-1">Активність друзів</h6>
+                    <small className="text-secondary">
+                      {friendsActivity ? "Увімкнено" : "Вимкнено"}
+                    </small>
+                  </div>
+                  <div className="form-check form-switch">
                     <input
-                      className="form-check-input fs-5"
+                      className="form-check-input custom-switch"
                       type="checkbox"
-                      role="switch"
-                      id="switch3"
                       checked={friendsActivity}
-                      onChange={(e) => handleToggleChange(setFriendsActivity, "friendsActivity", e.target.checked)}
+                      onChange={(e) =>
+                        handleToggleChange(
+                          setFriendsActivity,
+                          "friendsActivity",
+                          e.target.checked,
+                        )
+                      }
                     />
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="col-12 col-xxl-6 col-xl-6 col-md-12 col-sm-12 simil-block">
-            <h3 className="text-end">Спільні інтереси:</h3>
-            <div className="list-of-users">
-              <>
-                {userAnswers ? (
-                  <div className="border border-dark border-top-0 border-bottom-0">
-                    {users.map((user) => (
-                      <UserForRoom
-                        key={user.id}
-                        userAnswers={userAnswers}
-                        user={user}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-end">
-                    <h5>
-                      У вас немає спільних інтересів, так як ви не пройшли тест!
-                    </h5>
-                    <button className="start-test w-50" onClick={handleGoTest}>
-                      Пройти тест
-                    </button>
-                  </div>
-                )}
-              </>
+
+          {/* Спільні інтереси */}
+          <div className="col-12 col-xxl-6 col-xl-6 col-md-12 col-sm-12 simil-block mt-5 mt-xl-0">
+            <h4 className="fw-bold text-xl-end mb-4">Спільні інтереси:</h4>
+            <div className="list-of-users custom-scroll">
+              {userAnswers ? (
+                <div className="w-100 pe-2">
+                  {users.map((user) => (
+                    <UserForRoom
+                      key={user.id}
+                      userAnswers={userAnswers}
+                      user={user}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-xl-end">
+                  <h5 className="text-secondary mb-3">
+                    У вас немає спільних інтересів, так як ви не пройшли тест!
+                  </h5>
+                  <button
+                    className="btn btn-action-primary rounded-pill px-4 py-2"
+                    onClick={handleGoTest}
+                  >
+                    Пройти тест
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -1,156 +1,192 @@
-:root{
+:root {
     --primary-white: #fff;
     --primary-info: #0dcaf0;
-    --primary-grey: #adb5bd;;
-    --primary-purple-light: #e6d8f7;
+    --primary-grey: #adb5bd;
+    --primary-purple-light: #f4ecfd; /* Зробив трохи світлішим під макет */
     --primary-puple: #8a4fff;
     --primary-dark: #000;
 }
-*{
+
+* {
     box-sizing: border-box;
 }
-/* Main */
-.profile{
-    top: 50px;
-    /* margin-bottom: 200px; */
+
+/* Main Container */
+.profile {
     margin: 0 auto;
-    width: 90%;
-    justify-content: center;
-    display: flex;
-    /* flex-direction: column; */
+    width: 95%;
+    max-width: 1400px;
     background-color: var(--primary-white);
 }
 
-
-/* file choice */
-@media (min-width:1400px){
-    .file-choose{
-        width: 500px;
-    }
-}
-@media (min-width:700px){
-    .file-choose{
-        width: 500px;
-    }
+.custom-shadow {
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
 }
 
-/* user avatar */
-.user-avatar-block{
-    margin: 0 auto;
-    width: 100px !important;
-    height: 100px !important;
-    img{
-        width: 100px !important;
-        height: 100px !important;
-        border-radius: 50px;
-        border: 2px solid var(--primary-grey);
-    }
-}
-.upload-avatar{
-    justify-content: center;
-    display: flex;
+/* Avatar Block */
+.custom-avatar {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border: 2px solid var(--primary-purple-light);
 }
 
+.cursor-pointer {
+    cursor: pointer;
+}
 
-/* badge */
-
-.badge{
+/* Custom Buttons */
+.btn-action-primary {
     background-color: var(--primary-puple);
-}
-
-/* btn start test */
-
-.start-test{
-    background: var(--primary-puple);
-    color: var(--primary-white);
-    padding: 10px 20px;
-    border-radius: 20px;
-    transition: .3s;
-    &:hover{
-       scale: 1.05; 
-       filter: hue-rotate(5deg);
-    }
-}
-.test-again{
-    padding: 10px 20px;
-    background: var(--primary-dark);
-    color: var(--primary-white);
-    transition: .5s;
-    &:hover{
-        background: var(--primary-grey);
+    color: white;
+    transition: 0.3s;
+    border: none;
+    
+    &:hover {
+        background-color: darken(#8a4fff, 10%);
+        color: white;
     }
 }
 
-
-/* roommate component */
-.roommate-card{
-    flex-wrap: wrap;
-    max-width: 500px;   
-    width: 100%;
-    border-radius: 20px;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    margin: 10px;
-    @media (max-width: 1200px){
-       max-width: 100%;
+.btn-action-light {
+    background-color: var(--primary-purple-light);
+    color: var(--primary-puple);
+    border: none;
+    transition: 0.3s;
+    
+    &:hover {
+        background-color: darken(#f4ecfd, 5%);
     }
 }
 
-
-.user-info_block{
-    width: 80%;
-}
-.list-of-users{
-    width: 100%;
-    max-height: 110vh;
-    display: flex; 
-    flex-wrap: wrap;
-    flex-direction: column;
-    align-items: flex-end;
-    overflow-y: auto;
-    @media (max-width: 1200px){
-        align-items: stretch;
+/* Form Controls */
+.form-control {
+    border: 1px solid #dee2e6;
+    transition: border-color 0.2s;
+    
+    &:focus {
+        border-color: var(--primary-puple);
+        box-shadow: 0 0 0 0.25rem rgba(138, 79, 255, 0.15);
     }
 }
-.user-photo{
-    width: 100px;
-    height: 100px;
+
+/* Badges */
+.badge-custom {
+    background-color: var(--primary-purple-light);
+    color: var(--primary-puple);
+    border: 1px solid rgba(138, 79, 255, 0.2);
 }
 
-.set {
-    background: var(--primary-purple-light);
-    padding: 20px 30px;
-    margin: 10px 0;
-    border-radius: 20px;
-} 
-.icon-block{
-    width: 50px;
-    height: 50px;
+/* Settings List Cards */
+.set-card {
+    background-color: var(--primary-purple-light);
+    padding: 20px 25px;
+    border-radius: 16px;
+}
+
+.icon-block {
+    width: 45px;
+    height: 45px;
     display: flex;
-    border-radius: 30px;
+    border-radius: 50%;
     justify-content: center;
     align-items: center;
-    background: #b6ffe4;
+    background: #def6ec; /* Світло-зелений фон */
+    
+    .bi {
+        color: #17a96e; /* Темно-зелена іконка */
+    }
 }
-.icon-block > .bi{
-        color: green;
-        
+
+/* Custom Bootstrap Switch Override */
+.form-switch .custom-switch {
+    width: 2.8em;
+    height: 1.4em;
+    cursor: pointer;
+    
+    &:checked {
+        background-color: var(--primary-puple);
+        border-color: var(--primary-puple);
+    }
+    
+    &:focus {
+        box-shadow: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%238a4fff'/%3e%3c/svg%3e");
+    }
+    
+    &:checked:focus {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+    }
 }
 
+/* Scrollbar for roommates */
+.custom-scroll {
+    max-height: 800px;
+    overflow-y: auto;
+    
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: var(--primary-grey);
+        border-radius: 10px;
+    }
+}
 
-
-.add-friend{
+.roommate-card {
+    background-color: var(--primary-white);
+    border-radius: 16px;
+    border: 1px solid #eaeaea;
+    margin-bottom: 15px;
+    padding: 20px;
+}
+/* Кнопка "Додати в друзі" (UserForRoom) */
+.add-friend {
     background: var(--primary-puple);
     padding: 10px 20px;
     margin-top: 10px;
     border-radius: 10px;
     color: var(--primary-white);
-    transition: .5s;
-    &.activated{
+    transition: 0.5s;
+    border: none;
+    
+    &.activated {
         background: var(--primary-purple-light);
         color: var(--primary-dark);
     }
-    &:hover{
+    
+    &:hover {
         cursor: pointer;
         scale: 1.02;
+        /* Додав трохи затемнення при наведенні, щоб краще вписувалося в новий стиль */
+        background-color: darken(#8a4fff, 10%); 
+    }
+}
+.user-photo {
+    width: 100px;
+    height: 100px;
+}
+/* Блок спільних інтересів (права колонка) */
+.simil-block {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Розтягуємо на всю висоту батьківського елемента (ряду) */
+}
+
+.list-of-users {
+    flex-grow: 1; /* Змушує список зайняти весь вільний простір по висоті */
+    width: 100%;
+    height: max-content;
+    /* Можеш використовувати фіксовану висоту або адаптивну через vh */
+    max-height: 1300px; 
+    overflow-y: auto;
+    padding-right: 10px; /* Трохи відступу, щоб скролбар не прилипав до карток */
+    
+    @media (max-width: 1200px) {
+        align-items: stretch;
     }
 }

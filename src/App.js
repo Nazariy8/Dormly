@@ -13,7 +13,7 @@ import Aboutus from "./pages/AboutUs.jsx"
 import Chat from "./components/Chat.jsx";
 import ResetPass from "./pages/ResetPass.jsx"
 
-import "./css/main.css";
+import "./css/main.css"
 
 function App() {
     const [user, setUser] = useState(null);
