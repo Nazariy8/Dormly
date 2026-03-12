@@ -298,7 +298,7 @@ const Test = () => {
   
   // Переходимо на результати
   navigate("/resultoftest", {
-    state: { userAnswers: answers, userAnswerIds: answerIds, questions: questions },
+    state: { userAnswers: answers, userAnswerIds: answerIds },
   });
 };
 

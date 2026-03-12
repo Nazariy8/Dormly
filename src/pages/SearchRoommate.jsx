@@ -10,6 +10,8 @@ import { auth, db } from "../firebase"; // Перевір, щоб шлях бу�
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
+import Cropper from "react-easy-crop";
+import { getCroppedImg } from "../utils/cropImage"; // Перевір, щоб шлях до файлу був правильним
 const users = [
   {
     id: 101,
@@ -409,6 +411,7 @@ const SearchRoommate = ({ user }) => {
   const [lastName, setLastName] = useState("");
   const [instagram, setInstagram] = useState("");
   const [telegram, setTelegram] = useState("");
+  const [isLookingForRoom, setIsLookingForRoom] = useState(false);
 
   const [fileName, setFileName] = useState("");
 
@@ -420,61 +423,61 @@ const SearchRoommate = ({ user }) => {
   const [friendsActivity, setFriendsActivity] = useState("");
   const [showMessages, setShowMessages] = useState("");
 
+  const [imageToCrop, setImageToCrop] = useState(null); // Фото, яке обрізаємо
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null); // Координати
+  const [showCropper, setShowCropper] = useState(false); // Чи показувати модалку
+
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+
+  // Заміни свої useEffect на цей один цілісний блок завантаження
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        // Якщо в стейті порожньо, йдемо в базу
-        if (!userAnswers) {
-          try {
-            const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-            if (userDoc.exists()) {
-              const data = userDoc.data();
-              if (data.answers) setUserAnswers(data.answers);
+        setLoading(true);
+        try {
+          const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+          if (userDoc.exists()) {
+            const data = userDoc.data();
 
-              if (data.firstName) setFirstName(data.firstName);
-              if (data.lastName) setLastName(data.lastName);
-              if (data.instagram) setInstagram(data.instagram);
-              if (data.telegram) setTelegram(data.telegram);
-              if (data.avatar) setAvatar(data.avatar || null);
+            // Завжди оновлюємо ці поля, незалежно від того, чи прийшли ми з тесту
+            setFirstName(data.firstName || "");
+            setLastName(data.lastName || "");
+            setInstagram(data.instagram || "");
+            setTelegram(data.telegram || "");
+            setAvatar(data.avatar || null);
+            setIsLookingForRoom(data.status || "");
 
-              if (data.photoAccess !== undefined)
-                setPhotoAccess(data.photoAccess);
-              if (data.sendAllow !== undefined) setSendAllow(data.sendAllow);
-              if (data.hideActivity !== undefined)
-                setHideActivity(data.hideActivity);
+            // Конфіденційність
+            setPhotoAccess(data.photoAccess ?? false);
+            setSendAllow(data.sendAllow ?? false);
+            setHideActivity(data.hideActivity ?? false);
 
-              if (data.friendsQuery !== undefined)
-                setFriendsQuery(data.friendsQuery);
-              if (data.friendsActivity !== undefined)
-                setFriendsActivity(data.friendsActivity);
-              if (data.showMessages !== undefined)
-                setShowMessages(data.showMessages);
+            // Повідомлення
+            setFriendsQuery(data.friendsQuery ?? false);
+            setFriendsActivity(data.friendsActivity ?? false);
+            setShowMessages(data.showMessages ?? false);
+
+            // Якщо в location.state є нові відповіді з тесту - беремо їх,
+            // якщо немає - беремо старі з бази
+            if (location.state?.userAnswers) {
+              setUserAnswers(location.state.userAnswers);
+            } else if (data.answers) {
+              setUserAnswers(data.answers);
             }
-          } catch (error) {
-            console.error("Помилка завантаження даних користувача:", error);
           }
+        } catch (error) {
+          console.error("Помилка завантаження даних:", error);
+        } finally {
+          setLoading(false);
         }
+      } else {
+        setLoading(false);
       }
-      setLoading(false); // Дані завантажені (або юзер не залогінений)
     });
 
     return () => unsubscribe();
-  }, [userAnswers]);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-        if (userDoc.exists() && userDoc.data().answers) {
-          setUserAnswers(userDoc.data().answers);
-        }
-      }
-      setLoading(false);
-    };
-
-    fetchUserData();
-  }, []);
+  }, [location.state]); // Додаємо залежність від location, щоб реагувати на повернення з тесту
 
   useEffect(() => {
     if (window.bootstrap) {
@@ -533,24 +536,28 @@ const SearchRoommate = ({ user }) => {
   };
 
   // Обробник зміни файлу (оновлено для збереження назви)
-  const handleFileChange = async (e) => {
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file && file.type.startsWith("image/")) {
+    if (file) {
       const reader = new FileReader();
-      reader.onload = async () => {
-        const base64Image = reader.result;
-
-        // 1. Оновлюємо на екрані
-        setAvatar(base64Image);
-
-        // 2. Зберігаємо в базу для конкретного юзера
-        const currentUser = auth.currentUser;
-        if (currentUser) {
-          const userRef = doc(db, "users", currentUser.uid);
-          await updateDoc(userRef, { avatar: base64Image });
-        }
+      reader.onload = () => {
+        setImageToCrop(reader.result);
+        setShowCropper(true);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const onSaveCrop = async () => {
+    const croppedImage = await getCroppedImg(imageToCrop, croppedAreaPixels);
+    setAvatar(croppedImage);
+    setShowCropper(false);
+
+    // Зберігаємо в Firestore
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      const userRef = doc(db, "users", currentUser.uid);
+      await updateDoc(userRef, { avatar: croppedImage });
     }
   };
 
@@ -576,50 +583,111 @@ const SearchRoommate = ({ user }) => {
     navigate("/test");
   };
 
+  const handleStatusChange = async (e) => {
+    const isLooking = e.target.checked;
+
+    // 1. Оновлюємо локальний стейт (щоб текст на сайті змінився відразу)
+    setIsLookingForRoom(isLooking);
+
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      const newStatusString = isLooking ? "Шукаю кімнату" : "Не шукаю";
+      try {
+        const userRef = doc(db, "users", currentUser.uid);
+        // 2. Оновлюємо саме в базі даних
+        await updateDoc(userRef, {
+          status: newStatusString,
+        });
+        console.log("Статус оновлено в БД на:", newStatusString);
+      } catch (error) {
+        console.error("Помилка збереження статусу в Firebase:", error);
+        // Якщо в базі не збереглося — повертаємо стейт назад
+        setIsLookingForRoom(!isLooking);
+      }
+    }
+  };
+
   return (
     <div>
       <Header user={user} />
 
-      <div className="profile row rounded-5 p-4 p-md-5 mb-5 mt-4 border-0 custom-shadow">
+      <div className="profile rounded-5 p-4 p-md-5 mb-5 mt-4 custom-shadow">
         <div className="col-12">
           <h1 className="mb-5 fw-bold text-start">Налаштування профілю</h1>
 
           {/* Блок Аватара як на макеті */}
-          <div className="d-flex flex-wrap align-items-center mb-5 gap-4">
-            <img
-              src={avatar || defaultUser}
-              alt="Фото користувача"
-              className="rounded-circle custom-avatar border"
-            />
-            <div className="flex-grow-1">
-              <h3 className="mb-1 fw-bold">
-                {firstName || "Ім'я"} {lastName || "Прізвище"}
-              </h3>
-              <span className="text-secondary">Змініть фото профілю</span>
+          {/* Блок Аватара з адаптивними кнопками */}
+          <div className="row align-items-center mb-5 gy-4">
+            {/* Ліва частина: Аватар та Ім'я */}
+            <div className="col-12 col-md-auto d-flex align-items-center gap-4">
+              <img
+                src={avatar || defaultUser}
+                alt="Фото користувача"
+                className="rounded-circle custom-avatar border"
+              />
+              <div>
+                <h3 className="mb-1 fw-bold">
+                  {firstName || "Ім'я"} {lastName || "Прізвище"}
+                </h3>
+                <span className="text-secondary">Змініть фото профілю</span>
+              </div>
             </div>
-            <div className="d-flex gap-3">
-              <button
-                className="btn btn-action-light fw-semibold rounded-pill px-4 py-2"
-                onClick={deleteFile}
-              >
-                Видалити
-              </button>
-              <label className="btn btn-action-primary fw-semibold rounded-pill px-4 py-2 m-0 cursor-pointer">
-                Завантажити фото
-                <input
-                  type="file"
-                  accept="image/*"
-                  hidden
-                  onChange={handleFileChange}
-                  ref={fileInputRef}
-                />
-              </label>
+
+            {/* Права частина: Кнопки (на десктопі справа, на мобілці - знизу) */}
+            <div className="col-12 col-md d-flex justify-content-md-end ">
+              <div className="d-flex flex-wrap gap-2 w-100 w-md-auto justify-content-end">
+                <button
+                  className="btn btn-action-light fw-semibold rounded-pill px-3 px-sm-4 py-2 flex-grow-1 flex-md-grow-0"
+                  onClick={deleteFile}
+                >
+                  Видалити
+                </button>
+                <label className="btn btn-action-primary fw-semibold rounded-pill px-3 px-sm-4 py-2 m-0 cursor-pointer flex-grow-1 flex-md-grow-0 text-center">
+                  Завантажити фото
+                  <input
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    onChange={handleFileChange}
+                    ref={fileInputRef}
+                  />
+                </label>
+              </div>
             </div>
           </div>
 
           {/* Особиста інформація */}
           <div className="mb-5">
             <h4 className="fw-bold mb-4">Особиста інформація</h4>
+
+            <div className="row mb-4">
+              <div className="col-12 col-md-6 col-xl-5">
+                <div className="set-card d-flex justify-content-between align-items-center m-0">
+                  <div>
+                    <h6 className="mb-1">Мій статус пошуку</h6>
+                    <span
+                      className={
+                        isLookingForRoom
+                          ? "text-success fw-bold"
+                          : "text-secondary"
+                      }
+                    >
+                      {isLookingForRoom ? "Шукаю кімнату" : "Не шукаю"}
+                    </span>
+                  </div>
+                  <div className="form-check form-switch m-0">
+                    <input
+                      className="form-check-input custom-switch"
+                      type="checkbox"
+                      checked={isLookingForRoom}
+                      onChange={handleStatusChange}
+                      style={{ cursor: "pointer" }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="row g-4">
               <div className="col-md-6">
                 <label className="form-label text-secondary">Ім'я</label>
@@ -671,7 +739,7 @@ const SearchRoommate = ({ user }) => {
 
         <div className="row my-features p-2">
           {/* Звички та налаштування */}
-          <div className="col-12 col-xxl-6 col-xl-6 col-md-12 col-sm-12 flex-wrap mb-4">
+          <div className="col-12 col-xxl-6 col-xl-6 col-md-12 col-sm-12 flex-wrap mb-4 ">
             <div className="mb-5">
               <h4 className="fw-bold mb-3">Мої звички:</h4>
               {userAnswers ? (
@@ -684,7 +752,7 @@ const SearchRoommate = ({ user }) => {
                     return (
                       <div key={questionId} className="m-1 d-inline-block">
                         <span
-                          className="badge badge-custom fs-6 px-3 py-2 fw-normal"
+                          className="badge badge-custom fs-6 px-3 py-2 text-wrap fw-normal"
                           data-bs-toggle="tooltip"
                           data-bs-title={
                             currentQuestion
@@ -698,10 +766,7 @@ const SearchRoommate = ({ user }) => {
                     );
                   })}
                   <div className="w-100 mt-4">
-                    <Link
-                      className="btn btn-dark rounded-pill px-4"
-                      to="/test"
-                    >
+                    <Link className="btn btn-dark rounded-pill px-4" to="/test">
                       Перепройти тест
                     </Link>
                   </div>
@@ -883,7 +948,7 @@ const SearchRoommate = ({ user }) => {
           </div>
 
           {/* Спільні інтереси */}
-          <div className="col-12 col-xxl-6 col-xl-6 col-md-12 col-sm-12 simil-block mt-5 mt-xl-0">
+          <div className="col-12 col-xxl-6 col-xl-6 col-md-12 col-sm-12 simil-block mt-5 mt-xl-0 ">
             <h4 className="fw-bold text-xl-end mb-4">Спільні інтереси:</h4>
             <div className="list-of-users custom-scroll">
               {userAnswers ? (
@@ -913,6 +978,33 @@ const SearchRoommate = ({ user }) => {
           </div>
         </div>
       </div>
+
+      {showCropper && (
+        <div className="custom-cropper-modal">
+          <div className="cropper-container">
+            <Cropper
+              image={imageToCrop}
+              crop={crop}
+              zoom={zoom}
+              aspect={1}
+              onCropChange={setCrop}
+              onZoomChange={setZoom}
+              onCropComplete={(_, pixels) => setCroppedAreaPixels(pixels)}
+            />
+          </div>
+          <div className="cropper-controls">
+            <button
+              className="btn btn-secondary"
+              onClick={() => setShowCropper(false)}
+            >
+              Скасувати
+            </button>
+            <button className="btn btn-primary" onClick={onSaveCrop}>
+              Зберегти
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

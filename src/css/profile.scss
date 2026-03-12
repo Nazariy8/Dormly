@@ -182,11 +182,34 @@
     width: 100%;
     height: max-content;
     /* Можеш використовувати фіксовану висоту або адаптивну через vh */
-    max-height: 1300px; 
+    max-height: 750px; 
     overflow-y: auto;
     padding-right: 10px; /* Трохи відступу, щоб скролбар не прилипав до карток */
     
     @media (max-width: 1200px) {
         align-items: stretch;
     }
+}
+
+
+
+.custom-cropper-modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.9);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.cropper-container {
+  position: relative;
+  width: 90%;
+  height: 70vh;
+}
+.cropper-controls {
+  margin-top: 20px;
+  display: flex;
+  gap: 20px;
 }
