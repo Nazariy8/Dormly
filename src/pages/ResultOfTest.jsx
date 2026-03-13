@@ -13,7 +13,7 @@ const ResultOfTest = () => {
 
   const handleSubmitForSearch = () => {
     // ✅ ЗМІНЕНО: Передаємо обидва об'єкти на search-roommate
-    navigate("/search-roommate", {
+    navigate("/profile", {
       state: {
         userAnswers: userAnswers, // Текст
         userAnswerIds: userAnswerIds, // ID
@@ -94,7 +94,7 @@ const ResultOfTest = () => {
               handleSubmitForSearch();
             }}
           >
-            Знайти співжителя
+            До профілю
           </button>
         </div>
       </div>

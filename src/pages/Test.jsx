@@ -277,30 +277,30 @@ const Test = () => {
   };
 
   const handleSubmit = async () => {
-  const currentUser = auth.currentUser;
+    const currentUser = auth.currentUser;
 
-  if (currentUser) {
-    try {
-      const userRef = doc(db, "users", currentUser.uid);
+    if (currentUser) {
+      try {
+        const userRef = doc(db, "users", currentUser.uid);
 
-      // Записуємо дані в Firestore
-      await updateDoc(userRef, {
-        answers: answers, // Використовуємо 'answers' замість 'testResults'
-        answerIds: answerIds,
-        hasPassedTest: true,
-        lastTestDate: new Date(),
-      });
-      console.log("Результати успішно збережено в Firestore!");
-    } catch (error) {
-      console.error("Помилка при збереженні в базу:", error);
+        // Записуємо дані в Firestore
+        await updateDoc(userRef, {
+          answers: answers, // Використовуємо 'answers' замість 'testResults'
+          answerIds: answerIds,
+          hasPassedTest: true,
+          lastTestDate: new Date(),
+        });
+        console.log("Результати успішно збережено в Firestore!");
+      } catch (error) {
+        console.error("Помилка при збереженні в базу:", error);
+      }
     }
-  }
-  
-  // Переходимо на результати
-  navigate("/resultoftest", {
-    state: { userAnswers: answers, userAnswerIds: answerIds },
-  });
-};
+
+    // Переходимо на результати
+    navigate("/resultoftest", {
+      state: { userAnswers: answers, userAnswerIds: answerIds, questions: questions, },
+    });
+  };
 
   // Обчислення прогресу (для смужки зверху)
   const progressPercentage =

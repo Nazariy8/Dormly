@@ -38,7 +38,7 @@ const Header = ({ user }) => {
               className="navbar-collapse collapse text-end"
               id="navbarSupportedContent"
             >
-              <ul className="navbar-nav text-start mb-2 mb-lg-0">
+              <ul className="navbar-nav text-center mb-2 mb-lg-0">
                 <li className="nav-item">
                   <Link
                     className="nav-link link px-3"
@@ -69,22 +69,31 @@ const Header = ({ user }) => {
 
                 {user ? (
                   <>
+                  <li className="nav-item">
+                      <Link
+                        to="/chat"
+                        className="nav-link btn btn-link link px-3 border-0"
+                        style={{ textDecoration: "none" }}
+                      >
+                        Чат
+                      </Link>
+                    </li>
                     <li className="nav-item">
                       <Link
                         className="nav-link link px-3 fw-bold text-white bg-primary"
-                        to="/search-roommate"
+                        to="/profile"
                       >
                         Профіль
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <button
-                        onClick={handleLogout}
+                      <Link
+                        to="/search-roommate"
                         className="nav-link btn btn-link link px-3 border-0"
                         style={{ textDecoration: "none" }}
                       >
-                        Вийти
-                      </button>
+                        Співжителі
+                      </Link>
                     </li>
                   </>
                 ) : (
