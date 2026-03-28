@@ -1,0 +1,197 @@
+/* Загальний контейнер на весь екран мінус висота хедера */
+.chat-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* 100% висоти екрану */
+  color: var(--text-main);
+  overflow: hidden; /* Забороняємо прокрутку всієї сторінки */
+}
+
+.chat-container {
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden;
+  background-color: var(--bg-main); /* Було #0a0a0a */
+  border-top: 1px solid var(--border-color); /* Додасть візуальну лінію розділення */
+}
+
+/* --- ЛІВА ПАНЕЛЬ (Список чатів) --- */
+.chat-sidebar {
+  width: 350px;
+  min-width: 350px;
+  background-color: var(--bg-secondary); /* Було #121212 */
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+
+  h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  .actions i {
+    font-size: 20px;
+    margin-left: 15px;
+    cursor: pointer;
+    color: #a0a0a0;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}
+
+.search-box {
+  padding: 0 20px 20px 20px;
+
+  .search-input-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-input);
+    border-radius: 12px;
+    padding: 0px 15px; /* Виправив помилку з padding */
+    height: 45px;
+
+    i {
+      color: #7a7a7a;
+      font-size: 16px;
+      margin-right: 45px;
+      display: flex;
+      flex-shrink: 0; /* МАГІЯ: забороняємо іконці лупи стискатися! */
+    }
+
+    input {
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      width: 100%;
+      height: 100%;
+      outline: none;
+      padding: 0;
+      flex-grow: 1; /* МАГІЯ: кажемо інпуту займати лише вільне місце */
+
+      &::placeholder {
+        color: #7a7a7a;
+      }
+    }
+  }
+}
+
+.chat-list {
+  flex-grow: 1;
+  overflow-y: auto; /* Прокрутка тільки для списку */
+
+  /* Кастомізація скролбару (щоб був тонкий і темний) */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 10px;
+  }
+}
+
+/* --- ПРАВА ПАНЕЛЬ (Саме листування - поки заглушка) --- */
+.chat-main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-main);
+
+  overflow: hidden;
+
+  .chat-main-header {
+    border-bottom: 1px solid var(--border-color) !important;
+    flex-shrink: 0;
+  }
+
+  .chat-input-area {
+    border-top: 1px solid var(--border-color);
+    flex-shrink: 0;
+  }
+}
+
+.chat-input {
+  &:focus {
+    color: var(--text-main);
+  }
+  color: var(--text-main);
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+}
+
+.user-search-card {
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  background-color: var(--bg-input);
+
+  &:hover,
+  &.active-chat {
+    background-color: var(--bg-main);
+  }
+}
+
+/* --- АДАПТИВНІСТЬ ДЛЯ МОБІЛЬНИХ ПРИСТРОЇВ --- */
+@media (max-width: 768px) {
+  .chat-sidebar {
+    width: 100%;
+    min-width: 100%;
+    border-right: none;
+  }
+
+  /* За замовчуванням на телефоні права панель (діалог) схована */
+  .chat-main {
+    display: none;
+    width: 100%;
+  }
+
+  /* АЛЕ! Якщо ми додамо клас .mobile-chat-active до контейнера, вони міняються місцями: */
+  .chat-container.mobile-chat-active {
+    .chat-sidebar {
+      display: none; /* Ховаємо список */
+    }
+    .chat-main {
+      display: flex; /* Показуємо діалог */
+    }
+  }
+}
+
+/* Відображення кнопок дій при наведенні на повідомлення */
+.message-bubble {
+  &:hover {
+    .message-actions {
+      display: flex !important;
+    }
+  }
+}
+
+/* Стилі для кастомного меню */
+.context-menu-item {
+  cursor: pointer;
+  color: var(--text-main);
+  transition: background-color 0.2s ease;
+  font-size: 14px;
+
+  &:hover {
+    background-color: var(--bg-input);
+  }
+}
+
+.btn-close {
+  // Якщо тема темна (текст білий), інвертуємо колір хрестика, щоб він став білим
+  [data-theme="dark"] & {
+    filter: invert(1) grayscale(100%) brightness(200%);
+  }
+}
