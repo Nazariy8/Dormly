@@ -1,9 +1,6 @@
 {
-<<<<<<< HEAD
-=======
-    "editor.fontSize": 16,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.fontFamily": "'Fira Code', Consolas, 'Courier New', monospace",
-    "editor.fontLigatures": true
->>>>>>> origin/user-photos
+  "editor.fontSize": 16,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.fontFamily": "'Fira Code', Consolas, 'Courier New', monospace",
+  "editor.fontLigatures": true
 }

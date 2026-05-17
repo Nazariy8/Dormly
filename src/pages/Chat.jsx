@@ -1,5 +1,8 @@
-import React, { useState, useEffect, useRef, setContextMenu } from "react";
+// 1. ПРИБРАНО ПОМИЛКОВИЙ ІМПОРТ setContextMenu
+import React, { useState, useEffect, useRef } from "react"; 
 import Header from "../components/Header";
+// 2. ДОДАНО useNavigate для правильного очищення історії
+import { useLocation, useNavigate } from "react-router-dom"; 
 
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../firebase";
@@ -22,9 +25,9 @@ import {
   arrayUnion,
   arrayRemove,
 } from "firebase/firestore";
-import { db } from "../firebase"; // Перевір шлях до файлу firebase
+import { db } from "../firebase"; 
 import "../css/chat.scss";
-import defaultUser from "../img/profile/user.jpg"; // Перевір шлях до дефолтної аватарки
+import defaultUser from "../img/profile/user.jpg"; 
 
 const Chat = ({ user }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -33,31 +36,42 @@ const Chat = ({ user }) => {
 
   const [activeChatUser, setActiveChatUser] = useState(null);
 
-  // Стан для збереження чернеток (беремо з localStorage, якщо вони там є)
   const [drafts, setDrafts] = useState(() => {
     const savedDrafts = localStorage.getItem("chat_drafts");
     return savedDrafts ? JSON.parse(savedDrafts) : {};
   });
 
-  const [messages, setMessages] = useState([]); // Стан для масиву повідомлень
+  const location = useLocation();
+  const navigate = useNavigate(); // Ініціалізуємо навігацію
+
+  const [messages, setMessages] = useState([]); 
   const messagesEndRef = useRef(null);
-
   const [chatHistory, setChatHistory] = useState([]);
-
   const [friendStatus, setFriendStatus] = useState("none");
-
-  const [editingMessage, setEditingMessage] = useState(null); // Зберігає об'єкт повідомлення, яке ми зараз редагуємо
-  const [editDraft, setEditDraft] = useState(""); // Текст, який ми змінюємо
-
+  const [editingMessage, setEditingMessage] = useState(null); 
+  const [editDraft, setEditDraft] = useState(""); 
   const [contextMenu, setContextMenu] = useState(null);
-
   const [showSocialModal, setShowSocialModal] = useState(false);
   const [incomingRequests, setIncomingRequests] = useState([]);
   const [myFriends, setMyFriends] = useState([]);
-
   const [isUploading, setIsUploading] = useState(false);
 
+  // --- ЛОВЕЦЬ КОРИСТУВАЧА ЗІ СТОРІНКИ ПОШУКУ (ЄДИНИЙ ПРАВИЛЬНИЙ) ---
+  useEffect(() => {
+    if (location.state && location.state.startChatWith) {
+      const targetUser = location.state.startChatWith;
+
+      // 1. Встановлюємо цю людину як активного співрозмовника
+      setActiveChatUser(targetUser);
+
+      // 2. Правильно очищаємо стан маршрутизатора, щоб не було зациклень
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, navigate]);
+  // ----------------------------------------------
+
   const handleImageUpload = async (e) => {
+// ... ДАЛІ ЙДЕ ТВІЙ КОД БЕЗ ЗМІН ...
     const file = e.target.files[0];
     if (!file || !activeChatUser) return;
 
@@ -76,15 +90,15 @@ const Chat = ({ user }) => {
       },
       async () => {
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        
+
         await sendImageMessage(downloadURL);
-        
+
         setIsUploading(false); // Вимикаємо крутилку
-        
+
         // НАДІЙНЕ очищення інпуту, щоб можна було скинути те саме фото ще раз
         const fileInput = document.getElementById("image-input");
         if (fileInput) fileInput.value = "";
-      }
+      },
     );
   };
 
@@ -110,9 +124,11 @@ const Chat = ({ user }) => {
       lastMessageSender: user.uid,
       updatedAt: serverTimestamp(),
       [`unreadCounts.${activeChatUser.id}`]: increment(1), // Співрозмовнику +1
-      [`unreadCounts.${user.uid}`]: 0 // Собі 0
+      [`unreadCounts.${user.uid}`]: 0, // Собі 0
     });
   };
+
+ 
 
   useEffect(() => {
     if (!user) return;
@@ -631,7 +647,10 @@ const Chat = ({ user }) => {
                   <span className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
                 )}
               </div>
-              <i className="bi bi-three-dots" style={{ color: "var(--text-main)" }}></i>
+              <i
+                className="bi bi-three-dots"
+                style={{ color: "var(--text-main)" }}
+              ></i>
             </div>
           </div>
 

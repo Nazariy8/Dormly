@@ -98,6 +98,22 @@ $text-color: #333;
   color: $text-color;
 }
 
+// Індикатор категорії
+.category-indicator {
+  display: inline-block;
+  align-self: flex-start; // Щоб плашка не розтягувалась на всю ширину
+  background-color: var(--primary-purple-light);
+  color: var(--primary-puple);
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 10px rgba(138, 79, 255, 0.1);
+  border: 1px solid rgba(138, 79, 255, 0.2);
+}
 // Опції (кнопки відповідей)
 .options-grid {
   display: flex;

@@ -65,7 +65,7 @@ const AboutUs = ({ user }) => {
               <label
                 className="btn btn-light mb-3 text-start rounded-5 align-items-center"
                 htmlFor="vbtn-radio2"
-                onClick={() => navigate("/regist")}
+               onClick={() => user ? navigate("/profile") : navigate("/regist")}
               >
                 <i className="bi bi-person fs-5 me-2"></i> Реєстрація та профіль
               </label>
