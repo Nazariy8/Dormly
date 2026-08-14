@@ -1,0 +1,37 @@
+.tabs{
+    background: var(--bg-main);
+    .btn.active {
+        color: var(--bg-main);
+    }
+    .btn{
+        color: var(--text-main);
+    }   
+}
+
+.candidates{
+    .card{
+        background: var(--bg-main);
+        h4,p{
+            color: var(--text-main);
+        }
+    }
+}
+
+// .roommates-block {
+//     .card-body input {
+//         background: var(--text-secondary);
+//         box-shadow: rgba(255, 255, 255, 0.16) 0px 0px 10px;
+//         color: var(--text-main);
+//     &::placeholder{
+//         color: var(--text-secondary);
+//     }
+//     }
+    
+// }
+
+.roommates-block, .tasks-block {
+    background-color: var(--bg-main);
+    span{
+        color: var(--text-main);
+    }
+}
