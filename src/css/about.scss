@@ -6,20 +6,22 @@
     i{
         color: var(--text-main);
     }
-    input{
-        background: var(--bg-main);
-        color: var(--text-main);
-    }
-}
-.search-quest{
-    transition: 1s;
+    .search-quest{
+    background: var(--bg-secondary);
+    color: var(--text-main);
+    transition: .3s;
     border: none;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    outline:1px solid var(--primary-puple);  
+    &:focus{
+        box-shadow: rgb(138, 79, 255) 0px 0px 30px -12px;
+    }
+    
 } 
-
-.search-quest:focus{
-    outline:1px solid var(--primary-puple);
 }
+
+
+
 
 .list-of-btns{
     justify-content: center;
@@ -27,7 +29,7 @@
     align-items: start;    
     
     label{
-        background: var(--bg-main);
+        background: var(--bg-secondary);
         color: var(--text-main);
     }
 }
@@ -39,7 +41,7 @@
 }
 
 .not-found-quest { 
-    background: var(--bg-main);
+    background: var(--bg-secondary);
     
     i{
     background: #3CC8A1;
@@ -62,7 +64,7 @@
 .accordion-item{
     border: none;
     box-shadow: var(--text-main) 0px 7px 29px -20px;
-    background:var(--bg-main);
+    background:var(--bg-secondary);
     color: var(--text-main);
 
     button{
@@ -146,7 +148,7 @@
 }
 
 .teammate-card{
-    background: var(--bg-main);
+    background: var(--bg-secondary);
     width: 350px;
     padding: 20px;
     border-radius: 30px;

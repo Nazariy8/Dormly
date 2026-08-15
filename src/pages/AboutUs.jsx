@@ -43,22 +43,6 @@ const AboutUs = ({ user }) => {
                 type="radio"
                 className="btn-check"
                 name="vbtn-radio"
-                id="vbtn-radio1"
-                autoComplete="off"
-                defaultChecked
-              />
-              <label
-                className="btn btn-light mb-3 text-start rounded-5 align-items-center"
-                htmlFor="vbtn-radio1"
-              >
-                <i className="bi bi-question-circle fs-5 me-2"></i> Часті
-                запитання
-              </label>
-
-              <input
-                type="radio"
-                className="btn-check"
-                name="vbtn-radio"
                 id="vbtn-radio2"
                 autoComplete="off"
               />
@@ -117,7 +101,7 @@ const AboutUs = ({ user }) => {
             </div>
           </div>
 
-          <div className="not-found-quest d-flex flex-column text-center rounded-5 mb-5 p-4">
+          <div className="not-found-quest d-flex flex-column text-center rounded-5 mb-5 p-3">
             <i className="bi bi-patch-question fs-4"></i>
             <h5>Не знайшли відповідь?</h5>
             <p>Наша команда підтримки завжди готова допомогти.</p>
@@ -258,11 +242,29 @@ const AboutUs = ({ user }) => {
       <div className="about-us text-center ">
         <h1 className="p-3 rounded-5 title mx-auto mb-5">Про нас</h1>
         <h4 className="fw-bold">Наша команда</h4>
-        <h6 className="text-secondary mb-5">
+        <h6 className="text-secondary">
           Ми команда інтузіастів, студентів та розробників, які прагнули зробити
           ваше життя в гуртожитку кращим.
         </h6>
-        <div className="row justify-content-center d-flex">
+        
+        <div className="row justify-content-center d-flex mt-5">
+          <div className="d-flex col-xxl-3 col-xl-3 col-lg-4 col-sm-12 col-12 col-md-6  mb-3 justify-content-center text-center">
+            <div className="teammate-card">
+              <img className="" src={nazar} alt="" />
+              <h4>Яворський Назарій</h4>
+              <h6>Головний розробник</h6>
+            </div>
+          </div>
+          <div className="d-flex col-xxl-3 col-xl-3 col-lg-4 col-sm-12 col-12 col-md-6  mb-3 justify-content-center text-center">
+            {" "}
+            <div className="teammate-card">
+              <img className="" src={maks} alt="" />
+              <h4>Плечій Максим</h4>
+              <h6>Тестувальник</h6>
+            </div>
+          </div>
+        </div>
+        <div className="row justify-content-center d-flex mb-5">
           <div className="d-flex col-xxl-3 col-xl-3 col-lg-4 col-sm-12 col-12 col-md-6  mb-3 justify-content-center text-center">
             <div className="teammate-card">
               <img className="" src={julia} alt="" />
@@ -284,23 +286,6 @@ const AboutUs = ({ user }) => {
               <img className="" src={zlata} alt="" />
               <h4>Нисинець Златослава</h4>
               <h6>UX/UI дизайнер</h6>
-            </div>
-          </div>
-        </div>
-        <div className="row justify-content-center mb-5">
-          <div className="d-flex col-xxl-3 col-xl-3 col-lg-4 col-sm-12 col-12 col-md-6  mb-3 justify-content-center text-center">
-            <div className="teammate-card">
-              <img className="" src={nazar} alt="" />
-              <h4>Яворський Назарій</h4>
-              <h6>Головний розробник</h6>
-            </div>
-          </div>
-          <div className="d-flex col-xxl-3 col-xl-3 col-lg-4 col-sm-12 col-12 col-md-6  mb-3 justify-content-center text-center">
-            {" "}
-            <div className="teammate-card">
-              <img className="" src={maks} alt="" />
-              <h4>Плечій Максим</h4>
-              <h6>Тестувальник</h6>
             </div>
           </div>
         </div>

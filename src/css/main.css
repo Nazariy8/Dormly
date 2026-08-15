@@ -92,8 +92,10 @@ header .modal-dialog .modal-content {
 
 .navbar {
   width: 90%;
-  background: var(--bg-main);
+  background: var(--bg-secondary);
 }
+
+.navbar
 
 .logo-and-links {
   display: flex;
@@ -120,7 +122,7 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-main);
+  background: var(--bg-secondary);
   color: var(--text-main);
   transition: 0.5s;
   &:hover {

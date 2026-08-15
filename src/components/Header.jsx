@@ -21,7 +21,10 @@ const Header = ({ user }) => {
   return (
     <header className="py-2">
       {/* Додали p-2 для внутрішніх відступів */}
-      <nav className="navbar navbar-expand-lg rounded-4 p-2">
+      <nav
+        className={`navbar navbar-expand-lg rounded-4 p-2`}
+        style={{ boxShadow:`${theme === 'light' ? '' : 'rgb(138, 79, 255) 0px 15px 50px -20px'}`}}
+      >
         <div className="container-fluid">
           {/* ЛОГОТИП */}
           <h1 className="title m-0">
@@ -61,17 +64,25 @@ const Header = ({ user }) => {
             {/* ms-auto притискає всі лінки вправо */}
             <ul className="navbar-nav ms-auto text-center align-items-center mb-2 mb-lg-0 gap-2">
               <li className="nav-item">
-                <Link className="nav-link link px-3" to="/aboutUs">
+                <Link className="nav-link link px-3" to="/aboutUs" smooth>
                   Питання
                 </Link>
               </li>
               <li className="nav-item">
-                <HashLink className="nav-link link px-3" to="/#advantage-heading" smooth>
+                <HashLink
+                  className="nav-link link px-3"
+                  to="/#advantage-heading"
+                  smooth
+                >
                   Переваги
                 </HashLink>
               </li>
               <li className="nav-item">
-                <HashLink className="nav-link link px-3" to="/#feedbacks-heading" smooth>
+                <HashLink
+                  className="nav-link link px-3"
+                  to="/#feedbacks-heading"
+                  smooth
+                >
                   Відгуки
                 </HashLink>
               </li>
@@ -89,7 +100,10 @@ const Header = ({ user }) => {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link link px-4 rounded-pill fw-bold text-white bg-primary" to="/profile">
+                    <Link
+                      className="nav-link link px-4 rounded-pill fw-bold text-white bg-primary"
+                      to="/profile"
+                    >
                       Профіль
                     </Link>
                   </li>
@@ -102,7 +116,10 @@ const Header = ({ user }) => {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link signup link px-4 rounded-pill" to="/regist">
+                    <Link
+                      className="nav-link signup link px-4 rounded-pill"
+                      to="/regist"
+                    >
                       Зареєструватись
                     </Link>
                   </li>
@@ -125,9 +142,14 @@ const Header = ({ user }) => {
           </div>
         </div>
       </nav>
-      
+
       {/* Модалка залишилась на своєму місці */}
-      <div className="modal fade" id="loginModal" tabIndex="-1" aria-hidden="true"></div>
+      <div
+        className="modal fade"
+        id="loginModal"
+        tabIndex="-1"
+        aria-hidden="true"
+      ></div>
     </header>
   );
 };
