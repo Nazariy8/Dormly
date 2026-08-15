@@ -199,14 +199,18 @@ const SearchRoommate = ({ user }) => {
                 <h3 className="mb-1 fw-bold">
                   {firstName || "Ім'я"} {lastName || "Прізвище"}
                 </h3>
-                <span>Статус: <span
-                  className={`text-secondary text-nowrap ${
-                    isLookingForRoom ? "text-success fw-bold" : "text-secondary"
-                  }`}
-                >
-                  {isLookingForRoom ? "Шукає кімнату" : "Не шукає"}
-                </span></span>
-                
+                <span>
+                  Статус:{" "}
+                  <span
+                    className={`text-secondary text-nowrap ${
+                      isLookingForRoom
+                        ? "text-success fw-bold"
+                        : "text-secondary"
+                    }`}
+                  >
+                    {isLookingForRoom ? "Шукає кімнату" : "Не шукає"}
+                  </span>
+                </span>
               </div>
             </div>
 
@@ -394,7 +398,7 @@ const SearchRoommate = ({ user }) => {
 
         <div className="row my-features p-2">
           {/* Звички та налаштування */}
-          <div className="col-12 col-xxl-6 col-xl-6 col-md-12 col-sm-12 flex-wrap mb-4 ">
+          <div className="col-12 col-xxl-6 col-xl-6 col-md-12 col-sm-12 flex-wrap mb-4">
             <div className="mb-5">
               <h4 className="fw-bold mb-3">Мої звички:</h4>
               {userAnswers ? (
@@ -442,166 +446,6 @@ const SearchRoommate = ({ user }) => {
                   </button>
                 </div>
               )}
-            </div>
-
-            <div className="user-settings">
-              {/* Налаштування конфіденційності */}
-              <div className="privacy-sets mb-5">
-                <div className="d-flex align-items-center gap-3 mb-4">
-                  <div className="icon-block">
-                    <i className="bi bi-file-lock fs-5"></i>
-                  </div>
-                  <h4 className="m-0 fw-bold">Налаштування конфіденційності</h4>
-                </div>
-
-                <div className="set-card d-flex justify-content-between align-items-center">
-                  <div>
-                    <h6 className="mb-1">Хто може бачити мої фотографії</h6>
-                    <small className="text-secondary">
-                      {photoAccess ? "Всі користувачі" : "Ніхто"}
-                    </small>
-                  </div>
-                  <div className="form-check form-switch">
-                    <input
-                      className="form-check-input custom-switch"
-                      type="checkbox"
-                      checked={photoAccess}
-                      onChange={(e) =>
-                        handleToggleChange(
-                          setPhotoAccess,
-                          "photoAccess",
-                          e.target.checked,
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="set-card d-flex justify-content-between align-items-center mt-3">
-                  <div>
-                    <h6 className="mb-1">
-                      Хто може надсилати мені повідомлення
-                    </h6>
-                    <small className="text-secondary">
-                      {sendAllow ? "Всі" : "Лише взаємні контакти"}
-                    </small>
-                  </div>
-                  <div className="form-check form-switch">
-                    <input
-                      className="form-check-input custom-switch"
-                      type="checkbox"
-                      checked={sendAllow}
-                      onChange={(e) =>
-                        handleToggleChange(
-                          setSendAllow,
-                          "sendAllow",
-                          e.target.checked,
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="set-card d-flex justify-content-between align-items-center mt-3">
-                  <div>
-                    <h6 className="mb-1">Приховати мою активність</h6>
-                    <small className="text-secondary">
-                      {hideActivity ? "Статус невидимий" : "Статус видимий"}
-                    </small>
-                  </div>
-                  <div className="form-check form-switch">
-                    <input
-                      className="form-check-input custom-switch"
-                      type="checkbox"
-                      checked={hideActivity}
-                      onChange={(e) =>
-                        handleToggleChange(
-                          setHideActivity,
-                          "hideActivity",
-                          e.target.checked,
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Налаштування повідомлень */}
-              <div className="message-sets">
-                <div className="d-flex align-items-center gap-3 mb-4">
-                  <div className="icon-block">
-                    <i className="bi bi-bell fs-5"></i>
-                  </div>
-                  <h4 className="m-0 fw-bold">Налаштування повідомлень</h4>
-                </div>
-
-                <div className="set-card d-flex justify-content-between align-items-center">
-                  <div>
-                    <h6 className="mb-1">Нові повідомлення в чаті</h6>
-                    <small className="text-secondary">
-                      Push-сповіщення, E-mail
-                    </small>
-                  </div>
-                  <div className="form-check form-switch">
-                    <input
-                      className="form-check-input custom-switch"
-                      type="checkbox"
-                      checked={showMessages}
-                      onChange={(e) =>
-                        handleToggleChange(
-                          setShowMessages,
-                          "showMessages",
-                          e.target.checked,
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="set-card d-flex justify-content-between align-items-center mt-3">
-                  <div>
-                    <h6 className="mb-1">Запити на додавання в друзі</h6>
-                    <small className="text-secondary">Push-сповіщення</small>
-                  </div>
-                  <div className="form-check form-switch">
-                    <input
-                      className="form-check-input custom-switch"
-                      type="checkbox"
-                      checked={friendsQuery}
-                      onChange={(e) =>
-                        handleToggleChange(
-                          setFriendsQuery,
-                          "friendsQuery",
-                          e.target.checked,
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="set-card d-flex justify-content-between align-items-center mt-3">
-                  <div>
-                    <h6 className="mb-1">Активність друзів</h6>
-                    <small className="text-secondary">
-                      {friendsActivity ? "Увімкнено" : "Вимкнено"}
-                    </small>
-                  </div>
-                  <div className="form-check form-switch">
-                    <input
-                      className="form-check-input custom-switch"
-                      type="checkbox"
-                      checked={friendsActivity}
-                      onChange={(e) =>
-                        handleToggleChange(
-                          setFriendsActivity,
-                          "friendsActivity",
-                          e.target.checked,
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -672,6 +516,168 @@ const SearchRoommate = ({ user }) => {
             </div>
           </div>
         </div>
+
+
+        
+        <div className="user-settings row p-2">
+
+            {/* Налаштування конфіденційності */}
+            <div className="privacy-sets mb-5 col-xl-6 col-lg-6 col-md-12 col-sm-12">
+              <div className="d-flex align-items-center gap-3 mb-4">
+                <div className="icon-block">
+                  <i className="bi bi-file-lock fs-5"></i>
+                </div>
+                <h4 className="m-0 fw-bold">Налаштування конфіденційності</h4>
+              </div>
+
+              <div className="set-card d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 className="mb-1">Хто може бачити мої фотографії</h6>
+                  <small className="text-secondary">
+                    {photoAccess ? "Всі користувачі" : "Ніхто"}
+                  </small>
+                </div>
+                <div className="form-check form-switch">
+                  <input
+                    className="form-check-input custom-switch"
+                    type="checkbox"
+                    checked={photoAccess}
+                    onChange={(e) =>
+                      handleToggleChange(
+                        setPhotoAccess,
+                        "photoAccess",
+                        e.target.checked,
+                      )
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="set-card d-flex justify-content-between align-items-center mt-3">
+                <div>
+                  <h6 className="mb-1">Хто може надсилати мені повідомлення</h6>
+                  <small className="text-secondary">
+                    {sendAllow ? "Всі" : "Лише взаємні контакти"}
+                  </small>
+                </div>
+                <div className="form-check form-switch">
+                  <input
+                    className="form-check-input custom-switch"
+                    type="checkbox"
+                    checked={sendAllow}
+                    onChange={(e) =>
+                      handleToggleChange(
+                        setSendAllow,
+                        "sendAllow",
+                        e.target.checked,
+                      )
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="set-card d-flex justify-content-between align-items-center mt-3">
+                <div>
+                  <h6 className="mb-1">Приховати мою активність</h6>
+                  <small className="text-secondary">
+                    {hideActivity ? "Статус невидимий" : "Статус видимий"}
+                  </small>
+                </div>
+                <div className="form-check form-switch">
+                  <input
+                    className="form-check-input custom-switch"
+                    type="checkbox"
+                    checked={hideActivity}
+                    onChange={(e) =>
+                      handleToggleChange(
+                        setHideActivity,
+                        "hideActivity",
+                        e.target.checked,
+                      )
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Налаштування повідомлень */}
+            <div className="message-sets col-xl-6 col-lg-6 col-md-12 col-sm-12">
+              <div className="d-flex align-items-center gap-3 mb-4">
+                <div className="icon-block">
+                  <i className="bi bi-bell fs-5"></i>
+                </div>
+                <h4 className="m-0 fw-bold">Налаштування повідомлень</h4>
+              </div>
+
+              <div className="set-card d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 className="mb-1">Нові повідомлення в чаті</h6>
+                  <small className="text-secondary">
+                    Push-сповіщення, E-mail
+                  </small>
+                </div>
+                <div className="form-check form-switch">
+                  <input
+                    className="form-check-input custom-switch"
+                    type="checkbox"
+                    checked={showMessages}
+                    onChange={(e) =>
+                      handleToggleChange(
+                        setShowMessages,
+                        "showMessages",
+                        e.target.checked,
+                      )
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="set-card d-flex justify-content-between align-items-center mt-3">
+                <div>
+                  <h6 className="mb-1">Запити на додавання в друзі</h6>
+                  <small className="text-secondary">Push-сповіщення</small>
+                </div>
+                <div className="form-check form-switch">
+                  <input
+                    className="form-check-input custom-switch"
+                    type="checkbox"
+                    checked={friendsQuery}
+                    onChange={(e) =>
+                      handleToggleChange(
+                        setFriendsQuery,
+                        "friendsQuery",
+                        e.target.checked,
+                      )
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="set-card d-flex justify-content-between align-items-center mt-3">
+                <div>
+                  <h6 className="mb-1">Активність друзів</h6>
+                  <small className="text-secondary">
+                    {friendsActivity ? "Увімкнено" : "Вимкнено"}
+                  </small>
+                </div>
+                <div className="form-check form-switch">
+                  <input
+                    className="form-check-input custom-switch"
+                    type="checkbox"
+                    checked={friendsActivity}
+                    onChange={(e) =>
+                      handleToggleChange(
+                        setFriendsActivity,
+                        "friendsActivity",
+                        e.target.checked,
+                      )
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+
+          </div>
       </div>
 
       {showCropper && (
