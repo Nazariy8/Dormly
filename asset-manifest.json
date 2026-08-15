@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/Dormly/static/css/main.d470595c.css",
-    "main.js": "/Dormly/static/js/main.d17521de.js",
+    "main.js": "/Dormly/static/js/main.a162c8e6.js",
     "static/media/findmate.png": "/Dormly/static/media/findmate.b8b52ce15a199f1e3887.png",
     "static/media/user1.png": "/Dormly/static/media/user1.b5797f3ff0e2fc46f62d.png",
     "static/media/user2.png": "/Dormly/static/media/user2.d9a5b3c2ec150ad2345d.png",
@@ -13,10 +13,10 @@
     "static/media/nazar.webp": "/Dormly/static/media/nazar.efbda36809f68c8e4cfe.webp",
     "index.html": "/Dormly/index.html",
     "main.d470595c.css.map": "/Dormly/static/css/main.d470595c.css.map",
-    "main.d17521de.js.map": "/Dormly/static/js/main.d17521de.js.map"
+    "main.a162c8e6.js.map": "/Dormly/static/js/main.a162c8e6.js.map"
   },
   "entrypoints": [
     "static/css/main.d470595c.css",
-    "static/js/main.d17521de.js"
+    "static/js/main.a162c8e6.js"
   ]
 }
