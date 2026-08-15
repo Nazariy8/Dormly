@@ -17,7 +17,7 @@ import Aboutus from "./pages/AboutUs.jsx"
 import Chat from "./pages/Chat.jsx";
 import ResetPass from "./pages/ResetPass.jsx"
 
-import "./css/main.css"
+import "./css/main.scss"
 import Roommates from "./pages/Roommates.jsx";
 
 const users = [

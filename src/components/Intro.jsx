@@ -27,7 +27,8 @@ const Intro = ({ user }) => {
           <div className="row mx-auto d-flex justify-content-center">
             <div className="col-12 col-md-12 col-lg-12 col-xl-6 col-xxl-5 d-flex justify-content-center">
               <div className="text">
-                <h1 className="section-title ">
+                <h1 className="section-title"
+                id="intro-title">
                   Знайди свого ідеального співжителя
                 </h1>
                 <p className="text-descr">
@@ -39,7 +40,7 @@ const Intro = ({ user }) => {
 
                 <button
                   type="button"
-                  className="button-test test-btn text-white border-0"
+                  className="button-test test-btn text-white border-0 text-nowrap"
                   onClick={handleStartTest}
                 >
                   Почати тест

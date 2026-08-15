@@ -23,7 +23,7 @@ const Header = ({ user }) => {
       {/* Додали p-2 для внутрішніх відступів */}
       <nav
         className={`navbar navbar-expand-lg rounded-4 p-2`}
-        style={{ boxShadow:`${theme === 'light' ? '' : 'rgb(138, 79, 255) 0px 15px 50px -20px'}`}}
+        style={{ boxShadow:`${theme === 'light' ? '' : 'rgb(138, 79, 255) 0px 15px 40px -24px'}`}}
       >
         <div className="container-fluid">
           {/* ЛОГОТИП */}

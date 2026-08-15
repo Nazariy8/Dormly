@@ -7,6 +7,8 @@ import { doc, updateDoc } from "firebase/firestore";
 const Test = () => {
   const navigate = useNavigate();
 
+
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   // --- СТАН ---
   // Індекс поточного питання (починаємо з 0)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -388,7 +390,7 @@ const Test = () => {
         {/* Кнопки навігації */}
         <div className="navigation-buttons">
           <button
-            className="nav-btn prev-btn"
+            className={`nav-btn prev-btn ${currentQuestionIndex > 0 ? 'activated' : ''}`}
             onClick={handlePrev}
             disabled={currentQuestionIndex === 0}
           >

@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import user1 from "../img/main-feedback-users/user1.png"
 import user2 from "../img/main-feedback-users/user2.png"
 import user3 from "../img/main-feedback-users/user3.png"
 
 const Feedbacks = () => {
+
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+	
+	
 	return (
 		<div>
 			<section className="feedbacks-section py-5">
 				<div className="text text-center">
-					<h3 className="section-minititle" id="feedbacks-heading">Що кажуть наші користувачі</h3>
+					<h2 className="section-minititle mb-4" id="feedbacks-heading">Що кажуть наші користувачі</h2>
 					<p>
 						Історії успіху від студентів, які знайшли ідеальних сусідів з
 						Dormly.
@@ -16,7 +20,8 @@ const Feedbacks = () => {
 				</div>
 				<div className="container-fluid">
 					<div className="row feedbacks d-flex justify-content-center">
-						<div className="col-9 col-xxl-3 my-3 col-lg-9 col-md-9 col-sm-5 feedback-card p-5 mx-3">
+						<div className="col-9 col-xxl-3 my-3 col-lg-9 col-md-9 col-sm-5 feedback-card p-5 mx-3"
+						style={{boxShadow:`${theme === 'light' ? '' : 'var(--bg-main) 0px 0px 20px -12px'}`}}>
 							<div className="user-info-block">
 								<div className="user-avatar">
 									<img src={user1} alt="" />
@@ -34,7 +39,8 @@ const Feedbacks = () => {
 								</p>
 							</div>
 						</div>
-						<div className="col-9 col-xxl-3 my-3 col-lg-9 col-md-9 col-sm-5 feedback-card p-5 mx-3">
+						<div className="col-9 col-xxl-3 my-3 col-lg-9 col-md-9 col-sm-5 feedback-card p-5 mx-3"
+						style={{boxShadow:`${theme === 'light' ? '' : 'var(--bg-main) 0px 0px 20px -12px'}`}}>
 							<div className="user-info-block">
 								<div className="user-avatar">
 									<img src={user2} alt="" />
@@ -52,7 +58,8 @@ const Feedbacks = () => {
 								</p>
 							</div>
 						</div>
-						<div className="col-9 col-xxl-3 my-3 col-lg-9 col-md-9 col-sm-5 feedback-card p-5 mx-3">
+						<div className="col-9 col-xxl-3 my-3 col-lg-9 col-md-9 col-sm-5 feedback-card p-5 mx-3"
+						style={{boxShadow:`${theme === 'light' ? '' : 'var(--bg-main) 0px 0px 20px -12px'}`}}>
 							<div className="user-info-block">
 								<div className="user-avatar">
 									<img src={user3} alt="" />

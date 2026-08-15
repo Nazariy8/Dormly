@@ -199,7 +199,14 @@ const SearchRoommate = ({ user }) => {
                 <h3 className="mb-1 fw-bold">
                   {firstName || "Ім'я"} {lastName || "Прізвище"}
                 </h3>
-                <span className="text-secondary">Змініть фото профілю</span>
+                <span>Статус: <span
+                  className={`text-secondary text-nowrap ${
+                    isLookingForRoom ? "text-success fw-bold" : "text-secondary"
+                  }`}
+                >
+                  {isLookingForRoom ? "Шукає кімнату" : "Не шукає"}
+                </span></span>
+                
               </div>
             </div>
 
@@ -207,7 +214,7 @@ const SearchRoommate = ({ user }) => {
             <div className="col-12 col-md d-flex justify-content-md-end ">
               <div className="d-flex flex-wrap gap-2 w-100 w-md-auto justify-content-end">
                 <button
-                  className="btn btn-action-light fw-semibold rounded-pill px-3 px-sm-4 py-2 flex-grow-1 flex-md-grow-0"
+                  className="btn-action-light fw-semibold rounded-pill px-3 px-sm-4 py-2 flex-grow-1 flex-md-grow-0"
                   onClick={() =>
                     deleteFile(setAvatar, setFileName, fileInputRef)
                   }
@@ -229,10 +236,10 @@ const SearchRoommate = ({ user }) => {
               </div>
             </div>
             <div className=" d-flex justify-content-center align-items-center w-100">
-              <div className="logOut-block col-12 col-md-4 col-lg-3 col-xl-2 d-flex justify-content-start align-items-center ">
+              <div className="col-12 col-md-4 col-lg-3 col-xl-2 d-flex justify-content-start align-items-center ">
                 <button
                   onClick={() => handleLogout(navigate)}
-                  className="btn btn-link w-100 fw-semibold rounded-pill btn btn-action-primary_logOut border-0 p-2 rounded-4"
+                  className="btn w-100 fw-semibold rounded-pill btn btn-action-primary_logOut border-0 p-2 rounded-4"
                   style={{ textDecoration: "none" }}
                 >
                   Вийти
@@ -414,7 +421,10 @@ const SearchRoommate = ({ user }) => {
                     );
                   })}
                   <div className="w-100 mt-4">
-                    <Link className="btn btn-dark rounded-pill px-4" to="/test">
+                    <Link
+                      className="btn retest-btn rounded-pill px-4"
+                      to="/test"
+                    >
                       Перепройти тест
                     </Link>
                   </div>
@@ -602,9 +612,9 @@ const SearchRoommate = ({ user }) => {
               </h4>
 
               {/* Кнопка "Додати фото" */}
-              <label className="btn btn-action-primary rounded-pill px-4 py-2 m-0 cursor-pointer d-flex align-items-center gap-2 shadow-sm">
+              <label className="btn add-photo rounded-pill px-4 py-2 m-0 d-flex align-items-center gap-2">
                 <i className="bi bi-plus-lg"></i>
-                <span>Додати</span>
+                <span className="fw-bold">Додати</span>
                 <input
                   type="file"
                   accept="image/*"

@@ -1,26 +1,23 @@
 :root {
-  /* Твої старі змінні */
   --primary-white: #fff;
   --primary-info: #0dcaf0;
   --primary-grey: #adb5bd;
   --primary-purple-light: #e6d8f7;
   --primary-puple: #8a4fff;
 
-  /* ДОДАЄМО НОВІ: Кольори Світлої теми (за замовчуванням) */
+ 
   --bg-main: #ffffff;
-  --bg-secondary: #f8f9fa; /* Світло-сірий для бокових панелей */
+  --bg-secondary: #f8f9fa; 
   --bg-input: #f1f3f5;
   --text-main: #000000;
   --text-muted: #6c757d;
   --border-color: #dee2e6;
 }
 
-/* Кольори Темної теми */
 [data-theme="dark"] {
-  --primary-purple-light: #1a1a1a; /* Робимо базовий фон темним */
-  --bg-main: #000000; /* Абсолютно чорний */
-  --bg-secondary: #121212; /* Темно-сірий для карток/чату */
-  --bg-input: #1e1e1e;
+  --primary-purple-light: #1a1a1a; 
+  --bg-main: #000000; 
+  --bg-secondary: #121212; --bg-input: #1e1e1e;
   --text-main: #ffffff;
   --text-muted: #7a7a7a;
   --border-color: #2a2a2a;
@@ -89,15 +86,19 @@ header .modal-dialog .modal-content {
     padding-left: 100px;
   }
 }
-
+header {
+  display: flex;
+  padding: 20px 0;
+  justify-content: center;
+  align-items: center;
+  /* background: #000; */
+}
 .navbar {
   width: 90%;
   background: var(--bg-secondary);
 }
 
-.navbar
-
-.logo-and-links {
+.navbar .logo-and-links {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -109,13 +110,7 @@ header .modal-dialog .modal-content {
   align-items: center;
   justify-content: center;
 }
-header {
-  display: flex;
-  padding: 20px 0;
-  justify-content: center;
-  align-items: center;
-  /* background: #000; */
-}
+
 .theme-btn {
   width: 50px;
   height: 50px;
@@ -259,6 +254,7 @@ button.user-block {
   }
 }
 
+
 .intro-section {
   margin: 0;
   width: 100%;
@@ -269,6 +265,20 @@ button.user-block {
   font-size: 60px;
   font-weight: 1000;
   color: var(--text-main);
+}
+@media (min-width: 302px) and (max-width: 450px) {
+  .section-title#intro-title {
+    font-size: 45px;
+    font-weight: 1000;
+    color: var(--text-main);
+    display: flex;
+    flex-wrap: wrap;
+    text-align: justify;
+    & + .text-descr{
+      text-align: start;
+      max-width: 300px;
+    }
+  }
 }
 .intro-section .findmate-col {
   height: 400px;
@@ -356,10 +366,17 @@ button.user-block {
 .feedbacks-section {
   .section-minititle {
     font-weight: 700;
+    font-size: 40px;
   }
 }
-.feedback-card {
+[data-theme="dark"] .feedback-card {
+  background: var(--border-color);
+}
+[data-theme="light"] .feedback-card {
   background: var(--bg-main);
+}
+
+.feedback-card {
   border-radius: 30px;
   padding: 30px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
