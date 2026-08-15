@@ -15,6 +15,7 @@ const Header = ({ user }) => {
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
+    window.dispatchEvent(new Event("themeChanged"));
   };
 
   return (

@@ -7,31 +7,32 @@
         color: var(--text-main);
     }   
 }
-
+h4,h6,p,span{
+            color: var(--text-main);
+}
 .candidates{
     .card{
         background: var(--bg-main);
-        h4,p{
-            color: var(--text-main);
-        }
+        
     }
 }
 
-// .roommates-block {
-//     .card-body input {
-//         background: var(--text-secondary);
-//         box-shadow: rgba(255, 255, 255, 0.16) 0px 0px 10px;
-//         color: var(--text-main);
-//     &::placeholder{
-//         color: var(--text-secondary);
-//     }
-//     }
+.roommates-block, .tasks-block { 
     
-// }
-
-.roommates-block, .tasks-block {
     background-color: var(--bg-main);
     span{
         color: var(--text-main);
     }
+    .card-body input {
+        background: var(--text-secondary);
+        box-shadow: rgba(255, 255, 255, 0.16) 0px 0px 10px;
+        color: var(--text-main);
+    &::placeholder{
+        color: var(--text-secondary);
+    }
+    }
+}
+.roommate-to-add, .roommate, .tasks-block .list-group-item, .congr-block {
+    background: var(--bg-main);
+    color: var(--text-main);
 }
