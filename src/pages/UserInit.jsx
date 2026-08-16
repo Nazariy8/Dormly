@@ -15,6 +15,7 @@ import {
   signInWithPopup,
   signInWithRedirect,
   getRedirectResult,
+  onAuthStateChanged,
 } from "firebase/auth";
 import { googleProvider } from "../firebase";
 
@@ -40,40 +41,35 @@ function UserInit(props) {
 
 
   useEffect(() => {
-    const checkRedirect = async () => {
-      try {
-        const result = await getRedirectResult(auth);
-        if (result && result.user) {
-          const user = result.user;
-
-          // Перевіряємо та створюємо профіль у Firestore, якщо його ще нема
-          const userDocRef = doc(db, "users", user.uid);
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        try {
+          const userDocRef = doc(db, "users", currentUser.uid);
           const userDocSnap = await getDoc(userDocRef);
 
           if (!userDocSnap.exists()) {
             await setDoc(userDocRef, {
-              uid: user.uid,
-              email: user.email,
-              name: user.displayName || "Студент",
-              photoURL: user.photoURL || "",
+              uid: currentUser.uid,
+              email: currentUser.email,
+              name: currentUser.displayName || "Студент",
+              photoURL: currentUser.photoURL || "",
               status: "Шукаю кімнату",
               createdAt: new Date(),
             });
           }
 
           navigate("/profile");
+        } catch (error) {
+          console.error("Помилка обробки профілю:", error);
         }
-      } catch (error) {
-        console.error("Помилка обробки редіректу:", error);
       }
-    };
+    });
 
-    checkRedirect();
+    return () => unsubscribe();
   }, [navigate]);
-  
-  const handleGoogleSignIn = async (e) => {
-    if (e) e.preventDefault(); // Запобігаємо небажаним діям браузера
 
+  const handleGoogleSignIn = async (e) => {
+    if (e) e.preventDefault();
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
@@ -94,13 +90,7 @@ function UserInit(props) {
 
       navigate("/profile");
     } catch (error) {
-      // Якщо браузер заблокував popup — запускаємо надійний редірект
-      if (error.code === "auth/popup-blocked") {
-        await signInWithRedirect(auth, googleProvider);
-      } else {
-        console.error("Помилка входу через Google:", error);
-        alert("Не вдалося увійти через Google. Спробуйте ще раз.");
-      }
+      console.error("Помилка Google Auth:", error);
     }
   };
 
