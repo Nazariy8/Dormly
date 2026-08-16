@@ -23,7 +23,9 @@ const Header = ({ user }) => {
       {/* Додали p-2 для внутрішніх відступів */}
       <nav
         className={`navbar navbar-expand-lg rounded-4 p-2`}
-        style={{ boxShadow:`${theme === 'light' ? '' : 'rgb(138, 79, 255) 0px 15px 40px -24px'}`}}
+        style={{
+          boxShadow: `${theme === "light" ? "" : "rgb(138, 79, 255) 0px 15px 40px -24px"}`,
+        }}
       >
         <div className="container-fluid">
           {/* ЛОГОТИП */}
@@ -68,24 +70,28 @@ const Header = ({ user }) => {
                   Питання
                 </Link>
               </li>
-              <li className="nav-item">
-                <HashLink
-                  className="nav-link link px-3"
-                  to="/#advantage-heading"
-                  smooth
-                >
-                  Переваги
-                </HashLink>
-              </li>
-              <li className="nav-item">
-                <HashLink
-                  className="nav-link link px-3"
-                  to="/#feedbacks-heading"
-                  smooth
-                >
-                  Відгуки
-                </HashLink>
-              </li>
+              {!user && (
+                <>
+                  <li className="nav-item">
+                    <HashLink
+                      className="nav-link link px-3"
+                      to="/#advantage-heading"
+                      smooth
+                    >
+                      Переваги
+                    </HashLink>
+                  </li>
+                  <li className="nav-item">
+                    <HashLink
+                      className="nav-link link px-3"
+                      to="/#feedbacks-heading"
+                      smooth
+                    >
+                      Відгуки
+                    </HashLink>
+                  </li>
+                </>
+              )}
 
               {user ? (
                 <>

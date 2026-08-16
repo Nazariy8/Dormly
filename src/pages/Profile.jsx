@@ -200,7 +200,11 @@ const SearchRoommate = ({ user }) => {
               />
               <div>
                 <h3 className="mb-1 fw-bold">
-                  {firstName || "Ім'я"} {lastName || "Прізвище"}
+                  {firstName || lastName
+                    ? `${firstName} ${lastName}`.trim()
+                    : username
+                      ? `@${username}`
+                      : user?.email?.split("@")[0] || "Користувач"}
                 </h3>
                 <span>
                   Статус:{" "}
@@ -402,10 +406,7 @@ const SearchRoommate = ({ user }) => {
         <div className="row my-features p-2 mb-5">
           {/* СЕКЦІЯ "МОЇ ЗВИЧКИ" */}
           <div className="col-12 col-xl-6 mb-4 mb-xl-0 align-self-start">
-            <div
-              className="card w-100 rounded-4 "
-              
-            >
+            <div className="card w-100 rounded-4 ">
               <div
                 className="card-header d-flex habits-header justify-content-between align-items-center p-3 rounded-4"
                 style={{

@@ -299,18 +299,15 @@ const Roommates = ({ user }) => {
           >
             {/* --- БЛОК СУСІДІВ (ЛІВА КОЛОНКА) --- */}
             <div className="col-12 col-lg-6 mb-4 mb-lg-0 align-self-start">
-              <div className="card roommates-block shadow-sm border-0 rounded-4 w-100">
+              <div className="card roommates-block rounded-4 w-100">
                 <div
-                  className="card-header d-flex justify-content-between align-items-center p-3 rounded-4"
+                  className="card-header border-0 d-flex justify-content-between align-items-center p-3 rounded-4"
                   style={{
                     cursor: "pointer",
-                    boxShadow: isRoommatesOpen
-                      ? "rgba(216, 216, 216, 0.24) 0px 3px 8px"
-                      : "none",
                   }}
                   onClick={() => setIsRoommatesOpen(!isRoommatesOpen)}
                 >
-                  <span className="fw-bold">Сусіди по кімнаті</span>
+                  <span className="fw-bold">Кімната</span>
                   <button
                     className="btn btn-sm border-1 border-secondary rounded-pill"
                     style={{
@@ -393,7 +390,7 @@ const Roommates = ({ user }) => {
                         )}
                       </div>
 
-                      <h6 className="text-start mt-2 fw-bold">Ваші сусіди</h6>
+                      <h6 className="text-start mt-2 fw-bold">Ваша кімната</h6>
                       <div className="d-flex flex-wrap gap-2 mt-2">
                         {roommates.length === 0 && (
                           <p className="small w-100 mb-0 empty-roommates-text text-start">
@@ -442,14 +439,11 @@ const Roommates = ({ user }) => {
 
             {/* --- БЛОК ЗАВДАНЬ (ПРАВА КОЛОНКА) --- */}
             <div className="col-12 col-lg-6 align-self-start">
-              <div className="card shadow-sm tasks-block border-0 rounded-4 w-100">
+              <div className="card tasks-block  rounded-4 w-100">
                 <div
-                  className="card-header d-flex justify-content-between align-items-center p-3 rounded-4"
+                  className="card-header border-0 d-flex justify-content-between align-items-center p-3 rounded-4"
                   style={{
                     cursor: "pointer",
-                    boxShadow: isTasksOpen
-                      ? "rgba(216, 216, 216, 0.24) 0px 3px 8px"
-                      : "none",
                   }}
                   onClick={() => setIsTasksOpen(!isTasksOpen)}
                 >
@@ -537,7 +531,7 @@ const Roommates = ({ user }) => {
 
           {/* КОНТЕЙНЕР КОЛЕСА ТА КНОПОК */}
           <div
-            className="d-flex flex-column flex-md-row justify-content-center align-items-center gap-5 mx-auto mt-5"
+            className="d-flex flex-column flex-md-row justify-content-center align-items-center gap-5 mx-auto "
             style={{ maxWidth: "1000px" }}
           >
             {/* 1. ФІКС КОЛЕСА: Жорстко фіксуємо розмір, щоб обертання не міняло габарити */}
@@ -592,19 +586,17 @@ const Roommates = ({ user }) => {
                     key={participant.id}
                     className="btn shadow-sm fw-bold px-4 py-2"
                     style={{
-                      backgroundColor: "var(--bg-input)",
+                      backgroundColor: "var(--bg-secondary)",
                       borderRadius: "10px",
                       color: "var(--text-main)",
-                      // ЗАВЖДИ 2px! Просто міняємо колір на прозорий, щоб висота не стрибала
                       border:
                         winner && winner.person.id === participant.id
                           ? "2px solid #8a4fff"
-                          : "2px solid transparent",
-                      // Додаємо тінь замість старої рамки, щоб виглядало красиво
+                          : "1px solid var(--border-color, rgba(255,255,255,0.1))",
                       boxShadow:
                         winner && winner.person.id === participant.id
-                          ? "0 4px 15px rgba(138, 79, 255, 0.3)"
-                          : "0 2px 4px rgba(0,0,0,0.05)",
+                          ? "0 4px 15px rgba(138, 79, 255, 0.35)"
+                          : "none",
                     }}
                   >
                     {participant.firstName}{" "}
@@ -619,6 +611,7 @@ const Roommates = ({ user }) => {
                   backgroundColor: "#8a4fff",
                   borderRadius: "15px",
                   width: "100%",
+                  fontSize: "20px",
                 }}
                 disabled={
                   allParticipants.length === 0 || tasks.length === 0 || mustSpin

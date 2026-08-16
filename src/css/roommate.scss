@@ -1,5 +1,15 @@
+:root{
+  --custom-card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --custom-card-border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] { 
+  --custom-card-shadow: 0 8px 24px rgba(138, 79, 255, 0.12);
+  --custom-card-border: 1px solid rgba(138, 79, 255, 0.2);
+}
+
 .roommates-page{
-    
+
 
 .tabs{
     background: var(--bg-main);
@@ -21,10 +31,16 @@ h4,h6,p,span{
 }
 
 .roommates-block, .tasks-block { 
-    
-    background-color: var(--bg-main);
-    span{
+    background: var(--bg-secondary);
+      box-shadow: var(--custom-card-shadow);
+      border: var(--custom-card-border);
+      overflow: hidden;
+      span{
         color: var(--text-main);
+    }
+    .card-header {
+      background: transparent !important;
+      border-bottom: none !important;
     }
     .card-body input {
         background: var(--text-secondary);
