@@ -67,7 +67,7 @@ const SearchRoommate = ({ user }) => {
     location.state?.userAnswers || null,
   );
   const [loading, setLoading] = useState(true);
-
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   // 1. Стан для аватара
   const [avatar, setAvatar] = useState("");
   // 2. Стан для імені та прізвища
@@ -95,6 +95,9 @@ const SearchRoommate = ({ user }) => {
   const [friendsQuery, setFriendsQuery] = useState("");
   const [friendsActivity, setFriendsActivity] = useState("");
   const [showMessages, setShowMessages] = useState("");
+
+  const [isHabitsOpen, setIsHabitsOpen] = useState(false);
+  const [isPhotosOpen, setIsPhotosOpen] = useState(false);
 
   const [imageToCrop, setImageToCrop] = useState(null); // Фото, яке обрізаємо
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null); // Координати
@@ -396,288 +399,356 @@ const SearchRoommate = ({ user }) => {
           </div>
         </div>
 
-        <div className="row my-features p-2">
-          {/* Звички та налаштування */}
-          <div className="col-12 col-xxl-6 col-xl-6 col-md-12 col-sm-12 flex-wrap mb-4">
-            <div className="mb-5">
-              <h4 className="fw-bold mb-3">Мої звички:</h4>
-              {userAnswers ? (
-                <div className="d-flex flex-wrap gap-2">
-                  {Object.keys(userAnswers).map((questionId) => {
-                    const answer = userAnswers[questionId];
-                    const currentQuestion = questions.find(
-                      (q) => q.id == questionId,
-                    );
-                    return (
-                      <div key={questionId} className="m-1 d-inline-block">
-                        <span
-                          className="badge badge-custom fs-6 px-3 py-2 text-wrap fw-normal"
-                          data-bs-toggle="tooltip"
-                          data-bs-title={
-                            currentQuestion
-                              ? currentQuestion.questionText
-                              : "Питання"
-                          }
-                        >
-                          {answer}
-                        </span>
+        <div className="row my-features p-2 mb-5">
+          {/* СЕКЦІЯ "МОЇ ЗВИЧКИ" */}
+          <div className="col-12 col-xl-6 mb-4 mb-xl-0 align-self-start">
+            <div
+              className="card w-100 rounded-4 "
+              
+            >
+              <div
+                className="card-header d-flex habits-header justify-content-between align-items-center p-3 rounded-4"
+                style={{
+                  cursor: "pointer",
+                }}
+                onClick={() => setIsHabitsOpen(!isHabitsOpen)}
+              >
+                <span className="fw-bold card-header-title">Мої звички</span>
+                <button
+                  className="btn btn-sm rounded-pill border-1 border-secondary"
+                  style={{
+                    backgroundColor: "var(--bg-input)",
+                    color: "var(--text-main)",
+                  }}
+                >
+                  {isHabitsOpen ? "Сховати" : "Показати"}
+                </button>
+              </div>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateRows: isHabitsOpen ? "1fr" : "0fr",
+                  transition: "grid-template-rows 0.5s ease-out",
+                }}
+              >
+                <div style={{ overflow: "hidden" }}>
+                  <div className="card-body habits-body rounded-bottom-4">
+                    {userAnswers ? (
+                      <div className="d-flex flex-wrap gap-2">
+                        {Object.keys(userAnswers).map((questionId) => {
+                          const answer = userAnswers[questionId];
+                          const currentQuestion = questions.find(
+                            (q) => q.id == questionId,
+                          );
+                          return (
+                            <div
+                              key={questionId}
+                              className="m-1 d-inline-block"
+                            >
+                              <span
+                                className="badge badge-custom fs-6 px-3 py-2 text-wrap fw-normal"
+                                data-bs-toggle="tooltip"
+                                data-bs-title={
+                                  currentQuestion
+                                    ? currentQuestion.questionText
+                                    : "Питання"
+                                }
+                              >
+                                {answer}
+                              </span>
+                            </div>
+                          );
+                        })}
+                        <div className="w-100 mt-4">
+                          <Link
+                            className="btn retest-btn rounded-pill px-4"
+                            to="/test"
+                          >
+                            Перепройти тест
+                          </Link>
+                        </div>
                       </div>
-                    );
-                  })}
-                  <div className="w-100 mt-4">
-                    <Link
-                      className="btn retest-btn rounded-pill px-4"
-                      to="/test"
-                    >
-                      Перепройти тест
-                    </Link>
+                    ) : (
+                      <div>
+                        <h5 className="text-warning mb-3">
+                          Ви не пройшли тест на звички
+                        </h5>
+                        <button
+                          className="btn btn-action-primary rounded-pill px-4 py-2"
+                          onClick={() => handleGoTest(navigate)}
+                        >
+                          Пройти тест
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
-              ) : (
-                <div>
-                  <h5 className="text-warning mb-3">
-                    Ви не пройшли тест на звички
-                  </h5>
-                  <button
-                    className="btn btn-action-primary rounded-pill px-4 py-2"
-                    onClick={() => handleGoTest(navigate)}
-                  >
-                    Пройти тест
-                  </button>
-                </div>
-              )}
+              </div>
             </div>
           </div>
 
-          <div className="col-12 col-xxl-6 col-xl-6 col-md-12 col-sm-12 simil-block mt-5 mt-xl-0">
-            <div className="d-flex justify-content-between align-items-center mb-4">
-              <h4 className="fw-bold m-0 text-xl-end w-100 pe-3">
-                Мої фотографії:
-              </h4>
+          {/* СЕКЦІЯ "МОЇ ФОТОГРАФІЇ" */}
+          <div className="col-12 col-xl-6 align-self-start">
+            <div className="card rounded-4 w-100">
+              <div
+                className="card-header photos-header d-flex justify-content-between align-items-center p-3 rounded-4"
+                style={{
+                  cursor: "pointer",
+                }}
+                onClick={() => setIsPhotosOpen(!isPhotosOpen)}
+              >
+                <span className="fw-bold card-header-title">
+                  Мої фотографії ({gallery ? gallery.length : 0})
+                </span>
+                <div className="d-flex align-items-center gap-2">
+                  <label
+                    className="btn add-photo rounded-pill px-3 py-1 m-0 d-flex align-items-center gap-1 btn-sm"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <i className="bi bi-plus-lg"></i>
+                    <span className="fw-bold add-text">Додати</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      hidden
+                      onChange={(e) =>
+                        handleGalleryUpload(e, auth.currentUser, setGallery)
+                      }
+                    />
+                  </label>
+                  <button
+                    className="btn btn-sm rounded-pill border-1 border-secondary"
+                    style={{
+                      backgroundColor: "var(--bg-input)",
+                      color: "var(--text-main)",
+                    }}
+                  >
+                    {isPhotosOpen ? "Сховати" : "Показати"}
+                  </button>
+                </div>
+              </div>
 
-              {/* Кнопка "Додати фото" */}
-              <label className="btn add-photo rounded-pill px-4 py-2 m-0 d-flex align-items-center gap-2">
-                <i className="bi bi-plus-lg"></i>
-                <span className="fw-bold">Додати</span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  hidden
-                  onChange={(e) =>
-                    handleGalleryUpload(e, auth.currentUser, setGallery)
-                  }
-                />
-              </label>
-            </div>
-
-            <div className="list-of-users custom-scroll p-2">
-              <div className="d-flex flex-wrap gap-3 justify-content-start">
-                {gallery && gallery.length > 0 ? (
-                  gallery.map((url, index) => (
-                    <div
-                      key={index}
-                      className="position-relative gallery-item-wrapper shadow-sm"
-                    >
-                      <img
-                        src={url}
-                        alt={`Gallery item ${index}`}
-                        className="rounded-4 border"
-                        style={{
-                          width: "290px",
-                          height: "290px",
-                          objectFit: "cover",
-                        }}
-                      />
-                      {/* Кнопка видалення (хрестик) */}
-                      <button
-                        className="btn btn-danger position-absolute top-0 end-0 m-1 rounded-circle p-0 d-flex align-items-center justify-content-center"
-                        style={{
-                          width: "22px",
-                          height: "22px",
-                          fontSize: "12px",
-                          border: "2px solid white",
-                        }}
-                        onClick={() =>
-                          deleteGalleryImage(url, auth.currentUser, setGallery)
-                        }
-                      >
-                        ✕
-                      </button>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateRows: isPhotosOpen ? "1fr" : "0fr",
+                  transition: "grid-template-rows 0.3s ease-out",
+                }}
+              >
+                <div style={{ overflow: "hidden" }}>
+                  <div className="card-body rounded-bottom-4">
+                    <div className="list-of-users custom-scroll p-1">
+                      <div className="d-flex flex-wrap gap-3 justify-content-start">
+                        {gallery && gallery.length > 0 ? (
+                          gallery.map((url, index) => (
+                            <div
+                              key={index}
+                              className="position-relative gallery-item-wrapper shadow-sm"
+                            >
+                              <img
+                                src={url}
+                                alt={`Gallery item ${index}`}
+                                className="rounded-4 border"
+                                style={{
+                                  width: "130px",
+                                  height: "130px",
+                                  objectFit: "cover",
+                                }}
+                              />
+                              <button
+                                className="btn btn-danger position-absolute top-0 end-0 m-1 rounded-circle p-0 d-flex align-items-center justify-content-center"
+                                style={{
+                                  width: "22px",
+                                  height: "22px",
+                                  fontSize: "12px",
+                                  border: "2px solid white",
+                                }}
+                                onClick={() =>
+                                  deleteGalleryImage(
+                                    url,
+                                    auth.currentUser,
+                                    setGallery,
+                                  )
+                                }
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="text-center w-100 py-3">
+                            <p className="text-secondary small mb-0">
+                              У вас ще немає доданих фотографій
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  ))
-                ) : (
-                  <div className="text-center w-100 py-4">
-                    <p className="text-secondary small">
-                      У вас ще немає доданих фотографій
-                    </p>
                   </div>
-                )}
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-
-        
         <div className="user-settings row p-2">
-
-            {/* Налаштування конфіденційності */}
-            <div className="privacy-sets mb-5 col-xl-6 col-lg-6 col-md-12 col-sm-12">
-              <div className="d-flex align-items-center gap-3 mb-4">
-                <div className="icon-block">
-                  <i className="bi bi-file-lock fs-5"></i>
-                </div>
-                <h4 className="m-0 fw-bold">Налаштування конфіденційності</h4>
+          {/* Налаштування конфіденційності */}
+          <div className="privacy-sets col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            <div className="d-flex align-items-center gap-3 mb-4">
+              <div className="icon-block">
+                <i className="bi bi-file-lock fs-5"></i>
               </div>
+              <h4 className="m-0 fw-bold">Налаштування конфіденційності</h4>
+            </div>
 
-              <div className="set-card d-flex justify-content-between align-items-center">
-                <div>
-                  <h6 className="mb-1">Хто може бачити мої фотографії</h6>
-                  <small className="text-secondary">
-                    {photoAccess ? "Всі користувачі" : "Ніхто"}
-                  </small>
-                </div>
-                <div className="form-check form-switch">
-                  <input
-                    className="form-check-input custom-switch"
-                    type="checkbox"
-                    checked={photoAccess}
-                    onChange={(e) =>
-                      handleToggleChange(
-                        setPhotoAccess,
-                        "photoAccess",
-                        e.target.checked,
-                      )
-                    }
-                  />
-                </div>
+            <div className="set-card d-flex justify-content-between align-items-center">
+              <div>
+                <h6 className="mb-1">Хто може бачити мої фотографії</h6>
+                <small className="text-secondary">
+                  {photoAccess ? "Всі користувачі" : "Ніхто"}
+                </small>
               </div>
-
-              <div className="set-card d-flex justify-content-between align-items-center mt-3">
-                <div>
-                  <h6 className="mb-1">Хто може надсилати мені повідомлення</h6>
-                  <small className="text-secondary">
-                    {sendAllow ? "Всі" : "Лише взаємні контакти"}
-                  </small>
-                </div>
-                <div className="form-check form-switch">
-                  <input
-                    className="form-check-input custom-switch"
-                    type="checkbox"
-                    checked={sendAllow}
-                    onChange={(e) =>
-                      handleToggleChange(
-                        setSendAllow,
-                        "sendAllow",
-                        e.target.checked,
-                      )
-                    }
-                  />
-                </div>
-              </div>
-
-              <div className="set-card d-flex justify-content-between align-items-center mt-3">
-                <div>
-                  <h6 className="mb-1">Приховати мою активність</h6>
-                  <small className="text-secondary">
-                    {hideActivity ? "Статус невидимий" : "Статус видимий"}
-                  </small>
-                </div>
-                <div className="form-check form-switch">
-                  <input
-                    className="form-check-input custom-switch"
-                    type="checkbox"
-                    checked={hideActivity}
-                    onChange={(e) =>
-                      handleToggleChange(
-                        setHideActivity,
-                        "hideActivity",
-                        e.target.checked,
-                      )
-                    }
-                  />
-                </div>
+              <div className="form-check form-switch">
+                <input
+                  className="form-check-input custom-switch"
+                  type="checkbox"
+                  checked={photoAccess}
+                  onChange={(e) =>
+                    handleToggleChange(
+                      setPhotoAccess,
+                      "photoAccess",
+                      e.target.checked,
+                    )
+                  }
+                />
               </div>
             </div>
 
-            {/* Налаштування повідомлень */}
-            <div className="message-sets col-xl-6 col-lg-6 col-md-12 col-sm-12">
-              <div className="d-flex align-items-center gap-3 mb-4">
-                <div className="icon-block">
-                  <i className="bi bi-bell fs-5"></i>
-                </div>
-                <h4 className="m-0 fw-bold">Налаштування повідомлень</h4>
+            <div className="set-card d-flex justify-content-between align-items-center mt-3">
+              <div>
+                <h6 className="mb-1">Хто може надсилати мені повідомлення</h6>
+                <small className="text-secondary">
+                  {sendAllow ? "Всі" : "Лише взаємні контакти"}
+                </small>
               </div>
-
-              <div className="set-card d-flex justify-content-between align-items-center">
-                <div>
-                  <h6 className="mb-1">Нові повідомлення в чаті</h6>
-                  <small className="text-secondary">
-                    Push-сповіщення, E-mail
-                  </small>
-                </div>
-                <div className="form-check form-switch">
-                  <input
-                    className="form-check-input custom-switch"
-                    type="checkbox"
-                    checked={showMessages}
-                    onChange={(e) =>
-                      handleToggleChange(
-                        setShowMessages,
-                        "showMessages",
-                        e.target.checked,
-                      )
-                    }
-                  />
-                </div>
-              </div>
-
-              <div className="set-card d-flex justify-content-between align-items-center mt-3">
-                <div>
-                  <h6 className="mb-1">Запити на додавання в друзі</h6>
-                  <small className="text-secondary">Push-сповіщення</small>
-                </div>
-                <div className="form-check form-switch">
-                  <input
-                    className="form-check-input custom-switch"
-                    type="checkbox"
-                    checked={friendsQuery}
-                    onChange={(e) =>
-                      handleToggleChange(
-                        setFriendsQuery,
-                        "friendsQuery",
-                        e.target.checked,
-                      )
-                    }
-                  />
-                </div>
-              </div>
-
-              <div className="set-card d-flex justify-content-between align-items-center mt-3">
-                <div>
-                  <h6 className="mb-1">Активність друзів</h6>
-                  <small className="text-secondary">
-                    {friendsActivity ? "Увімкнено" : "Вимкнено"}
-                  </small>
-                </div>
-                <div className="form-check form-switch">
-                  <input
-                    className="form-check-input custom-switch"
-                    type="checkbox"
-                    checked={friendsActivity}
-                    onChange={(e) =>
-                      handleToggleChange(
-                        setFriendsActivity,
-                        "friendsActivity",
-                        e.target.checked,
-                      )
-                    }
-                  />
-                </div>
+              <div className="form-check form-switch">
+                <input
+                  className="form-check-input custom-switch"
+                  type="checkbox"
+                  checked={sendAllow}
+                  onChange={(e) =>
+                    handleToggleChange(
+                      setSendAllow,
+                      "sendAllow",
+                      e.target.checked,
+                    )
+                  }
+                />
               </div>
             </div>
 
+            <div className="set-card d-flex justify-content-between align-items-center mt-3">
+              <div>
+                <h6 className="mb-1">Приховати мою активність</h6>
+                <small className="text-secondary">
+                  {hideActivity ? "Статус невидимий" : "Статус видимий"}
+                </small>
+              </div>
+              <div className="form-check form-switch">
+                <input
+                  className="form-check-input custom-switch"
+                  type="checkbox"
+                  checked={hideActivity}
+                  onChange={(e) =>
+                    handleToggleChange(
+                      setHideActivity,
+                      "hideActivity",
+                      e.target.checked,
+                    )
+                  }
+                />
+              </div>
+            </div>
           </div>
+
+          {/* Налаштування повідомлень */}
+          <div className="message-sets col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            <div className="d-flex align-items-center gap-3 mb-4">
+              <div className="icon-block">
+                <i className="bi bi-bell fs-5"></i>
+              </div>
+              <h4 className="m-0 fw-bold">Налаштування повідомлень</h4>
+            </div>
+
+            <div className="set-card d-flex justify-content-between align-items-center">
+              <div>
+                <h6 className="mb-1">Нові повідомлення в чаті</h6>
+                <small className="text-secondary">
+                  Push-сповіщення, E-mail
+                </small>
+              </div>
+              <div className="form-check form-switch">
+                <input
+                  className="form-check-input custom-switch"
+                  type="checkbox"
+                  checked={showMessages}
+                  onChange={(e) =>
+                    handleToggleChange(
+                      setShowMessages,
+                      "showMessages",
+                      e.target.checked,
+                    )
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="set-card d-flex justify-content-between align-items-center mt-3">
+              <div>
+                <h6 className="mb-1">Запити на додавання в друзі</h6>
+                <small className="text-secondary">Push-сповіщення</small>
+              </div>
+              <div className="form-check form-switch">
+                <input
+                  className="form-check-input custom-switch"
+                  type="checkbox"
+                  checked={friendsQuery}
+                  onChange={(e) =>
+                    handleToggleChange(
+                      setFriendsQuery,
+                      "friendsQuery",
+                      e.target.checked,
+                    )
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="set-card d-flex justify-content-between align-items-center mt-3">
+              <div>
+                <h6 className="mb-1">Активність друзів</h6>
+                <small className="text-secondary">
+                  {friendsActivity ? "Увімкнено" : "Вимкнено"}
+                </small>
+              </div>
+              <div className="form-check form-switch">
+                <input
+                  className="form-check-input custom-switch"
+                  type="checkbox"
+                  checked={friendsActivity}
+                  onChange={(e) =>
+                    handleToggleChange(
+                      setFriendsActivity,
+                      "friendsActivity",
+                      e.target.checked,
+                    )
+                  }
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {showCropper && (

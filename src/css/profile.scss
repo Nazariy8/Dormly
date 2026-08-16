@@ -1,4 +1,13 @@
-* {
+:root{
+  --custom-card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --custom-card-border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] { 
+  --custom-card-shadow: 0 8px 24px rgba(138, 79, 255, 0.12);
+  --custom-card-border: 1px solid rgba(138, 79, 255, 0.2);
+}
+  * {
   box-sizing: border-box;
 }
 
@@ -8,225 +17,257 @@
   width: 95%;
   max-width: 1400px;
   background-color: var(--bg-secondary);
-}
 
-.custom-shadow {
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
-}
-
-/* Avatar Block */
-.custom-avatar {
-  width: 110px;
-  height: 110px;
-  object-fit: cover;
-  border: 2px solid var(--primary-purple-light);
-}
-
-.cursor-pointer {
-  cursor: pointer;
-}
-/* Custom Buttons */
-
-.btn-action-primary,
-.add-photo {
-  background-color: var(--primary-puple);
-  color: var(--bg-main);
-  transition: 0.3s;
-  border: none;
-  &:hover {
-    box-shadow: 0 0 0 0.2rem rgba(138, 79, 255, 0.15);
-
-    filter: hue-rotate(-30deg);
+  .custom-shadow {
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
   }
-}
-[data-theme="dark"] {
+
+  /* Avatar Block */
+  .custom-avatar {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border: 2px solid var(--primary-purple-light);
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  /* Custom Buttons */
+
   .btn-action-primary,
   .add-photo {
-    color: var(--text-main);
+    background-color: var(--primary-puple);
+    color: var(--bg-main);
+    transition: 0.3s;
+    border: none;
     &:hover {
-      color: var(--text-main);
+      box-shadow: 0 0 0 0.2rem rgba(138, 79, 255, 0.15);
+
+      filter: hue-rotate(-30deg);
     }
   }
-}
-.btn-action-primary_logOut,
-.retest-btn {
-  background: var(--text-main);
-  color: var(--bg-main);
-  &:hover {
-    box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.15);
-    filter: hue-rotate(-30deg);
+  .add-photo {
+    color: #f1f1f1;
   }
-}
-[data-theme="dark"] {
+  [data-theme="dark"] {
+    .btn-action-primary,
+    .add-photo {
+      color: var(--text-main);
+      &:hover {
+        color: var(--text-main);
+      }
+    }
+  }
   .btn-action-primary_logOut,
   .retest-btn {
+    background: var(--text-main);
+    color: var(--bg-main);
     &:hover {
+      background: var(--text-muted);
+      box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.15);
+      filter: hue-rotate(-30deg);
+    }
+  }
+  [data-theme="dark"] {
+    .btn-action-primary_logOut,
+    .retest-btn {
+      &:hover {
         background: var(--text-muted);
+      }
+    }
+  }
+  .btn-action-light {
+    background-color: var(--primary-purple-light);
+    color: var(--primary-puple);
+    border: none;
+    transition: 0.3s;
+    &:hover {
+      filter: hue-rotate(-30deg);
+    }
+  }
+
+  /* Form Controls */
+  .form-control {
+    border: 1px solid #dee2e6;
+    transition: border-color 0.2s;
+
+    &:focus {
+      border-color: var(--primary-puple);
+      box-shadow: 0 0 0 0.25rem rgba(138, 79, 255, 0.15);
+    }
+  }
+
+  /* Badges */
+  .badge-custom {
+    background-color: var(--primary-purple-light);
+    color: var(--primary-puple);
+    border: 1px solid rgba(138, 79, 255, 0.2);
+  }
+
+  /* Settings List Cards */
+  .set-card {
+    background-color: var(--primary-purple-light);
+    padding: 20px 25px;
+    border-radius: 16px;
+  }
+
+  .icon-block {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    background: #def6ec; /* Світло-зелений фон */
+
+    .bi {
+      color: #17a96e; /* Темно-зелена іконка */
+    }
+  }
+
+  /* Custom Bootstrap Switch Override */
+  .form-switch .custom-switch {
+    width: 2.8em;
+    height: 1.4em;
+    cursor: pointer;
+
+    &:checked {
+      background-color: var(--primary-puple);
+      border-color: var(--primary-puple);
+    }
+
+    &:focus {
+      box-shadow: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%238a4fff'/%3e%3c/svg%3e");
+    }
+
+    &:checked:focus {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+    }
+  }
+
+  /* Scrollbar for roommates */
+  .custom-scroll {
+    max-height: 800px;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: var(--primary-grey);
+      border-radius: 10px;
+    }
+  }
+
+  .roommate-card {
+    background-color: var(--primary-white);
+    border-radius: 16px;
+    border: 1px solid #eaeaea;
+    margin-bottom: 15px;
+    padding: 20px;
+  }
+  /* Кнопка "Додати в друзі" (UserForRoom) */
+  .add-friend {
+    background: var(--primary-puple);
+    padding: 10px 20px;
+    margin-top: 10px;
+    border-radius: 10px;
+    color: var(--primary-white);
+    transition: 0.5s;
+    border: none;
+
+    &.activated {
+      background: var(--primary-purple-light);
+      color: var(--primary-dark);
+    }
+
+    &:hover {
+      cursor: pointer;
+      scale: 1.02;
+      /* Додав трохи затемнення при наведенні, щоб краще вписувалося в новий стиль */
+      background-color: darken(#8a4fff, 10%);
+    }
+  }
+  .user-photo {
+    width: 100px;
+    height: 100px;
+  }
+  /* Блок спільних інтересів (права колонка) */
+  .simil-block {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Розтягуємо на всю висоту батьківського елемента (ряду) */
+  }
+
+  .list-of-users {
+    flex-grow: 1; /* Змушує список зайняти весь вільний простір по висоті */
+    width: 100%;
+    height: max-content;
+    /* Можеш використовувати фіксовану висоту або адаптивну через vh */
+    max-height: 750px;
+    overflow-y: auto;
+    padding-right: 10px; /* Трохи відступу, щоб скролбар не прилипав до карток */
+
+    @media (max-width: 1200px) {
+      align-items: stretch;
+    }
+  }
+
+  .custom-cropper-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .cropper-container {
+    position: relative;
+    width: 90%;
+    height: 70vh;
+  }
+  .cropper-controls {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+  }
+  @media (min-width: 300px) and (max-width: 991px) {
+    .message-sets {
+      margin-top: 30px;
+    }
+  }
+
+  // --------------
+  .my-features {
+  
+    .card{
+      background: var(--bg-secondary);
+      box-shadow: var(--custom-card-shadow);
+      border: var(--custom-card-border);
+      overflow: hidden;
+    }
+    .card-header {
+      background: transparent !important;
+      border-bottom: none !important;
+    }
+    .habits-header,
+    .photos-header {
+      background: var(--bg-secondary);
+      .card-header-title {
+        color: var(--text-main);
+      }
     }
   }
 }
-.btn-action-light {
-  background-color: var(--primary-purple-light);
-  color: var(--primary-puple);
-  border: none;
-  transition: 0.3s;
-  &:hover {
-    filter: hue-rotate(-30deg);
-  }
-}
 
-/* Form Controls */
-.form-control {
-  border: 1px solid #dee2e6;
-  transition: border-color 0.2s;
-
-  &:focus {
-    border-color: var(--primary-puple);
-    box-shadow: 0 0 0 0.25rem rgba(138, 79, 255, 0.15);
-  }
-}
-
-/* Badges */
-.badge-custom {
-  background-color: var(--primary-purple-light);
-  color: var(--primary-puple);
-  border: 1px solid rgba(138, 79, 255, 0.2);
-}
-
-/* Settings List Cards */
-.set-card {
-  background-color: var(--primary-purple-light);
-  padding: 20px 25px;
-  border-radius: 16px;
-}
-
-.icon-block {
-  width: 45px;
-  height: 45px;
-  display: flex;
-  border-radius: 50%;
-  justify-content: center;
-  align-items: center;
-  background: #def6ec; /* Світло-зелений фон */
-
-  .bi {
-    color: #17a96e; /* Темно-зелена іконка */
-  }
-}
-
-/* Custom Bootstrap Switch Override */
-.form-switch .custom-switch {
-  width: 2.8em;
-  height: 1.4em;
-  cursor: pointer;
-
-  &:checked {
-    background-color: var(--primary-puple);
-    border-color: var(--primary-puple);
-  }
-
-  &:focus {
-    box-shadow: none;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%238a4fff'/%3e%3c/svg%3e");
-  }
-
-  &:checked:focus {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
-  }
-}
-
-/* Scrollbar for roommates */
-.custom-scroll {
-  max-height: 800px;
-  overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-  &::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: var(--primary-grey);
-    border-radius: 10px;
-  }
-}
-
-.roommate-card {
-  background-color: var(--primary-white);
-  border-radius: 16px;
-  border: 1px solid #eaeaea;
-  margin-bottom: 15px;
-  padding: 20px;
-}
-/* Кнопка "Додати в друзі" (UserForRoom) */
-.add-friend {
-  background: var(--primary-puple);
-  padding: 10px 20px;
-  margin-top: 10px;
-  border-radius: 10px;
-  color: var(--primary-white);
-  transition: 0.5s;
-  border: none;
-
-  &.activated {
-    background: var(--primary-purple-light);
-    color: var(--primary-dark);
-  }
-
-  &:hover {
-    cursor: pointer;
-    scale: 1.02;
-    /* Додав трохи затемнення при наведенні, щоб краще вписувалося в новий стиль */
-    background-color: darken(#8a4fff, 10%);
-  }
-}
-.user-photo {
-  width: 100px;
-  height: 100px;
-}
-/* Блок спільних інтересів (права колонка) */
-.simil-block {
-  display: flex;
-  flex-direction: column;
-  height: 100%; /* Розтягуємо на всю висоту батьківського елемента (ряду) */
-}
-
-.list-of-users {
-  flex-grow: 1; /* Змушує список зайняти весь вільний простір по висоті */
-  width: 100%;
-  height: max-content;
-  /* Можеш використовувати фіксовану висоту або адаптивну через vh */
-  max-height: 750px;
-  overflow-y: auto;
-  padding-right: 10px; /* Трохи відступу, щоб скролбар не прилипав до карток */
-
-  @media (max-width: 1200px) {
-    align-items: stretch;
-  }
-}
-
-.custom-cropper-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.9);
-  z-index: 10000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.cropper-container {
-  position: relative;
-  width: 90%;
-  height: 70vh;
-}
-.cropper-controls {
-  margin-top: 20px;
-  display: flex;
-  gap: 20px;
-}
