@@ -193,7 +193,6 @@ const SearchRoommate = ({ user }) => {
 
       <div className="profile rounded-5 p-4 p-md-5 mb-5 mt-4 custom-shadow">
         <div className="w-100">
-          {/* Верхня шапка: Заголовок та кнопка Виходу */}
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h2 className="fw-bold m-0">Налаштування профілю</h2>
             <button
@@ -204,7 +203,7 @@ const SearchRoommate = ({ user }) => {
             </button>
           </div>
 
-          {/* Плашка Аватара в стилі Instagram */}
+          
           <div
             className="d-flex flex-wrap justify-content-between align-items-center p-3 rounded-4 mb-4 gap-3"
             style={{

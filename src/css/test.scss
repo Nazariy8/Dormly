@@ -141,7 +141,7 @@ $text-color: #333;
   &.selected {
     border-color: rgb(138, 79, 255);
     background-color: var(--bg-secondary);
-    color: #000;
+    color: var(--text-secondaru);
     font-weight: 700;
     transform: scale(1.02);
   }
