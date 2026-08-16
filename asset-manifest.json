@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/Dormly/static/css/main.d470595c.css",
-    "main.js": "/Dormly/static/js/main.a162c8e6.js",
-    "static/media/findmate.png": "/Dormly/static/media/findmate.b8b52ce15a199f1e3887.png",
-    "static/media/user1.png": "/Dormly/static/media/user1.b5797f3ff0e2fc46f62d.png",
-    "static/media/user2.png": "/Dormly/static/media/user2.d9a5b3c2ec150ad2345d.png",
-    "static/media/user3.png": "/Dormly/static/media/user3.fc692e814eb831425ea8.png",
-    "static/media/julia.webp": "/Dormly/static/media/julia.d19e3eab985f8fb496fa.webp",
-    "static/media/olena.webp": "/Dormly/static/media/olena.acf475d9f5e0caccb526.webp",
-    "static/media/zlata.webp": "/Dormly/static/media/zlata.3c93a70fcbd1347720ce.webp",
-    "static/media/maks.webp": "/Dormly/static/media/maks.fa30b2b1117135a865d7.webp",
-    "static/media/nazar.webp": "/Dormly/static/media/nazar.efbda36809f68c8e4cfe.webp",
-    "index.html": "/Dormly/index.html",
-    "main.d470595c.css.map": "/Dormly/static/css/main.d470595c.css.map",
-    "main.a162c8e6.js.map": "/Dormly/static/js/main.a162c8e6.js.map"
+    "main.css": "./static/css/main.0a44a3e3.css",
+    "main.js": "./static/js/main.8a710e31.js",
+    "static/media/findmate.png": "./static/media/findmate.b8b52ce15a199f1e3887.png",
+    "static/media/user1.png": "./static/media/user1.b5797f3ff0e2fc46f62d.png",
+    "static/media/user2.png": "./static/media/user2.d9a5b3c2ec150ad2345d.png",
+    "static/media/user3.png": "./static/media/user3.fc692e814eb831425ea8.png",
+    "static/media/julia.webp": "./static/media/julia.d19e3eab985f8fb496fa.webp",
+    "static/media/olena.webp": "./static/media/olena.acf475d9f5e0caccb526.webp",
+    "static/media/zlata.webp": "./static/media/zlata.3c93a70fcbd1347720ce.webp",
+    "static/media/maks.webp": "./static/media/maks.fa30b2b1117135a865d7.webp",
+    "static/media/nazar.webp": "./static/media/nazar.efbda36809f68c8e4cfe.webp",
+    "index.html": "./index.html",
+    "main.0a44a3e3.css.map": "./static/css/main.0a44a3e3.css.map",
+    "main.8a710e31.js.map": "./static/js/main.8a710e31.js.map"
   },
   "entrypoints": [
-    "static/css/main.d470595c.css",
-    "static/js/main.a162c8e6.js"
+    "static/css/main.0a44a3e3.css",
+    "static/js/main.8a710e31.js"
   ]
 }
