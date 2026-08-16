@@ -8,11 +8,11 @@ import julia from "../img/team/julia.webp"
 import zlata from "../img/team/zlata.webp"
 import maks from "../img/team/maks.webp"
 
-const AboutUs = () => {
+const AboutUs = ({ user }) => {
   const navigate = useNavigate();
   return (
     <div className="container-fluid">
-      <Header />
+     <Header user={user} />
       <h1 className="text-center mt-3 fw-bolder help-header-text mx-auto">
         Чим ми можемо вам допомогти?
       </h1>

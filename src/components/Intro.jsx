@@ -24,6 +24,10 @@ const Intro = () => {
 									<Link to="/test" className="test-btn text-white">
 										Почати тест
 									</Link>
+
+									{/* <Link to="/chat" className="btn btn-success ms-3">
+										Відкрити Чат
+									</Link> */}
 								</button>
 							</div>
 						</div>

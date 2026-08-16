@@ -1,0 +1,22 @@
+:root{
+    --primary-white: #fff;
+    --primary-info: #0dcaf0;
+    --primary-grey: #adb5bd;;
+    --primary-purple-light: #e6d8f7;
+    --primary-puple: #8a4fff;
+}
+
+.container{
+    height: 80vh;
+}
+
+.send-btn{
+    background: var(--primary-puple);
+    transition: .6s;
+    &:hover{
+        filter:brightness(70%);
+    }
+}
+
+/* .resetPass-card{
+} */

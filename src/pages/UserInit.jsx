@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import googleicon from "../img/icons/google.png";
+import { auth, db } from '../firebase'; 
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail } from 'firebase/auth';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { signInWithPopup } from "firebase/auth";
+import { googleProvider } from "../firebase";
 
 function UserInit(props) {
   const [showPassword, setShowPassword] = useState(false);
@@ -22,8 +27,37 @@ function UserInit(props) {
   }
 
 
-const [emailInput, setEmailInput] = useState('');
+  const [emailInput, setEmailInput] = useState('');
   const [status, setStatus] = useState('idle'); // idle, valid, invalid
+
+  const handleGoogleSignIn = async () => {
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    const user = result.user;
+
+    // Перевіряємо, чи є користувач у базі, якщо немає — створюємо профіль
+    const userDocRef = doc(db, "users", user.uid);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (!userDocSnap.exists()) {
+      await setDoc(userDocRef, {
+        uid: user.uid,
+        email: user.email,
+        name: user.displayName || "Студент",
+        photoURL: user.photoURL || "",
+        status: "Шукаю кімнату",
+        createdAt: new Date()
+      });
+    }
+
+    navigate("/search-roommate");
+  } catch (error) {
+    console.error("Помилка входу через Google:", error);
+    alert("Не вдалося увійти через Google. Спробуйте ще раз.");
+  }
+};
+
+
 
   const validateEmail = (input) => {
     setEmailInput(input);
@@ -83,28 +117,85 @@ const [emailInput, setEmailInput] = useState('');
     return isValid;
   };
 
+  const handleResetPassword = async (email) => {
+  try {
+    // Firebase сам згенерує унікальне посилання і відправить його
+    await sendPasswordResetEmail(auth, email);
+    alert("Лист для відновлення пароля надіслано! Перевірте пошту.");
+  } catch (error) {
+    console.error("Помилка:", error.code);
+    alert("Не вдалося надіслати лист. Перевірте правильність Email.");
+  }
+};
+
   // --- 4. Функція, що викликається при відправці форми ---
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Забороняємо сторінці перезавантажуватись
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  const isValid = validateInputs();
 
-    // Запускаємо валідацію
-    const isValid = validateInputs();
+  if (isValid) {
+    try {
+      if (props.goal === "reg") {
+        // === РЕЄСТРАЦІЯ ===
+        // 1. Створюємо технічний акаунт у Firebase Auth
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
-    if (isValid) {
-      // ВАЛІДАЦІЯ УСПІШНА!
-      // Тут була б ваша логіка setIsInited(true)
+        // 2. Відправляємо лист підтвердження
+        await sendEmailVerification(user);
 
-      // Тут ви б відправили дані на сервер (fetch, axios...)
-      console.log("Валідація успішна, відправляємо дані:", { email, password });
+        // 3. Одразу "викидаємо" користувача (розлогінюємо), щоб він не пройшов далі без підтвердження
+        await signOut(auth);
 
-      // 5. Перенаправляємо користувача на сторінку профілю
-      navigate("/search-roommate");
-    } else {
-      // Якщо валідація не пройдена, помилки (emailError, passwordError)
-      // автоматично з'являться на сторінці
-      console.log("Валідація провалена");
+        // 4. Показуємо повідомлення користувачу
+        alert("Акаунт створено! Будь ласка, перевірте вашу пошту та перейдіть за посиланням для підтвердження.");
+        
+        // Перекидаємо на сторінку логіну
+        navigate("/login");
+
+      } else {
+        // === ЛОГІН (ВХІД) ===
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // 1. Перевіряємо, чи підтверджена пошта
+        if (!user.emailVerified) {
+          await signOut(auth); // Викидаємо назад
+          alert("Будь ласка, підтвердіть вашу електронну пошту перед входом!");
+          return; // Зупиняємо виконання коду
+        }
+
+        // 2. Якщо пошта підтверджена, перевіряємо чи є вже профіль у базі даних (Firestore)
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        // 3. Якщо профілю ще немає (перший вхід після підтвердження) — створюємо його
+        if (!userDocSnap.exists()) {
+          await setDoc(userDocRef, {
+            uid: user.uid,
+            email: user.email,
+            name: "Студент", 
+            status: "Шукаю кімнату",
+            photoURL: "",
+            createdAt: new Date()
+          });
+        }
+
+        console.log("Успішний вхід:", user.email);
+        navigate("/search-roommate"); // Пускаємо на сайт
+      }
+    } catch (error) {
+      console.error("Помилка Firebase:", error.code);
+      if (error.code === 'auth/email-already-in-use') {
+        alert("Користувач з таким email вже існує");
+      } else if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
+        alert("Неправильний email або пароль");
+      } else {
+        alert("Сталася помилка. Спробуйте ще раз.");
+      }
     }
-  };
+  }
+};
 
   return (
     <div>
@@ -162,9 +253,17 @@ const [emailInput, setEmailInput] = useState('');
             <span className="col-6 mb-4 range text-secondary">
               Має бути 8-20 символів{" "}
             </span>
+            <span className="col-6 mb-4 range text-secondary text-end">
+                <Link to="/resetPass"
+                 className="resetPass ms-2">
+                  Забули пароль?
+                </Link>
+              
+            </span>
+            
           </div>
           {/* 8. Повідомлення про помилку для Пароля */}
-          {passwordError && <p className="error-message">{passwordError}</p>}
+          
 
           {/* --- 9. Блок для підтвердження пароля при реєстрації --- */}
           {props.goal === "reg" ? (
@@ -172,7 +271,7 @@ const [emailInput, setEmailInput] = useState('');
               <span>Підтвердіть пароль</span>
               <div className="input-password w-100">
                 <input
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? "text" : "password"} 
                   name=""
                   // id=""
                   placeholder="Підтвердіть пароль"
@@ -206,12 +305,16 @@ const [emailInput, setEmailInput] = useState('');
           <div className="or-span">
             <span className="fw-normal text-center ">або</span>
           </div>
-          <Link to="" className="text-dark googlelogin-btn p-2">
+
+
+          <Link to="#" onClick={handleGoogleSignIn} className="text-dark googlelogin-btn p-2">
             <span className="p-0 m-0">
-              <img src={googleicon} className="googleicon" alt="" />
+              <img src={googleicon} className="googleicon" alt="Google" />
             </span>
             Продовжити з <span className="p-0 m-0 ms-1">Google</span>
           </Link>
+
+
           <p className="question">
             {props.goal === "log" ? (
               <>

@@ -6,18 +6,19 @@ const ResultOfTest = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  console.log("Дані з тесту:", location.state);
   // Дістаємо дані, які ми передали через navigate
   // Використовуємо "через або" (|| {}), щоб код не впав, якщо хтось зайде на сторінку напряму
   const { userAnswers, userAnswerIds, questions } = location.state || {};
 
-   const handleSubmitForSearch = () => {
+  const handleSubmitForSearch = () => {
     // ✅ ЗМІНЕНО: Передаємо обидва об'єкти на search-roommate
-    navigate('/search-roommate', { 
-        state: { 
-            userAnswers: userAnswers, // Текст
-            userAnswerIds: userAnswerIds, // ID
-            questions: questions 
-        } 
+    navigate("/profile", {
+      state: {
+        userAnswers: userAnswers, // Текст
+        userAnswerIds: userAnswerIds, // ID
+        questions: questions,
+      },
     });
   };
   // Якщо даних немає (наприклад, користувач просто ввів посилання в браузер)
@@ -89,13 +90,13 @@ const ResultOfTest = () => {
         <div className="col-6 d-flex justify-content-end">
           <button
             className="next-btn"
-            onClick={() => {handleSubmitForSearch()}} 
+            onClick={() => {
+              handleSubmitForSearch();
+            }}
           >
-            Знайти співжителя
+            До профілю
           </button>
         </div>
-
-
       </div>
     </div>
   );
