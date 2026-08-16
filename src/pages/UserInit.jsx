@@ -1,10 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import googleicon from "../img/icons/google.png";
-import { auth, db } from '../firebase'; 
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { signInWithPopup, signInWithRedirect } from "firebase/auth";
+import { auth, db } from "../firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendEmailVerification,
+  signOut,
+  sendPasswordResetEmail,
+} from "firebase/auth";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+
+import {
+  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
+} from "firebase/auth";
 import { googleProvider } from "../firebase";
 
 function UserInit(props) {
@@ -13,9 +24,7 @@ function UserInit(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-
   const [confirmPassword, setConfirmPassword] = useState("");
-
 
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -26,50 +35,80 @@ function UserInit(props) {
     setShowPassword(!showPassword);
   }
 
-
-  const [emailInput, setEmailInput] = useState('');
-  const [status, setStatus] = useState('idle'); // idle, valid, invalid
-
- const handleGoogleSignIn = async (e) => {
-   if (e) e.preventDefault(); // Запобігаємо небажаним діям браузера
-
-   try {
-     const result = await signInWithPopup(auth, googleProvider);
-     const user = result.user;
-
-     const userDocRef = doc(db, "users", user.uid);
-     const userDocSnap = await getDoc(userDocRef);
-
-     if (!userDocSnap.exists()) {
-       await setDoc(userDocRef, {
-         uid: user.uid,
-         email: user.email,
-         name: user.displayName || "Студент",
-         photoURL: user.photoURL || "",
-         status: "Шукаю кімнату",
-         createdAt: new Date(),
-       });
-     }
-
-     navigate("/profile");
-   } catch (error) {
-     // Якщо браузер заблокував popup — запускаємо надійний редірект
-     if (error.code === "auth/popup-blocked") {
-       await signInWithRedirect(auth, googleProvider);
-     } else {
-       console.error("Помилка входу через Google:", error);
-       alert("Не вдалося увійти через Google. Спробуйте ще раз.");
-     }
-   }
- };
+  const [emailInput, setEmailInput] = useState("");
+  const [status, setStatus] = useState("idle"); // idle, valid, invalid
 
 
+  useEffect(() => {
+    const checkRedirect = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result && result.user) {
+          const user = result.user;
+
+          // Перевіряємо та створюємо профіль у Firestore, якщо його ще нема
+          const userDocRef = doc(db, "users", user.uid);
+          const userDocSnap = await getDoc(userDocRef);
+
+          if (!userDocSnap.exists()) {
+            await setDoc(userDocRef, {
+              uid: user.uid,
+              email: user.email,
+              name: user.displayName || "Студент",
+              photoURL: user.photoURL || "",
+              status: "Шукаю кімнату",
+              createdAt: new Date(),
+            });
+          }
+
+          navigate("/profile");
+        }
+      } catch (error) {
+        console.error("Помилка обробки редіректу:", error);
+      }
+    };
+
+    checkRedirect();
+  }, [navigate]);
+  
+  const handleGoogleSignIn = async (e) => {
+    if (e) e.preventDefault(); // Запобігаємо небажаним діям браузера
+
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+
+      const userDocRef = doc(db, "users", user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+
+      if (!userDocSnap.exists()) {
+        await setDoc(userDocRef, {
+          uid: user.uid,
+          email: user.email,
+          name: user.displayName || "Студент",
+          photoURL: user.photoURL || "",
+          status: "Шукаю кімнату",
+          createdAt: new Date(),
+        });
+      }
+
+      navigate("/profile");
+    } catch (error) {
+      // Якщо браузер заблокував popup — запускаємо надійний редірект
+      if (error.code === "auth/popup-blocked") {
+        await signInWithRedirect(auth, googleProvider);
+      } else {
+        console.error("Помилка входу через Google:", error);
+        alert("Не вдалося увійти через Google. Спробуйте ще раз.");
+      }
+    }
+  };
 
   const validateEmail = (input) => {
     setEmailInput(input);
-    
+
     if (!input) {
-      setStatus('idle');
+      setStatus("idle");
       return;
     }
 
@@ -77,9 +116,9 @@ function UserInit(props) {
     const pattern = /^[a-zA-Z0-9._%+-]+@(gmail\.com|lpnu\.ua)$/i;
 
     if (pattern.test(input)) {
-      setStatus('valid');
+      setStatus("valid");
     } else {
-      setStatus('invalid');
+      setStatus("invalid");
     }
   };
 
@@ -115,7 +154,9 @@ function UserInit(props) {
         setPasswordError("Будь ласка, підтвердіть пароль");
         isValid = false;
       } else if (password !== confirmPassword) {
-        setPasswordError(<div className="text-danger">Паролі не співпадають</div>);
+        setPasswordError(
+          <div className="text-danger">Паролі не співпадають</div>,
+        );
         isValid = false;
       }
     }
@@ -124,84 +165,98 @@ function UserInit(props) {
   };
 
   const handleResetPassword = async (email) => {
-  try {
-    // Firebase сам згенерує унікальне посилання і відправить його
-    await sendPasswordResetEmail(auth, email);
-    alert("Лист для відновлення пароля надіслано! Перевірте пошту.");
-  } catch (error) {
-    console.error("Помилка:", error.code);
-    alert("Не вдалося надіслати лист. Перевірте правильність Email.");
-  }
-};
+    try {
+      // Firebase сам згенерує унікальне посилання і відправить його
+      await sendPasswordResetEmail(auth, email);
+      alert("Лист для відновлення пароля надіслано! Перевірте пошту.");
+    } catch (error) {
+      console.error("Помилка:", error.code);
+      alert("Не вдалося надіслати лист. Перевірте правильність Email.");
+    }
+  };
 
   // --- 4. Функція, що викликається при відправці форми ---
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  const isValid = validateInputs();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const isValid = validateInputs();
 
-  if (isValid) {
-    try {
-      if (props.goal === "reg") {
-        // === РЕЄСТРАЦІЯ ===
-        // 1. Створюємо технічний акаунт у Firebase Auth
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+    if (isValid) {
+      try {
+        if (props.goal === "reg") {
+          // === РЕЄСТРАЦІЯ ===
+          // 1. Створюємо технічний акаунт у Firebase Auth
+          const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password,
+          );
+          const user = userCredential.user;
 
-        // 2. Відправляємо лист підтвердження
-        await sendEmailVerification(user);
+          // 2. Відправляємо лист підтвердження
+          await sendEmailVerification(user);
 
-        // 3. Одразу "викидаємо" користувача (розлогінюємо), щоб він не пройшов далі без підтвердження
-        await signOut(auth);
+          // 3. Одразу "викидаємо" користувача (розлогінюємо), щоб він не пройшов далі без підтвердження
+          await signOut(auth);
 
-        // 4. Показуємо повідомлення користувачу
-        alert("Акаунт створено! Будь ласка, перевірте вашу пошту та перейдіть за посиланням для підтвердження.");
-        
-        // Перекидаємо на сторінку логіну
-        navigate("/login");
+          // 4. Показуємо повідомлення користувачу
+          alert(
+            "Акаунт створено! Будь ласка, перевірте вашу пошту та перейдіть за посиланням для підтвердження.",
+          );
 
-      } else {
-        // === ЛОГІН (ВХІД) ===
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+          // Перекидаємо на сторінку логіну
+          navigate("/login");
+        } else {
+          // === ЛОГІН (ВХІД) ===
+          const userCredential = await signInWithEmailAndPassword(
+            auth,
+            email,
+            password,
+          );
+          const user = userCredential.user;
 
-        // 1. Перевіряємо, чи підтверджена пошта
-        if (!user.emailVerified) {
-          await signOut(auth); // Викидаємо назад
-          alert("Будь ласка, підтвердіть вашу електронну пошту перед входом!");
-          return; // Зупиняємо виконання коду
+          // 1. Перевіряємо, чи підтверджена пошта
+          if (!user.emailVerified) {
+            await signOut(auth); // Викидаємо назад
+            alert(
+              "Будь ласка, підтвердіть вашу електронну пошту перед входом!",
+            );
+            return; // Зупиняємо виконання коду
+          }
+
+          // 2. Якщо пошта підтверджена, перевіряємо чи є вже профіль у базі даних (Firestore)
+          const userDocRef = doc(db, "users", user.uid);
+          const userDocSnap = await getDoc(userDocRef);
+
+          // 3. Якщо профілю ще немає (перший вхід після підтвердження) — створюємо його
+          if (!userDocSnap.exists()) {
+            await setDoc(userDocRef, {
+              uid: user.uid,
+              email: user.email,
+              name: "Студент",
+              status: "Не шукаю",
+              photoURL: "",
+              createdAt: new Date(),
+            });
+          }
+
+          console.log("Успішний вхід:", user.email);
+          navigate("/search-roommate"); // Пускаємо на сайт
         }
-
-        // 2. Якщо пошта підтверджена, перевіряємо чи є вже профіль у базі даних (Firestore)
-        const userDocRef = doc(db, "users", user.uid);
-        const userDocSnap = await getDoc(userDocRef);
-
-        // 3. Якщо профілю ще немає (перший вхід після підтвердження) — створюємо його
-        if (!userDocSnap.exists()) {
-          await setDoc(userDocRef, {
-            uid: user.uid,
-            email: user.email,
-            name: "Студент", 
-            status: "Не шукаю",
-            photoURL: "",
-            createdAt: new Date()
-          });
+      } catch (error) {
+        console.error("Помилка Firebase:", error.code);
+        if (error.code === "auth/email-already-in-use") {
+          alert("Користувач з таким email вже існує");
+        } else if (
+          error.code === "auth/invalid-credential" ||
+          error.code === "auth/wrong-password"
+        ) {
+          alert("Неправильний email або пароль");
+        } else {
+          alert("Сталася помилка. Спробуйте ще раз.");
         }
-
-        console.log("Успішний вхід:", user.email);
-        navigate("/search-roommate"); // Пускаємо на сайт
-      }
-    } catch (error) {
-      console.error("Помилка Firebase:", error.code);
-      if (error.code === 'auth/email-already-in-use') {
-        alert("Користувач з таким email вже існує");
-      } else if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
-        alert("Неправильний email або пароль");
-      } else {
-        alert("Сталася помилка. Спробуйте ще раз.");
       }
     }
-  }
-};
+  };
 
   return (
     <div>
