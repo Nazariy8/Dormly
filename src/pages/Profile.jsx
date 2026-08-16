@@ -198,7 +198,7 @@ const SearchRoommate = ({ user }) => {
             <h2 className="fw-bold m-0">Налаштування профілю</h2>
             <button
               onClick={() => handleLogout(navigate)}
-              className="btn btn-outline-danger btn-sm rounded-pill px-3 py-1 fw-semibold"
+              className="btn btn-outline-primary btn-sm rounded-pill px-3 py-1 fw-semibold"
             >
               Вийти
             </button>
@@ -721,7 +721,7 @@ const SearchRoommate = ({ user }) => {
         <div className="user-settings row p-2">
           {/* Налаштування конфіденційності */}
           <div className="privacy-sets col-xl-6 col-lg-6 col-md-12 col-sm-12">
-            <div className="d-flex align-items-center gap-3 mb-4">
+            <div className="d-flex align-items-center gap-3 mb-4 w-100">
               <div className="icon-block">
                 <i className="bi bi-file-lock fs-5"></i>
               </div>
