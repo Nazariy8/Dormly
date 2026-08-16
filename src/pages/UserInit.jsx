@@ -4,7 +4,7 @@ import googleicon from "../img/icons/google.png";
 import { auth, db } from '../firebase'; 
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { signInWithPopup } from "firebase/auth";
+import { signInWithPopup, signInWithRedirect } from "firebase/auth";
 import { googleProvider } from "../firebase";
 
 function UserInit(props) {
@@ -30,32 +30,38 @@ function UserInit(props) {
   const [emailInput, setEmailInput] = useState('');
   const [status, setStatus] = useState('idle'); // idle, valid, invalid
 
-  const handleGoogleSignIn = async () => {
-  try {
-    const result = await signInWithPopup(auth, googleProvider);
-    const user = result.user;
+ const handleGoogleSignIn = async (e) => {
+   if (e) e.preventDefault(); // Запобігаємо небажаним діям браузера
 
-    // Перевіряємо, чи є користувач у базі, якщо немає — створюємо профіль
-    const userDocRef = doc(db, "users", user.uid);
-    const userDocSnap = await getDoc(userDocRef);
+   try {
+     const result = await signInWithPopup(auth, googleProvider);
+     const user = result.user;
 
-    if (!userDocSnap.exists()) {
-      await setDoc(userDocRef, {
-        uid: user.uid,
-        email: user.email,
-        name: user.displayName || "Студент",
-        photoURL: user.photoURL || "",
-        status: "Шукаю кімнату",
-        createdAt: new Date()
-      });
-    }
+     const userDocRef = doc(db, "users", user.uid);
+     const userDocSnap = await getDoc(userDocRef);
 
-    navigate("/profile");
-  } catch (error) {
-    console.error("Помилка входу через Google:", error);
-    alert("Не вдалося увійти через Google. Спробуйте ще раз.");
-  }
-};
+     if (!userDocSnap.exists()) {
+       await setDoc(userDocRef, {
+         uid: user.uid,
+         email: user.email,
+         name: user.displayName || "Студент",
+         photoURL: user.photoURL || "",
+         status: "Шукаю кімнату",
+         createdAt: new Date(),
+       });
+     }
+
+     navigate("/profile");
+   } catch (error) {
+     // Якщо браузер заблокував popup — запускаємо надійний редірект
+     if (error.code === "auth/popup-blocked") {
+       await signInWithRedirect(auth, googleProvider);
+     } else {
+       console.error("Помилка входу через Google:", error);
+       alert("Не вдалося увійти через Google. Спробуйте ще раз.");
+     }
+   }
+ };
 
 
 
@@ -254,16 +260,12 @@ function UserInit(props) {
               Має бути 8-20 символів{" "}
             </span>
             <span className="col-6 mb-4 range text-secondary text-end">
-                <Link to="/resetPass"
-                 className="resetPass ms-2">
-                  Забули пароль?
-                </Link>
-              
+              <Link to="/resetPass" className="resetPass ms-2">
+                Забули пароль?
+              </Link>
             </span>
-            
           </div>
           {/* 8. Повідомлення про помилку для Пароля */}
-          
 
           {/* --- 9. Блок для підтвердження пароля при реєстрації --- */}
           {props.goal === "reg" ? (
@@ -271,7 +273,7 @@ function UserInit(props) {
               <span>Підтвердіть пароль</span>
               <div className="input-password w-100">
                 <input
-                  type={showPassword ? "text" : "password"} 
+                  type={showPassword ? "text" : "password"}
                   name=""
                   // id=""
                   placeholder="Підтвердіть пароль"
@@ -300,20 +302,32 @@ function UserInit(props) {
             {props.goal === "log" ? "Увійти" : "Зареєструватися"}
           </button>
 
-
           <hr></hr>
           <div className="or-span">
             <span className="fw-normal text-center ">або</span>
           </div>
 
-
-          <Link to="#" onClick={handleGoogleSignIn} style={{color: "var(--text-main)"}} className="googlelogin-btn p-2">
-            <span className="p-0 m-0">
-              <img src={googleicon} className="googleicon" alt="Google" />
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            style={{
+              color: "var(--text-main)",
+              backgroundColor: "transparent",
+              border: "1px solid var(--border-color, #e0e0e0)",
+              cursor: "pointer",
+            }}
+            className="googlelogin-btn p-2 w-100 d-flex justify-content-center align-items-center rounded-3"
+          >
+            <span className="p-0 m-0 me-2">
+              <img
+                src={googleicon}
+                className="googleicon"
+                alt="Google"
+                style={{ width: "20px", height: "20px" }}
+              />
             </span>
-            Продовжити з <span className="p-0 m-0 ms-1">Google</span>
-          </Link>
-
+            Продовжити з <span className="p-0 m-0 ms-1 fw-bold">Google</span>
+          </button>
 
           <p className="question">
             {props.goal === "log" ? (
