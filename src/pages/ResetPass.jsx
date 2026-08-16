@@ -29,7 +29,7 @@ const ResetPass = () => {
     <>
     <Header />
     <div className="container d-flex justify-content-center align-items-center">
-      <div className="resetPass-card bg-white rounded-4 p-4">
+      <div className="resetPass-card rounded-4 p-4" style={{background: "var(--bg-main)"}}>
         <h2>Відновлення пароля</h2>
         <p>Введіть Email, на який ми надішлемо посилання для скидання пароля.</p>
         <form onSubmit={handleReset}>

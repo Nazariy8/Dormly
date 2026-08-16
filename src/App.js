@@ -10,7 +10,6 @@ import UserInit from "./pages/UserInit.jsx";
 import ResultOfTest from "./pages/ResultOfTest.jsx"
 
 import Profile from "./pages/Profile.jsx"
-import SearchRoommate from "./pages/SearchRoommate.jsx"
 
 
 import Test from "./pages/Test.jsx"
@@ -19,6 +18,7 @@ import Chat from "./pages/Chat.jsx";
 import ResetPass from "./pages/ResetPass.jsx"
 
 import "./css/main.css"
+import Roommates from "./pages/Roommates.jsx";
 
 const users = [
   {
@@ -418,7 +418,7 @@ function App() {
                 <Route path="/test" element={<Test user={user} />} />
                 <Route path="/resultoftest" element={<ResultOfTest user={user} />} />
 
-                <Route path="/search-roommate" element={<SearchRoommate  userAnswers={userAnswers} users={users} user={user}/>} />
+                <Route path="/search-roommate" element={<Roommates  userAnswers={userAnswers} users={users} user={user}/>} />
 
                 
                 <Route path="/aboutus" element={<Aboutus user={user} />} />

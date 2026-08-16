@@ -9,7 +9,7 @@ const Main = ({ user }) => {
   return (
 		<div>
 			<Header user={user}/>
-			<Intro />
+			<Intro  user={user}/>
 			<Advan />
 			<Feedbacks />
 		</div>

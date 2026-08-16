@@ -2,17 +2,17 @@ import React from "react";
 import Header from "../components/Header";
 import "../css/about.scss";
 import { Navigate, useNavigate } from "react-router-dom";
-import nazar from "../img/team/nazar.webp"
-import olena from "../img/team/olena.webp"
-import julia from "../img/team/julia.webp"
-import zlata from "../img/team/zlata.webp"
-import maks from "../img/team/maks.webp"
+import nazar from "../img/team/nazar.webp";
+import olena from "../img/team/olena.webp";
+import julia from "../img/team/julia.webp";
+import zlata from "../img/team/zlata.webp";
+import maks from "../img/team/maks.webp";
 
 const AboutUs = ({ user }) => {
   const navigate = useNavigate();
   return (
     <div className="container-fluid">
-     <Header user={user} />
+      <Header user={user} />
       <h1 className="text-center mt-3 fw-bolder help-header-text mx-auto">
         Чим ми можемо вам допомогти?
       </h1>
@@ -117,7 +117,7 @@ const AboutUs = ({ user }) => {
             </div>
           </div>
 
-          <div className="not-found-quest bg-white d-flex flex-column text-center rounded-5 mb-5 p-4">
+          <div className="not-found-quest d-flex flex-column text-center rounded-5 mb-5 p-4">
             <i className="bi bi-patch-question fs-4"></i>
             <h5>Не знайшли відповідь?</h5>
             <p>Наша команда підтримки завжди готова допомогти.</p>
@@ -256,11 +256,13 @@ const AboutUs = ({ user }) => {
       </div>
 
       <div className="about-us text-center ">
-        <h1 className="bg-white p-3 rounded-5 title mx-auto mb-5">Про нас</h1>
+        <h1 className="p-3 rounded-5 title mx-auto mb-5">Про нас</h1>
         <h4 className="fw-bold">Наша команда</h4>
-        <h6 className="text-secondary mb-5">Ми команда інтузіастів, студентів та розробників, які прагнули зробити ваше життя в гуртожитку кращим.</h6>
+        <h6 className="text-secondary mb-5">
+          Ми команда інтузіастів, студентів та розробників, які прагнули зробити
+          ваше життя в гуртожитку кращим.
+        </h6>
         <div className="row justify-content-center d-flex">
-
           <div className="d-flex col-xxl-3 col-xl-3 col-lg-4 col-sm-12 col-12 col-md-6  mb-3 justify-content-center text-center">
             <div className="teammate-card">
               <img className="" src={julia} alt="" />
@@ -302,13 +304,15 @@ const AboutUs = ({ user }) => {
             </div>
           </div>
         </div>
-      <button className="ready-to-find" onClick={()=> {
-        navigate("/test")
-      }}>
-        Готові знайти свого ідеального сусіда?
-      </button>
+        <button
+          className="ready-to-find mb-4"
+          onClick={() => {
+            navigate("/test");
+          }}
+        >
+          Готові знайти свого ідеального сусіда?
+        </button>
       </div>
-
     </div>
   );
 };

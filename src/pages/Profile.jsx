@@ -24,6 +24,9 @@ import {
   handleGoTest,
   handleToggleChange,
   onSaveCrop,
+  deleteGalleryImage,
+  handleGalleryUpload,
+  handleUsernameBlur,
 } from "../utils/functions.jsx";
 
 const questions = [
@@ -68,6 +71,13 @@ const SearchRoommate = ({ user }) => {
   // 1. Стан для аватара
   const [avatar, setAvatar] = useState("");
   // 2. Стан для імені та прізвища
+
+  // Десь біля інших станів
+  const [username, setUsername] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+
+  // Не забудь імпортувати handleUsernameBlur з functions.jsx!
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [instagram, setInstagram] = useState("");
@@ -75,6 +85,8 @@ const SearchRoommate = ({ user }) => {
   const [isLookingForRoom, setIsLookingForRoom] = useState(false);
 
   const [fileName, setFileName] = useState("");
+
+  const [gallery, setGallery] = useState([]);
 
   const [photoAccess, setPhotoAccess] = useState("");
   const [sendAllow, setSendAllow] = useState("");
@@ -102,12 +114,16 @@ const SearchRoommate = ({ user }) => {
             const data = userDoc.data();
 
             // Завжди оновлюємо ці поля, незалежно від того, чи прийшли ми з тесту
+            setUsername(data.username || "");
+
             setFirstName(data.firstName || "");
             setLastName(data.lastName || "");
             setInstagram(data.instagram || "");
             setTelegram(data.telegram || "");
             setAvatar(data.avatar || null);
             setIsLookingForRoom(data.status || "");
+
+            setGallery(data.gallery || []);
 
             // Конфіденційність
             setPhotoAccess(data.photoAccess ?? false);
@@ -228,6 +244,47 @@ const SearchRoommate = ({ user }) => {
           {/* Особиста інформація */}
           <div className="mb-5">
             <h4 className="fw-bold mb-4">Особиста інформація</h4>
+
+            <div className="row g-4 mb-4">
+              <div className="col-12 col-xl-6 col-lg-6 col-md-6">
+                <label className="form-label text-secondary fw-bold">
+                  Унікальний логін (Username){" "}
+                  <span className="text-danger">*</span>
+                </label>
+                <div className="input-group">
+                  <span className="input-group-text bg-light border-end-0 text-secondary rounded-start-4">
+                    @
+                  </span>
+                  <input
+                    type="text"
+                    className={`form-control p-3 border-start-0 ${usernameError ? "is-invalid" : ""} rounded-4 rounded-start-0`}
+                    placeholder="введіть_ваш_логін"
+                    value={username}
+                    onChange={(e) => {
+                      // Забороняємо пробіли, великі літери та кирилицю (тільки a-z, 0-9 та _)
+                      const validValue = e.target.value
+                        .toLowerCase()
+                        .replace(/[^a-z0-9_]/g, "");
+                      setUsername(validValue);
+                      setUsernameError(""); // Приховуємо помилку під час вводу
+                    }}
+                    onBlur={() =>
+                      handleUsernameBlur(
+                        username,
+                        auth.currentUser,
+                        setUsernameError,
+                      )
+                    }
+                  />
+                </div>
+                {/* Вивід помилки, якщо логін зайнятий або порожній */}
+                {usernameError && (
+                  <div className="text-danger mt-1 small fw-semibold">
+                    {usernameError}
+                  </div>
+                )}
+              </div>
+            </div>
 
             <div className="row mb-4">
               <div className="col-12 col-md-6 col-xl-4">
@@ -538,10 +595,71 @@ const SearchRoommate = ({ user }) => {
             </div>
           </div>
 
-          {/* Спільні інтереси */}
-          <div className="col-12 col-xxl-6 col-xl-6 col-md-12 col-sm-12 simil-block mt-5 mt-xl-0 ">
-            <h4 className="fw-bold text-xl-end mb-4">Мої фотографії:</h4>
-            <div className="list-of-users custom-scroll"></div>
+          <div className="col-12 col-xxl-6 col-xl-6 col-md-12 col-sm-12 simil-block mt-5 mt-xl-0">
+            <div className="d-flex justify-content-between align-items-center mb-4">
+              <h4 className="fw-bold m-0 text-xl-end w-100 pe-3">
+                Мої фотографії:
+              </h4>
+
+              {/* Кнопка "Додати фото" */}
+              <label className="btn btn-action-primary rounded-pill px-4 py-2 m-0 cursor-pointer d-flex align-items-center gap-2 shadow-sm">
+                <i className="bi bi-plus-lg"></i>
+                <span>Додати</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={(e) =>
+                    handleGalleryUpload(e, auth.currentUser, setGallery)
+                  }
+                />
+              </label>
+            </div>
+
+            <div className="list-of-users custom-scroll p-2">
+              <div className="d-flex flex-wrap gap-3 justify-content-start">
+                {gallery && gallery.length > 0 ? (
+                  gallery.map((url, index) => (
+                    <div
+                      key={index}
+                      className="position-relative gallery-item-wrapper shadow-sm"
+                    >
+                      <img
+                        src={url}
+                        alt={`Gallery item ${index}`}
+                        className="rounded-4 border"
+                        style={{
+                          width: "290px",
+                          height: "290px",
+                          objectFit: "cover",
+                        }}
+                      />
+                      {/* Кнопка видалення (хрестик) */}
+                      <button
+                        className="btn btn-danger position-absolute top-0 end-0 m-1 rounded-circle p-0 d-flex align-items-center justify-content-center"
+                        style={{
+                          width: "22px",
+                          height: "22px",
+                          fontSize: "12px",
+                          border: "2px solid white",
+                        }}
+                        onClick={() =>
+                          deleteGalleryImage(url, auth.currentUser, setGallery)
+                        }
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center w-100 py-4">
+                    <p className="text-secondary small">
+                      У вас ще немає доданих фотографій
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>

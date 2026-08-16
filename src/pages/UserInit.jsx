@@ -50,7 +50,7 @@ function UserInit(props) {
       });
     }
 
-    navigate("/search-roommate");
+    navigate("/profile");
   } catch (error) {
     console.error("Помилка входу через Google:", error);
     alert("Не вдалося увійти через Google. Спробуйте ще раз.");
@@ -175,7 +175,7 @@ function UserInit(props) {
             uid: user.uid,
             email: user.email,
             name: "Студент", 
-            status: "Шукаю кімнату",
+            status: "Не шукаю",
             photoURL: "",
             createdAt: new Date()
           });
@@ -307,7 +307,7 @@ function UserInit(props) {
           </div>
 
 
-          <Link to="#" onClick={handleGoogleSignIn} className="text-dark googlelogin-btn p-2">
+          <Link to="#" onClick={handleGoogleSignIn} style={{color: "var(--text-main)"}} className="googlelogin-btn p-2">
             <span className="p-0 m-0">
               <img src={googleicon} className="googleicon" alt="Google" />
             </span>
