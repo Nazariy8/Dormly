@@ -56,6 +56,8 @@ const Chat = ({ user }) => {
   const [myFriends, setMyFriends] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
 
+
+  const inputRef = useRef(null);
   // --- ЛОВЕЦЬ КОРИСТУВАЧА ЗІ СТОРІНКИ ПОШУКУ (ЄДИНИЙ ПРАВИЛЬНИЙ) ---
   useEffect(() => {
     if (location.state && location.state.startChatWith) {
@@ -266,6 +268,10 @@ const Chat = ({ user }) => {
     } catch (error) {
       console.error("Помилка відправки повідомлення:", error);
     }
+
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
   };
 
   // Функція відправки заявки в друзі
@@ -625,6 +631,7 @@ const Chat = ({ user }) => {
       console.error("Помилка при видаленні з друзів:", error);
     }
   };
+
   return (
     <div className="chat-page-wrapper">
       <Header user={user} />
@@ -1046,6 +1053,7 @@ const Chat = ({ user }) => {
                   </label>
 
                   <input
+                    ref={inputRef}
                     type="text"
                     className="form-control chat-input border-0 bg-transparent shadow-none"
                     placeholder={

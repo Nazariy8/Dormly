@@ -66,6 +66,7 @@ const SearchRoommate = ({ user }) => {
   const [userAnswers, setUserAnswers] = useState(
     location.state?.userAnswers || null,
   );
+
   const [loading, setLoading] = useState(true);
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   // 1. Стан для аватара
@@ -80,6 +81,9 @@ const SearchRoommate = ({ user }) => {
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [gender, setGender] = useState("");
+  const [bio, setBio] = useState("");
+
   const [instagram, setInstagram] = useState("");
   const [telegram, setTelegram] = useState("");
   const [isLookingForRoom, setIsLookingForRoom] = useState(false);
@@ -121,6 +125,9 @@ const SearchRoommate = ({ user }) => {
 
             setFirstName(data.firstName || "");
             setLastName(data.lastName || "");
+            setGender(data.gender || "male");
+            setBio(data.bio || "");
+
             setInstagram(data.instagram || "");
             setTelegram(data.telegram || "");
             setAvatar(data.avatar || null);
@@ -185,45 +192,55 @@ const SearchRoommate = ({ user }) => {
       <Header user={user} />
 
       <div className="profile rounded-5 p-4 p-md-5 mb-5 mt-4 custom-shadow">
-        <div className="col-12">
-          <h1 className="mb-5 fw-bold text-start">Налаштування профілю</h1>
+        <div className="w-100">
+          {/* Верхня шапка: Заголовок та кнопка Виходу */}
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h2 className="fw-bold m-0">Налаштування профілю</h2>
+            <button
+              onClick={() => handleLogout(navigate)}
+              className="btn btn-outline-danger btn-sm rounded-pill px-3 py-1 fw-semibold"
+            >
+              Вийти
+            </button>
+          </div>
 
-          {/* Блок Аватара як на макеті */}
-          {/* Блок Аватара з адаптивними кнопками */}
-          <div className="row align-items-center mb-5 gy-4">
-            {/* Ліва частина: Аватар та Ім'я */}
-            <div className="col-12 col-md-auto d-flex align-items-center gap-4">
+          {/* Плашка Аватара в стилі Instagram */}
+          <div
+            className="d-flex flex-wrap justify-content-between align-items-center p-3 rounded-4 mb-4 gap-3"
+            style={{
+              backgroundColor: "var(--bg-secondary, #1a1a1e)",
+              border:
+                "var(--custom-card-border, 1px solid rgba(255, 255, 255, 0.08))",
+            }}
+          >
+            <div className="d-flex align-items-center gap-3">
               <img
                 src={avatar || defaultUser}
-                alt="Фото користувача"
-                className="rounded-circle custom-avatar border"
+                alt="Аватар"
+                className="rounded-circle object-fit-cover shadow-sm"
+                style={{
+                  width: "66px",
+                  height: "66px",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                }}
               />
               <div>
-                <h3 className="mb-1 fw-bold">
+                <div
+                  className="fw-bold text-truncate"
+                  style={{ maxWidth: "220px" }}
+                >
+                  @{username || "username"}
+                </div>
+                <div className="small text-secondary">
                   {firstName || lastName
                     ? `${firstName} ${lastName}`.trim()
-                    : username
-                      ? `@${username}`
-                      : user?.email?.split("@")[0] || "Користувач"}
-                </h3>
-                <span>
-                  Статус:{" "}
-                  <span
-                    className={`text-secondary text-nowrap ${
-                      isLookingForRoom
-                        ? "text-success fw-bold"
-                        : "text-secondary"
-                    }`}
-                  >
-                    {isLookingForRoom ? "Шукає кімнату" : "Не шукає"}
-                  </span>
-                </span>
+                    : "Ім'я не вказано"}
+                </div>
               </div>
             </div>
 
-            {/* Права частина: Кнопки (на десктопі справа, на мобілці - знизу) */}
-            <div className="col-12 col-md d-flex justify-content-md-end ">
-              <div className="d-flex flex-wrap gap-2 w-100 w-md-auto justify-content-end">
+            <div className="d-flex align-items-center gap-2 new-ava-btn">
+              {/* {avatar && (
                 <button
                   className="btn-action-light fw-semibold rounded-pill px-3 px-sm-4 py-2 flex-grow-1 flex-md-grow-0"
                   onClick={() =>
@@ -232,59 +249,54 @@ const SearchRoommate = ({ user }) => {
                 >
                   Видалити
                 </button>
-                <label className="btn btn-action-primary fw-semibold rounded-pill px-3 px-sm-4 py-2 m-0 cursor-pointer flex-grow-1 flex-md-grow-0 text-center">
-                  Завантажити фото
-                  <input
-                    type="file"
-                    accept="image/*"
-                    hidden
-                    onChange={(e) =>
-                      handleFileChange(e, setImageToCrop, setShowCropper)
-                    }
-                    ref={fileInputRef}
-                  />
-                </label>
-              </div>
-            </div>
-            <div className=" d-flex justify-content-center align-items-center w-100">
-              <div className="col-12 col-md-4 col-lg-3 col-xl-2 d-flex justify-content-start align-items-center ">
-                <button
-                  onClick={() => handleLogout(navigate)}
-                  className="btn w-100 fw-semibold rounded-pill btn btn-action-primary_logOut border-0 p-2 rounded-4"
-                  style={{ textDecoration: "none" }}
-                >
-                  Вийти
-                </button>
-              </div>
+              )} */}
+              <label className="btn btn-action-primary fw-semibold rounded-pill px-3 px-sm-4 py-2 m-0 cursor-pointer flex-grow-1 flex-md-grow-0 text-center text-white">
+                Нове фото
+                <input
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={(e) =>
+                    handleFileChange(e, setImageToCrop, setShowCropper)
+                  }
+                  ref={fileInputRef}
+                />
+              </label>
             </div>
           </div>
 
-          {/* Особиста інформація */}
+          {/* Форма налаштувань профілю */}
           <div className="mb-5">
-            <h4 className="fw-bold mb-4">Особиста інформація</h4>
+            <h5 className="fw-bold mb-3">Особисті дані</h5>
 
-            <div className="row g-4 mb-4">
-              <div className="col-12 col-xl-6 col-lg-6 col-md-6">
-                <label className="form-label text-secondary fw-bold">
-                  Унікальний логін (Username){" "}
-                  <span className="text-danger">*</span>
+            <div className="row g-3 mb-3">
+              {/* Логін */}
+              <div className="col-12 col-md-6">
+                <label className="form-label small fw-bold text-secondary mb-1">
+                  Унікальний логін <span className="text-danger">*</span>
                 </label>
                 <div className="input-group">
-                  <span className="input-group-text bg-light border-end-0 text-secondary rounded-start-4">
+                  <span
+                    className="input-group-text border-0 text-secondary rounded-start-3"
+                    style={{ backgroundColor: "var(--bg-input, #232328)" }}
+                  >
                     @
                   </span>
                   <input
                     type="text"
-                    className={`form-control p-3 border-start-0 ${usernameError ? "is-invalid" : ""} rounded-4 rounded-start-0`}
-                    placeholder="введіть_ваш_логін"
+                    className={`form-control border-0 px-3 py-2 rounded-end-3 ${usernameError ? "is-invalid" : ""}`}
+                    style={{
+                      backgroundColor: "var(--bg-input, #232328)",
+                      color: "var(--text-main)",
+                    }}
+                    placeholder="username"
                     value={username}
                     onChange={(e) => {
-                      // Забороняємо пробіли, великі літери та кирилицю (тільки a-z, 0-9 та _)
                       const validValue = e.target.value
                         .toLowerCase()
                         .replace(/[^a-z0-9_]/g, "");
                       setUsername(validValue);
-                      setUsernameError(""); // Приховуємо помилку під час вводу
+                      setUsernameError("");
                     }}
                     onBlur={() =>
                       handleUsernameBlur(
@@ -295,52 +307,54 @@ const SearchRoommate = ({ user }) => {
                     }
                   />
                 </div>
-                {/* Вивід помилки, якщо логін зайнятий або порожній */}
                 {usernameError && (
-                  <div className="text-danger mt-1 small fw-semibold">
-                    {usernameError}
-                  </div>
+                  <div className="text-danger mt-1 small">{usernameError}</div>
                 )}
               </div>
-            </div>
 
-            <div className="row mb-4">
-              <div className="col-12 col-md-6 col-xl-4">
-                <div className="set-card d-flex justify-content-between align-items-center m-0">
-                  <div>
-                    <h6 className="mb-1">Мій статус пошуку</h6>
-                    <span
-                      className={
-                        isLookingForRoom
-                          ? "text-success fw-bold"
-                          : "text-secondary"
-                      }
-                    >
-                      {isLookingForRoom ? "Шукаю кімнату" : "Не шукаю"}
-                    </span>
-                  </div>
-                  <div className="form-check form-switch m-0">
-                    <input
-                      className="form-check-input custom-switch"
-                      type="checkbox"
-                      checked={isLookingForRoom}
-                      onChange={(e) =>
-                        handleStatusChange(e, setIsLookingForRoom)
-                      }
-                      style={{ cursor: "pointer" }}
-                    />
-                  </div>
-                </div>
+              {/* Стать (Gender) */}
+              <div className="col-12 col-md-6">
+                <label className="form-label small fw-bold text-secondary mb-1">
+                  Стать
+                </label>
+                <select
+                  className="form-select border-0 px-3 py-2 rounded-3"
+                  style={{
+                    backgroundColor: "var(--bg-input, #232328)",
+                    color: "var(--text-main)",
+                    cursor: "pointer",
+                    boxShadow: "none",
+                  }}
+                  value={gender}
+                  onChange={(e) =>
+                    handleProfileUpdate(
+                      e.target.value,
+                      "gender",
+                      setGender,
+                      auth.currentUser,
+                    )
+                  }
+                >
+                  <option value="male">Чоловіча</option>
+                  <option value="female">Жіноча</option>
+                  <option value="other">Інша / Не вказувати</option>
+                </select>
               </div>
-            </div>
 
-            <div className="row g-4">
-              <div className="col-md-6">
-                <label className="form-label text-secondary">Ім'я</label>
+              {/* Ім'я */}
+              <div className="col-12 col-md-6">
+                <label className="form-label small fw-bold text-secondary mb-1">
+                  Ім'я
+                </label>
                 <input
                   type="text"
-                  className="form-control rounded-4 p-3"
+                  className="form-control border-0 px-3 py-2 rounded-3"
+                  style={{
+                    backgroundColor: "var(--bg-input, #232328)",
+                    color: "var(--text-main)",
+                  }}
                   value={firstName}
+                  placeholder="Введіть ім'я"
                   onChange={(e) =>
                     handleProfileUpdate(
                       e.target.value,
@@ -351,12 +365,21 @@ const SearchRoommate = ({ user }) => {
                   }
                 />
               </div>
-              <div className="col-md-6">
-                <label className="form-label text-secondary">Прізвище</label>
+
+              {/* Прізвище */}
+              <div className="col-12 col-md-6">
+                <label className="form-label small fw-bold text-secondary mb-1">
+                  Прізвище
+                </label>
                 <input
                   type="text"
-                  className="form-control rounded-4 p-3"
+                  className="form-control border-0 px-3 py-2 rounded-3"
+                  style={{
+                    backgroundColor: "var(--bg-input, #232328)",
+                    color: "var(--text-main)",
+                  }}
                   value={lastName}
+                  placeholder="Введіть прізвище"
                   onChange={(e) =>
                     handleProfileUpdate(
                       e.target.value,
@@ -367,37 +390,130 @@ const SearchRoommate = ({ user }) => {
                   }
                 />
               </div>
-              <div className="col-md-6">
-                <label className="form-label text-secondary">Телеграм</label>
-                <input
-                  type="text"
-                  className="form-control rounded-4 p-3"
-                  value={telegram}
+
+              {/* Поле Про себе (Bio) */}
+              <div className="col-12 mt-4 mb-2">
+                <div className="d-flex justify-content-between align-items-center mb-1">
+                  <label className="form-label small fw-bold text-secondary mb-0">
+                    Про себе
+                  </label>
+                  <span
+                    className="small text-secondary"
+                    style={{ fontSize: "12px" }}
+                  >
+                    {bio.length} / 300
+                  </span>
+                </div>
+                <textarea
+                  className="form-control border-0 p-3 rounded-3"
+                  rows="3"
+                  maxLength={300}
+                  style={{
+                    backgroundColor: "var(--bg-input, #232328)",
+                    color: "var(--text-main)",
+                    resize: "none",
+                  }}
+                  placeholder="Розкажіть трохи про себе, свої хобі, навчання або звички..."
+                  value={bio}
                   onChange={(e) =>
                     handleProfileUpdate(
                       e.target.value,
-                      "telegram",
-                      setTelegram,
+                      "bio",
+                      setBio,
                       auth.currentUser,
                     )
                   }
                 />
               </div>
-              <div className="col-md-6">
-                <label className="form-label text-secondary">Інстаграм</label>
+            </div>
+
+            {/* Статус пошуку кімнати */}
+            <div
+              className="d-flex justify-content-between align-items-center p-3 rounded-3 mb-4"
+              style={{ backgroundColor: "var(--bg-input, #232328)" }}
+            >
+              <div>
+                <div className="fw-semibold small">Статус пошуку кімнати</div>
+                <div className="small text-secondary">
+                  {isLookingForRoom ? "Шукаю кімнату" : "Не шукаю"}
+                </div>
+              </div>
+              <div className="form-check form-switch m-0">
                 <input
-                  type="text"
-                  className="form-control rounded-4 p-3"
-                  value={instagram}
-                  onChange={(e) =>
-                    handleProfileUpdate(
-                      e.target.value,
-                      "instagram",
-                      setInstagram,
-                      auth.currentUser,
-                    )
-                  }
+                  className="form-check-input custom-switch"
+                  type="checkbox"
+                  checked={isLookingForRoom}
+                  onChange={(e) => handleStatusChange(e, setIsLookingForRoom)}
+                  style={{ cursor: "pointer" }}
                 />
+              </div>
+            </div>
+
+            {/* Контакти та соціальні мережі */}
+            <h5 className="fw-bold mb-3">Контакти та соціальні мережі</h5>
+            <div className="row g-3">
+              <div className="col-12 col-md-6">
+                <label className="form-label small fw-bold text-secondary mb-1">
+                  Telegram
+                </label>
+                <div className="input-group">
+                  <span
+                    className="input-group-text border-0 text-secondary rounded-start-3"
+                    style={{ backgroundColor: "var(--bg-input, #232328)" }}
+                  >
+                    <i className="bi bi-telegram fs-3"></i>
+                  </span>
+                  <input
+                    type="text"
+                    className="form-control border-0 py-3 px-2 rounded-end-3"
+                    style={{
+                      backgroundColor: "var(--bg-input, #232328)",
+                      color: "var(--text-main)",
+                    }}
+                    placeholder="@username або посилання"
+                    value={telegram}
+                    onChange={(e) =>
+                      handleProfileUpdate(
+                        e.target.value,
+                        "telegram",
+                        setTelegram,
+                        auth.currentUser,
+                      )
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="col-12 col-md-6">
+                <label className="form-label small fw-bold text-secondary mb-1">
+                  Instagram
+                </label>
+                <div className="input-group">
+                  <span
+                    className="input-group-text border-0 text-secondary rounded-start-3"
+                    style={{ backgroundColor: "var(--bg-input, #232328)" }}
+                  >
+                    <i className="bi bi-instagram fs-4"></i>
+                  </span>
+                  <input
+                    type="text"
+                    className="form-control border-0 py-3 px-2 rounded-end-3"
+                    style={{
+                      backgroundColor: "var(--bg-input, #232328)",
+                      color: "var(--text-main)",
+                    }}
+                    placeholder="@username або посилання"
+                    value={instagram}
+                    onChange={(e) =>
+                      handleProfileUpdate(
+                        e.target.value,
+                        "instagram",
+                        setInstagram,
+                        auth.currentUser,
+                      )
+                    }
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -422,7 +538,11 @@ const SearchRoommate = ({ user }) => {
                     color: "var(--text-main)",
                   }}
                 >
-                  {isHabitsOpen ? "Сховати" : "Показати"}
+                  {isHabitsOpen ? (
+                    <i class="bi bi-dash"></i>
+                  ) : (
+                    <i class="bi bi-plus"></i>
+                  )}
                 </button>
               </div>
 
@@ -500,9 +620,10 @@ const SearchRoommate = ({ user }) => {
                 onClick={() => setIsPhotosOpen(!isPhotosOpen)}
               >
                 <span className="fw-bold card-header-title">
-                  Мої фотографії ({gallery ? gallery.length : 0})
+                  Мої фото ({gallery ? gallery.length : 0})
                 </span>
                 <div className="d-flex align-items-center gap-2">
+                  {" "}
                   <label
                     className="btn add-photo rounded-pill px-3 py-1 m-0 d-flex align-items-center gap-1 btn-sm"
                     onClick={(e) => e.stopPropagation()}
@@ -525,7 +646,11 @@ const SearchRoommate = ({ user }) => {
                       color: "var(--text-main)",
                     }}
                   >
-                    {isPhotosOpen ? "Сховати" : "Показати"}
+                    {isPhotosOpen ? (
+                      <i class="bi bi-dash"></i>
+                    ) : (
+                      <i class="bi bi-plus"></i>
+                    )}
                   </button>
                 </div>
               </div>

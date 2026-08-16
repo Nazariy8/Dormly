@@ -307,7 +307,7 @@ const Roommates = ({ user }) => {
                   }}
                   onClick={() => setIsRoommatesOpen(!isRoommatesOpen)}
                 >
-                  <span className="fw-bold">Кімната</span>
+                  <span className="fw-bold">Сусіди ({roommates.length})</span>
                   <button
                     className="btn btn-sm border-1 border-secondary rounded-pill"
                     style={{
@@ -315,9 +315,11 @@ const Roommates = ({ user }) => {
                       color: "var(--text-main)",
                     }}
                   >
-                    {isRoommatesOpen
-                      ? `Сховати (${roommates.length})`
-                      : `Показати (${roommates.length})`}
+                    {isRoommatesOpen ? (
+                      <i class="bi bi-dash"></i>
+                    ) : (
+                      <i class="bi bi-plus"></i>
+                    )}
                   </button>
                 </div>
 
@@ -447,7 +449,7 @@ const Roommates = ({ user }) => {
                   }}
                   onClick={() => setIsTasksOpen(!isTasksOpen)}
                 >
-                  <span className="fw-bold">Завдання</span>
+                  <span className="fw-bold">Завдання ({tasks.length})</span>
                   <button
                     className="btn btn-sm rounded-pill border-1 border-secondary"
                     style={{
@@ -455,9 +457,11 @@ const Roommates = ({ user }) => {
                       color: "var(--text-main)",
                     }}
                   >
-                    {isTasksOpen
-                      ? `Сховати (${tasks.length})`
-                      : `Показати (${tasks.length})`}
+                    {isTasksOpen ? (
+                      <i class="bi bi-dash"></i>
+                    ) : (
+                      <i class="bi bi-plus"></i>
+                    )}
                   </button>
                 </div>
 

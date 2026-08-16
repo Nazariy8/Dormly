@@ -21,6 +21,17 @@
   --text-main: #ffffff;
   --text-muted: #7a7a7a;
   --border-color: #2a2a2a;
+
+
+
+
+  .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.2); 
+  }
+
+  .navbar-toggler-icon {
+    filter: invert(1) grayscale(100%) brightness(200%);
+  }
 }
 
 body {
