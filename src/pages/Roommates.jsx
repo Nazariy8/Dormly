@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   doc,
   updateDoc,
@@ -22,7 +22,7 @@ const Roommates = ({ user }) => {
   const navigate = useNavigate();
 
   // --- СТАНИ ДЛЯ ДАНИХ З БАЗИ ---
-  const [currentUserData, setCurrentUserData] = useState(null); // НОВЕ: Дані самого користувача (себе)
+  const [currentUserData, setCurrentUserData] = useState(null);
   const [roommates, setRoommates] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [myFriends, setMyFriends] = useState([]);
@@ -33,19 +33,18 @@ const Roommates = ({ user }) => {
   const [isLoadingMatches, setIsLoadingMatches] = useState(false);
 
   // --- СТАНИ ДЛЯ UI ---
-  const [activeTab, setActiveTab] = useState("room"); // 'room' або 'search'
+  const [activeTab, setActiveTab] = useState("room");
   const [isRoommatesOpen, setIsRoommatesOpen] = useState(false);
   const [isTasksOpen, setIsTasksOpen] = useState(false);
   const [searchFriendTerm, setSearchFriendTerm] = useState("");
   const [newTask, setNewTask] = useState("");
 
   // --- СТАНИ ДЛЯ КОЛЕСА ФОРТУНИ ---
+  const [spinStage, setSpinStage] = useState("task"); // 'task' | 'person'
+  const [selectedTask, setSelectedTask] = useState(null);
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
   const [winner, setWinner] = useState(null);
-
-
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
   // --- СИНХРОНІЗАЦІЯ ПРОФІЛЮ КОРИСТУВАЧА ---
   useEffect(() => {
@@ -56,7 +55,6 @@ const Roommates = ({ user }) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
 
-        // Зберігаємо дані самого себе для рулетки
         setCurrentUserData({ id: user.uid, ...data });
 
         if (data.tasks) setTasks(data.tasks);
@@ -184,6 +182,7 @@ const Roommates = ({ user }) => {
       console.error(error);
     }
   };
+
   const handleDeleteRoommate = async (friendId) => {
     try {
       await updateDoc(doc(db, "users", user.uid), {
@@ -193,6 +192,7 @@ const Roommates = ({ user }) => {
       console.error(error);
     }
   };
+
   const handleAddTask = async () => {
     if (!newTask.trim()) return;
     try {
@@ -204,6 +204,7 @@ const Roommates = ({ user }) => {
       console.error(error);
     }
   };
+
   const handleDeleteTask = async (taskText) => {
     try {
       await updateDoc(doc(db, "users", user.uid), {
@@ -214,33 +215,77 @@ const Roommates = ({ user }) => {
     }
   };
 
-  // --- ЛОГІКА КОЛЕСА (ТЕПЕР ІЗ ТОБОЮ) ---
-  const wheelData =
-    tasks.length > 0
-      ? tasks.map((task) => ({ option: task }))
-      : [{ option: "Додайте завдання" }];
+  const allParticipants = useMemo(() => {
+    return currentUserData ? [currentUserData, ...roommates] : roommates;
+  }, [currentUserData, roommates]);
 
-  // Додаємо себе в загальний список учасників!
-  const allParticipants = currentUserData
-    ? [currentUserData, ...roommates]
-    : roommates;
+  // Безпечне формування списку секторів (завжди >= 2 елементів)
+  const wheelData = useMemo(() => {
+    if (spinStage === "person") {
+      if (allParticipants.length === 0) {
+        return [{ option: "Додайте сусідів" }, { option: "Додайте сусідів" }];
+      }
+      const mapped = allParticipants.map((p) => ({
+        option: p.id === user.uid ? `${p.firstName} (Ви)` : p.firstName,
+      }));
+      return mapped.length === 1 ? [...mapped, ...mapped] : mapped;
+    }
 
+    // Для стадії "task"
+    if (tasks.length === 0) {
+      return [{ option: "Додайте завдання" }, { option: "Додайте завдання" }];
+    }
+    const mappedTasks = tasks.map((t) => ({ option: t }));
+    return mappedTasks.length === 1
+      ? [...mappedTasks, ...mappedTasks]
+      : mappedTasks;
+  }, [spinStage, allParticipants, tasks, user]);
+
+  // 1. Старт першого раунду (Завдання)
   const handleSpinClick = () => {
     if (tasks.length === 0 || allParticipants.length === 0 || mustSpin) return;
+
     setWinner(null);
-    setPrizeNumber(Math.floor(Math.random() * tasks.length));
+    setSelectedTask(null);
+    setSpinStage("task");
+
+    const targetIndex = Math.floor(Math.random() * wheelData.length);
+    setPrizeNumber(targetIndex);
     setMustSpin(true);
   };
 
+  // 2. Зупинка обертання
   const handleStopSpinning = () => {
     setMustSpin(false);
-    const randomParticipantIndex = Math.floor(
-      Math.random() * allParticipants.length,
-    );
-    setWinner({
-      person: allParticipants[randomParticipantIndex],
-      task: tasks[prizeNumber],
-    });
+
+    if (spinStage === "task") {
+      const chosenTask = wheelData[prizeNumber]?.option || tasks[0];
+      setSelectedTask(chosenTask);
+
+      // Перемикаємось на етап людей через невелику паузу
+      setTimeout(() => {
+        setSpinStage("person");
+
+        setTimeout(() => {
+          const personDataLength =
+            allParticipants.length === 1
+              ? 2
+              : Math.max(allParticipants.length, 2);
+          const nextIndex = Math.floor(Math.random() * personDataLength);
+          setPrizeNumber(nextIndex);
+          setMustSpin(true);
+        }, 150);
+      }, 700);
+    } else if (spinStage === "person") {
+      const actualIndex = prizeNumber % Math.max(allParticipants.length, 1);
+      const chosenPerson = allParticipants[actualIndex] || allParticipants[0];
+
+      setWinner({
+        person: chosenPerson,
+        task: selectedTask,
+      });
+      setSpinStage("task"); // скидання для наступного разу
+    }
   };
 
   return (
@@ -258,7 +303,9 @@ const Roommates = ({ user }) => {
         >
           <button
             onClick={() => setActiveTab("search")}
-            className={`btn rounded-pill px-4 py-2 fw-bold ${activeTab === "search" ? "active" : ""}`}
+            className={`btn rounded-pill px-4 py-2 fw-bold ${
+              activeTab === "search" ? "active" : ""
+            }`}
             style={{
               backgroundColor:
                 activeTab === "search" ? "#8a4fff" : "transparent",
@@ -270,7 +317,9 @@ const Roommates = ({ user }) => {
           </button>
           <button
             onClick={() => setActiveTab("room")}
-            className={`btn rounded-pill px-4 py-2 fw-bold ${activeTab === "room" ? "active" : ""}`}
+            className={`btn rounded-pill px-4 py-2 fw-bold ${
+              activeTab === "room" ? "active" : ""
+            }`}
             style={{
               backgroundColor: activeTab === "room" ? "#8a4fff" : "transparent",
               transition: "all 0.3s ease",
@@ -302,9 +351,7 @@ const Roommates = ({ user }) => {
               <div className="card roommates-block rounded-4 w-100">
                 <div
                   className="card-header border-0 d-flex justify-content-between align-items-center p-3 rounded-4"
-                  style={{
-                    cursor: "pointer",
-                  }}
+                  style={{ cursor: "pointer" }}
                   onClick={() => setIsRoommatesOpen(!isRoommatesOpen)}
                 >
                   <span className="fw-bold">Сусіди ({roommates.length})</span>
@@ -316,9 +363,9 @@ const Roommates = ({ user }) => {
                     }}
                   >
                     {isRoommatesOpen ? (
-                      <i class="bi bi-dash"></i>
+                      <i className="bi bi-dash"></i>
                     ) : (
-                      <i class="bi bi-plus"></i>
+                      <i className="bi bi-plus"></i>
                     )}
                   </button>
                 </div>
@@ -441,12 +488,10 @@ const Roommates = ({ user }) => {
 
             {/* --- БЛОК ЗАВДАНЬ (ПРАВА КОЛОНКА) --- */}
             <div className="col-12 col-lg-6 align-self-start">
-              <div className="card tasks-block  rounded-4 w-100">
+              <div className="card tasks-block rounded-4 w-100">
                 <div
                   className="card-header border-0 d-flex justify-content-between align-items-center p-3 rounded-4"
-                  style={{
-                    cursor: "pointer",
-                  }}
+                  style={{ cursor: "pointer" }}
                   onClick={() => setIsTasksOpen(!isTasksOpen)}
                 >
                   <span className="fw-bold">Завдання ({tasks.length})</span>
@@ -458,9 +503,9 @@ const Roommates = ({ user }) => {
                     }}
                   >
                     {isTasksOpen ? (
-                      <i class="bi bi-dash"></i>
+                      <i className="bi bi-dash"></i>
                     ) : (
-                      <i class="bi bi-plus"></i>
+                      <i className="bi bi-plus"></i>
                     )}
                   </button>
                 </div>
@@ -535,12 +580,12 @@ const Roommates = ({ user }) => {
 
           {/* КОНТЕЙНЕР КОЛЕСА ТА КНОПОК */}
           <div
-            className="d-flex flex-column flex-md-row justify-content-center align-items-center gap-5 mx-auto "
+            className="d-flex flex-column flex-md-row justify-content-center align-items-center gap-5 mx-auto"
             style={{ maxWidth: "1000px" }}
           >
-            {/* 1. ФІКС КОЛЕСА: Жорстко фіксуємо розмір, щоб обертання не міняло габарити */}
+            {/* КОЛЕСО */}
             <div
-              className="d-flex justify-content-center align-items-center"
+              className="d-flex justify-content-center align-items-center position-relative"
               style={{
                 width: "450px",
                 height: "450px",
@@ -549,17 +594,15 @@ const Roommates = ({ user }) => {
               }}
             >
               <Wheel
-                pointerProps={{
-                  style: {
-                    filter:
-                      "invert(40%) sepia(90%) saturate(3000%) hue-rotate(245deg) drop-shadow(0 2px 4px rgba(0,0,0,0.3))",
-                  },
-                }}
                 mustStartSpinning={mustSpin}
                 prizeNumber={prizeNumber}
                 data={wheelData}
-                backgroundColors={["#8a4fff", "#20c997", "#ffcc00"]}
-                textColors={["#ffffff", "#ffffff", "#1a1a1a"]}
+                backgroundColors={
+                  spinStage === "person"
+                    ? ["#3b82f6", "#10b981", "#f59e0b", "#ec4899"]
+                    : ["#8a4fff", "#20c997", "#ffcc00"]
+                }
+                textColors={["#ffffff", "#ffffff", "#1a1a1a", "#ffffff"]}
                 outerBorderColor="#ffffff"
                 outerBorderWidth={10}
                 innerBorderColor="#ffffff"
@@ -567,45 +610,49 @@ const Roommates = ({ user }) => {
                 innerRadius={20}
                 radiusLineColor="#ffffff"
                 radiusLineWidth={2}
-                fontSize={14}
+                fontSize={13}
                 onStopSpinning={handleStopSpinning}
               />
             </div>
 
-            {/* Права панель з кнопками */}
+            {/* ПРАВА ПАНЕЛЬ */}
             <div
               className="game-controls text-center text-md-start"
               style={{ flexGrow: 1, maxWidth: "450px", width: "100%" }}
             >
-              <h6 className="fw-bold mb-3">
-                Хто буде виконувати завдання прямо зараз?
-              </h6>
+              {selectedTask && (
+                <div
+                  className="p-3 mb-3 rounded-4 shadow-sm border text-center"
+                  style={{
+                    backgroundColor: "var(--bg-secondary)",
+                    borderColor: "#8a4fff",
+                    animation: "modalFadeIn 0.3s ease",
+                  }}
+                >
+                  <span className="small text-secondary d-block fw-bold mb-1">
+                    📌 Обране завдання:
+                  </span>
+                  <strong className="text-primary fs-5">{selectedTask}</strong>
+                </div>
+              )}
+
+              <h6 className="fw-bold mb-3">Учасники кімнати:</h6>
 
               <div className="d-flex flex-wrap gap-2 mb-4 justify-content-center justify-content-md-start">
-                {allParticipants.length === 0 && (
-                  <p className="small text-muted">Нікого немає</p>
-                )}
                 {allParticipants.map((participant) => (
-                  <button
+                  <span
                     key={participant.id}
-                    className="btn shadow-sm fw-bold px-4 py-2"
+                    className="badge rounded-pill px-3 py-2 fw-bold"
                     style={{
-                      backgroundColor: "var(--bg-secondary)",
-                      borderRadius: "10px",
+                      fontSize: "15px",
+                      backgroundColor: "var(--bg-input)",
                       color: "var(--text-main)",
-                      border:
-                        winner && winner.person.id === participant.id
-                          ? "2px solid #8a4fff"
-                          : "1px solid var(--border-color, rgba(255,255,255,0.1))",
-                      boxShadow:
-                        winner && winner.person.id === participant.id
-                          ? "0 4px 15px rgba(138, 79, 255, 0.35)"
-                          : "none",
+                      border: "1px solid var(--border-color)",
                     }}
                   >
                     {participant.firstName}{" "}
                     {participant.id === user.uid && "(Ви)"}
-                  </button>
+                  </span>
                 ))}
               </div>
 
@@ -622,39 +669,71 @@ const Roommates = ({ user }) => {
                 }
                 onClick={handleSpinClick}
               >
-                {mustSpin ? "Крутимо..." : "Покрутіть колесо!"}
+                {mustSpin
+                  ? spinStage === "task"
+                    ? "Обираємо завдання..."
+                    : "Обираємо людину..."
+                  : "Покрутити колесо!"}
               </button>
-
-              {/* 2. ФІКС ПЛАШКИ: Задаємо сувору висоту height: 120px замість minHeight */}
-              <div style={{ marginTop: "1.5rem", height: "120px" }}>
-                <div
-                  className="p-3 congr-block rounded-4 shadow-sm text-center border d-flex flex-column justify-content-center"
-                  style={{
-                    borderColor: "#20c997",
-                    backgroundColor: "var(--bg-secondary)",
-                    opacity: winner && !mustSpin ? 1 : 0,
-                    visibility: winner && !mustSpin ? "visible" : "hidden",
-                    transition: "opacity 0.3s ease",
-                    height: "100%", // Плашка завжди займає рівно 120px
-                  }}
-                >
-                  <h5
-                    className="mb-1 fw-bold text-truncate"
-                    style={{ color: "#8a4fff" }}
-                  >
-                    Вітаємо, {winner?.person?.firstName || "\u00A0"}! 🎉
-                  </h5>
-                  <p className="mb-0 text-main text-truncate">
-                    Твоє завдання: <strong>{winner?.task || "\u00A0"}</strong>
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* ВКЛАДКА "ЗНАЙТИ СПІВЖИТЕЛЯ" (МЕТЧИНГ) */}
+      {/* --- МОДАЛЬНЕ ВІКНО ПЕРЕМОЖЦЯ --- */}
+      {winner && !mustSpin && (
+        <div
+          className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.65)",
+            backdropFilter: "blur(4px)",
+            zIndex: 1050,
+          }}
+          onClick={() => {
+            setWinner(null);
+            setSelectedTask(null);
+          }}
+        >
+          <div
+            className="congr-modal card  rounded-4 p-4 text-center mx-3"
+            style={{
+              maxWidth: "420px",
+              width: "100%",
+              backgroundColor: "var(--bg-secondary)",
+              color: "var(--text-main)",
+              animation: "modalFadeIn 0.3s ease-out",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-2" style={{ fontSize: "3rem" }}>
+              🎉
+            </div>
+
+            <h4 className="fw-bold mb-2" style={{ color: "#8a4fff" }}>
+              Вітаємо, {winner?.person?.firstName}!
+            </h4>
+
+            <p className="fs-5 mb-4 text-break">
+              Твоє завдання:{" "}
+              <strong className="text-decoration-underline">
+                {winner?.task}
+              </strong>
+            </p>
+
+            <button
+              className="btn text-white fw-bold py-2 px-4 rounded-pill shadow-sm"
+              style={{ backgroundColor: "#8a4fff" }}
+              onClick={() => {
+                setWinner(null);
+                setSelectedTask(null);
+              }}
+            >
+              Зрозуміло!
+            </button>
+          </div>
+        </div>
+      )}
+
       {activeTab === "search" && (
         <div className="container mt-4">
           <h2 className="fw-bold mb-2 text-center">Пошук ідеального сусіда</h2>
@@ -706,25 +785,30 @@ const Roommates = ({ user }) => {
                 return (
                   <div
                     key={candidate.id}
-                    className="candidates col-12 col-md-6 col-lg-4 mb-4"
+                    className="candidates col-12 col-md-6 col-lg-3 mb-4"
                   >
                     <div className="card border-0 shadow-sm rounded-4 h-100">
                       <div className="card-body text-center p-4">
-                        <img
-                          src={candidate.avatar || defaultUser}
-                          alt="avatar"
-                          className="rounded-circle mb-3 shadow-sm"
-                          style={{
-                            width: "90px",
-                            height: "90px",
-                            objectFit: "cover",
-                            border: "3px solid #eae4f9",
-                          }}
-                        />
-                        <h4 className="fw-bold mb-1">
-                          {candidate.firstName} {candidate.lastName}
-                        </h4>
-                        <p className="small mb-4">Можливий співмешканець</p>
+                        <div className=" card-main-info mb-4">
+                          <img
+                            src={candidate.avatar || defaultUser}
+                            alt="avatar"
+                            className="rounded-circle shadow-s mb-3"
+                            style={{
+                              width: "90px",
+                              height: "90px",
+                              objectFit: "cover",
+                            }}
+                          />
+                          <h4
+                            className="fw-bold m-0 text-truncate"
+                            title={`${candidate.firstName} ${candidate.lastName}`} // підказка при наведенні
+                            style={{ fontSize: "1.1rem" }}
+                          >
+                            {candidate.firstName} {candidate.lastName}
+                          </h4>
+                        </div>
+
                         <div className="d-flex justify-content-center gap-2 mb-3">
                           {matchCategories.map((cat) => {
                             const status = calculateBlockStatus(
@@ -738,7 +822,11 @@ const Roommates = ({ user }) => {
                               <div
                                 key={cat.key}
                                 className="rounded-circle d-flex justify-content-center align-items-center shadow-sm"
-                                title={`${cat.label} (${status === "green" ? "Сумісно" : "Різні погляди"})`}
+                                title={`${cat.label} (${
+                                  status === "green"
+                                    ? "Сумісно"
+                                    : "Різні погляди"
+                                })`}
                                 style={{
                                   width: "40px",
                                   height: "40px",
@@ -761,11 +849,8 @@ const Roommates = ({ user }) => {
                             );
                           })}
                         </div>
-                        <p className="small mb-0">
-                          Наведіть на іконку для деталей
-                        </p>
                         <button
-                          className="btn btn-light w-100 mt-4 rounded-pill fw-bold text-secondary"
+                          className="btn btn-outline-purple text-btn w-100 mt-2 rounded-pill fw-bold"
                           onClick={() =>
                             navigate("/chat", {
                               state: { startChatWith: candidate },

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react"; // 1. Додано useState та useEffect
-import { Routes, Route, Navigate } from "react-router-dom"; // 2. Додано Navigate
-import { auth, db } from "./firebase"; // Перевір шлях до файлу firebase
+import React, { useState, useEffect } from "react"; 
+import { Routes, Route, Navigate } from "react-router-dom"; 
+import { auth, db } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 
@@ -383,7 +383,6 @@ function App() {
       setUser(currentUser);
       
       if (currentUser) {
-        // 3. ЯКЩО ЮЗЕР Є, ОДРАЗУ ТЯГНЕМО ЙОГО ВІДПОВІДІ З БАЗИ
         try {
           const userDoc = await getDoc(doc(db, "users", currentUser.uid));
           if (userDoc.exists() && userDoc.data().answers) {
@@ -393,7 +392,7 @@ function App() {
           console.error("Помилка завантаження відповідей:", error);
         }
       } else {
-        setUserAnswers(null); // Очищаємо, якщо вийшов з акаунту
+        setUserAnswers(null); 
       }
       
       setLoading(false);
@@ -402,7 +401,7 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-    if (loading) return null; // Або легкий спінер
+    if (loading) return null; 
 
     return (
         <div className="App">
