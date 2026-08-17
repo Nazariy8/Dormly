@@ -11,19 +11,25 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
-
 function UserInit(props) {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+  
   const navigate = useNavigate();
 
   function changeShowPassword() {
     setShowPassword(!showPassword);
+  }
+
+  function changeShowConfirmPassword() {
+    setShowConfirmPassword(!showConfirmPassword);
   }
 
   // Прямий виклик через Popup
@@ -175,137 +181,163 @@ function UserInit(props) {
 
   return (
     <div>
-      <section className="login-section px-3">
-        <Link to="/" className="back-btn d-flex align-items-center">
-          <i className="bi bi-arrow-left fs-5 me-2"></i>
-          На головну
-        </Link>
-
-        <form onSubmit={handleSubmit}>
-          <h3>Ласкаво просимо!</h3>
-          <p>Знайди свого ідеального сусіда по кімнаті</p>
-          <span>Email</span>
-          <input
-            type="email"
-            className="mb-2"
-            placeholder="Ваш email"
-            required
-            maxLength="64"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          {emailError && <p className="error-message">{emailError}</p>}
-
-          <span>Пароль</span>
-          <div className="input-password w-100">
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Пароль"
-              className="mb-2 w-100"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <span
-              className="text-dark showpass-btn-block"
-              style={{ cursor: "pointer" }}
-              onClick={changeShowPassword}
-            >
-              <i
-                className={`bi ${
-                  showPassword ? "bi-eye" : "bi-eye-slash"
-                } fs-4 position-absolute`}
-                id="showpass-btn"
-              ></i>
-            </span>
-          </div>
-
-          <div className="row after-password-spans d-flex justify-content-between align-items-center">
-            <span className="col-6 mb-4 range text-secondary">
-              Має бути 8-20 символів
-            </span>
-            <span className="col-6 mb-4 range text-secondary text-end">
-              <Link to="/resetPass" className="resetPass ms-2">
-                Забули пароль?
-              </Link>
-            </span>
-          </div>
-
-          {props.goal === "reg" && (
-            <>
-              <span>Підтвердіть пароль</span>
-              <div className="input-password w-100">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Підтвердіть пароль"
-                  className="mb-2 w-100"
-                  required
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
-                <span
-                  className="text-dark showpass-btn-block"
-                  style={{ cursor: "pointer" }}
-                  onClick={changeShowPassword}
-                >
-                  <i
-                    className={`bi ${
-                      showPassword ? "bi-eye" : "bi-eye-slash"
-                    } fs-4 position-absolute`}
-                    id="showpass-btn"
-                  ></i>
-                </span>
-              </div>
-            </>
-          )}
-
-          <button type="submit" className="w-100 log-reg-btn">
-            {props.goal === "log" ? "Увійти" : "Зареєструватися"}
-          </button>
-
-          <hr />
-          <div className="or-span">
-            <span className="fw-normal text-center">або</span>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleGoogleSignIn}
+      <section className="login-section px-1">
+        <div>
+          <Link
+            to="/"
+            className=" m-4 btn back-btn rounded-circle d-flex align-items-center justify-content-center"
             style={{
-              color: "var(--text-main)",
-              backgroundColor: "var(--bg-input)",
-              border: "1px solid var(--border-color)",
-              cursor: "pointer",
+              width: "42px",
+              height: "42px",
             }}
-            className="googlelogin-btn p-2 w-100 d-flex justify-content-center align-items-center rounded-3 shadow-sm"
+            title="На головну"
           >
-            <img
-              src={googleicon}
-              className="googleicon me-2"
-              alt="Google"
-              style={{ width: "20px", height: "20px" }}
-            />
-            Продовжити з <span className="fw-bold ms-1">Google</span>
-          </button>
+            <i className="bi bi-arrow-left fs-5"></i>
+          </Link>
 
-          <p className="question mt-3">
-            {props.goal === "log" ? (
-              <>
-                Ще не маєте акаунту?
-                <Link to="/regist" className="regist-link ms-2">
-                  Реєстрація
+          <form onSubmit={handleSubmit} className="init-form">
+            <h3>Ласкаво просимо!</h3>
+            <p className="mb-4">Знайди свого ідеального сусіда по кімнаті</p>
+            {/* <span className="text-secondary">Email</span> */}
+            <div className="floating-group mb-3">
+              <input
+                type="email"
+                className="floating-input"
+                id="emailInput"
+                placeholder=""
+                required
+                maxLength="64"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <label className="floating-label" htmlFor="emailInput">
+                Електронна адреса
+              </label>
+            </div>
+
+            {emailError && <p className="error-message">{emailError}</p>}
+
+            {/* <span className="text-secondary">Пароль</span> */}
+            <div className="floating-group mb-2 w-100">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder=""
+                className="w-100 floating-input"
+                id="passwordInput"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <label className="floating-label" htmlFor="passwordInput">
+                Пароль
+              </label>
+              <span
+                className="showpass-btn-block"
+                style={{ cursor: "pointer" }}
+                onClick={changeShowPassword}
+              >
+                <i
+                  className={`bi ${
+                    showPassword ? "bi-eye" : "bi-eye-slash"
+                  } fs-4 position-absolute`}
+                  id="showpass-btn"
+                ></i>
+              </span>
+            </div>
+
+            <div className="row after-password-spans d-flex justify-content-between align-items-center">
+              <span className="col-6 mb-4 range text-secondary">
+                Має бути 8-20 символів
+              </span>
+              <span className="col-6 mb-4 range text-secondary text-end">
+                <Link to="/resetPass" className="resetPass ms-2">
+                  Забули пароль?
                 </Link>
-              </>
-            ) : (
+              </span>
+            </div>
+
+            {props.goal === "reg" && (
               <>
-                Вже маєте акаунт?
-                <Link to="/login" className="regist-link ms-2">
-                  Увійти
-                </Link>
+                <div className="floating-group w-100">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder=""
+                    className="w-100 floating-input"
+                    id="confirmPasswordInput"
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                  <label
+                    className="floating-label"
+                    htmlFor="confirmPasswordInput"
+                  >
+                    Підтвердіть пароль
+                  </label>
+                  <span
+                    className="showpass-btn-block"
+                    style={{ cursor: "pointer" }}
+                    onClick={changeShowConfirmPassword}
+                  >
+                    <i
+                      className={`bi ${
+                        showConfirmPassword ? "bi-eye" : "bi-eye-slash"
+                      } fs-4 position-absolute`}
+                      id="showpass-btn"
+                    ></i>
+                  </span>
+                </div>
               </>
             )}
-          </p>
-        </form>
+
+            <button type="submit" className="w-100 init-btn">
+              {props.goal === "log" ? "Увійти" : "Зареєструватися"}
+            </button>
+
+            <hr />
+            <div className="or-span">
+              <span className="fw-normal text-center">або</span>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleGoogleSignIn}
+              style={{
+                color: "var(--text-main)",
+                backgroundColor: "var(--bg-input)",
+                border: "1px solid var(--border-color)",
+                cursor: "pointer",
+              }}
+              className="google-init-btn p-2 w-100 d-flex justify-content-center align-items-center rounded-3 shadow-sm fw-medium"
+            >
+              <img
+                src={googleicon}
+                className="googleicon me-2"
+                alt="Google"
+                style={{ width: "20px", height: "20px" }}
+              />
+              Продовжити з Google
+            </button>
+
+            <p className="question mt-3">
+              {props.goal === "log" ? (
+                <>
+                  Ще не маєте акаунту?
+                  <Link to="/regist" className="regist-link ms-2">
+                    Реєстрація
+                  </Link>
+                </>
+              ) : (
+                <>
+                  Вже маєте акаунт?
+                  <Link to="/login" className="regist-link ms-2">
+                    Увійти
+                  </Link>
+                </>
+              )}
+            </p>
+          </form>
+        </div>
       </section>
     </div>
   );

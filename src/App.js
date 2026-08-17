@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react"; 
-import { Routes, Route, Navigate } from "react-router-dom"; 
+import React, { useState, useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { auth, db } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
@@ -7,17 +7,16 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import Header from "./components/Header";
 import Homepage from "./pages/Main.jsx";
 import UserInit from "./pages/UserInit.jsx";
-import ResultOfTest from "./pages/ResultOfTest.jsx"
+import ResultOfTest from "./pages/ResultOfTest.jsx";
 
-import Profile from "./pages/Profile.jsx"
+import Profile from "./pages/Profile.jsx";
 
-
-import Test from "./pages/Test.jsx"
-import Aboutus from "./pages/AboutUs.jsx"
+import Test from "./pages/Test.jsx";
+import Aboutus from "./pages/AboutUs.jsx";
 import Chat from "./pages/Chat.jsx";
-import ResetPass from "./pages/ResetPass.jsx"
+import ResetPass from "./pages/ResetPass.jsx";
 
-import "./css/main.scss"
+import "./css/main.scss";
 import Roommates from "./pages/Roommates.jsx";
 
 const users = [
@@ -374,14 +373,21 @@ const users = [
 ];
 
 function App() {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    const [userAnswers, setUserAnswers] = useState(null);
-    useEffect(() => {
+  const [userAnswers, setUserAnswers] = useState(null);
+
+  useEffect(() => {
+    const currentTheme = localStorage.getItem("theme") || "dark";
+    document.documentElement.setAttribute("data-theme", currentTheme);
+    document.body.className = currentTheme;
+  }, []);
+  
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
-      
+
       if (currentUser) {
         try {
           const userDoc = await getDoc(doc(db, "users", currentUser.uid));
@@ -392,41 +398,46 @@ function App() {
           console.error("Помилка завантаження відповідей:", error);
         }
       } else {
-        setUserAnswers(null); 
+        setUserAnswers(null);
       }
-      
+
       setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
-    if (loading) return null; 
+  if (loading) return null;
 
-    return (
-        <div className="App">
-            <Routes>
-                <Route path="/" element={<Homepage user={user} />} />
+  return (
+    <div className="App">
+      <Routes>
+        <Route path="/" element={<Homepage user={user} />} />
 
-                <Route path="/login" element={<UserInit goal="log" user={user} />} />
-                <Route path="/regist" element={<UserInit goal="reg" user={user} />} />
-                <Route path="/resetPass" element={<ResetPass />} />
-                <Route path="/profile" element={<Profile user={user} userAnswers={userAnswers} />} />
+        <Route path="/login" element={<UserInit goal="log" user={user} />} />
+        <Route path="/regist" element={<UserInit goal="reg" user={user} />} />
+        <Route path="/resetPass" element={<ResetPass />} />
+        <Route
+          path="/profile"
+          element={<Profile user={user} userAnswers={userAnswers} />}
+        />
 
+        <Route path="/test" element={<Test user={user} />} />
+        <Route path="/resultoftest" element={<ResultOfTest user={user} />} />
 
-                <Route path="/test" element={<Test user={user} />} />
-                <Route path="/resultoftest" element={<ResultOfTest user={user} />} />
+        <Route
+          path="/search-roommate"
+          element={
+            <Roommates userAnswers={userAnswers} users={users} user={user} />
+          }
+        />
 
-                <Route path="/search-roommate" element={<Roommates  userAnswers={userAnswers} users={users} user={user}/>} />
+        <Route path="/aboutus" element={<Aboutus user={user} />} />
 
-                
-                <Route path="/aboutus" element={<Aboutus user={user} />} />
-                
-                
-                <Route path="/chat" element={<Chat user={user} />} />
-            </Routes>
-        </div>
-    );
+        <Route path="/chat" element={<Chat user={user} />} />
+      </Routes>
+    </div>
+  );
 }
 
 export default App;

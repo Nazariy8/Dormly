@@ -5,34 +5,42 @@
   --primary-purple-light: #e6d8f7;
   --primary-puple: #8a4fff;
 
- 
   --bg-main: #ffffff;
-  --bg-secondary: #f8f9fa; 
+  --bg-secondary: #f8f9fa;
   --bg-input: #f1f3f5;
   --text-main: #000000;
   --text-muted: #6c757d;
   --border-color: #dee2e6;
+
+  --custom-card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --custom-card-border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 [data-theme="dark"] {
-  --primary-purple-light: #1a1a1a; 
-  --bg-main: #000000; 
-  --bg-secondary: #121212; --bg-input: #1e1e1e;
+  --primary-purple-light: #1a1a1a;
+  --bg-main: #000000;
+  --bg-secondary: #121212;
+  --bg-input: #1e1e1e;
   --text-main: #ffffff;
   --text-muted: #7a7a7a;
   --border-color: #2a2a2a;
 
-
-
+  --custom-card-shadow: 0 8px 24px rgba(138, 79, 255, 0.12);
+  --custom-card-border: 1px solid rgba(138, 79, 255, 0.2);
 
   .navbar-toggler {
-    border-color: rgba(255, 255, 255, 0.2); 
+    border-color: rgba(255, 255, 255, 0.2);
   }
 
   .navbar-toggler-icon {
     filter: invert(1) grayscale(100%) brightness(200%);
   }
 }
+$bg-color: #2f4f4f; // Темно-зелений фон (як на фото)
+$card-bg: #ffffff;
+$primary-color: #2f4f4f;
+$accent-color: #e0e0e0;
+$text-color: #333;
 
 body {
   width: 100%;
@@ -63,6 +71,13 @@ button {
 input[type="email"],
 input[type="password"] {
   caret-color: var(--primary-puple);
+  font-weight: 600;
+  &::placeholder {
+    font-weight: 300;
+  }
+  &:focus {
+    outline: none;
+  }
 }
 
 /* Header section */
@@ -265,7 +280,6 @@ button.user-block {
   }
 }
 
-
 .intro-section {
   margin: 0;
   width: 100%;
@@ -285,7 +299,7 @@ button.user-block {
     display: flex;
     flex-wrap: wrap;
     text-align: justify;
-    & + .text-descr{
+    & + .text-descr {
       text-align: start;
       max-width: 300px;
     }
@@ -418,17 +432,18 @@ button.user-block {
 
 /* Login section */
 .back-btn {
-  color: #000;
-  background: var(--primary-white);
+  color: var(--text-main);
+  background: var(--bg-secondary);
   width: max-content;
   display: flex;
   justify-content: center;
-  padding: 10px 25px;
   border-radius: 20px;
   margin-bottom: 10px;
-  box-shadow:
-    rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
-    rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+  box-shadow: var(--custom-card-shadow);
+  border: var(--custom-card-border);
+    &:hover{
+      background: var(--border-color);
+    }
 }
 
 .login-section {
@@ -454,11 +469,13 @@ button.user-block {
 
 .login-section form {
   border-radius: 30px;
-  padding: 50px 30px 15px 30px;
+  padding: 25px 30px 15px 30px;
   display: flex;
   flex-direction: column;
   text-align: center;
-  background: var(--bg-main);
+  background: var(--bg-secondary);
+  border: var(--custom-card-border);
+  box-shadow: var(--custom-card-shadow);
 
   h3 {
     font-weight: bold;
@@ -467,22 +484,85 @@ button.user-block {
     /* color: var(); */
   }
   span {
-    margin-bottom: 10px;
+    margin-bottom: 2px;
     text-align: left;
-    font-weight: bold;
+    font-size: 14px;
+    font-weight: 500;
   }
   input {
-    margin-bottom: 20px;
+    // margin-bottom: 1px;
     padding: 15px 20px;
     border-radius: 10px;
     border: 2px solid var(--primary-grey);
   }
-  .log-reg-btn {
-    margin: 15px 0;
+
+  .floating-group {
+    position: relative;
+    width: 100%;
+
+    .floating-input {
+      width: 100%;
+      height: 54px;
+      padding: 0 16px;
+      background-color: transparent;
+      color: var(--text-main, #ffffff);
+      border: 1.5px solid var(--border-color, #555555);
+      border-radius: 8px;
+      outline: none;
+      font-size: 14.5px;
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+
+      &:focus {
+        border-color: #8a4fff; 
+        box-shadow: var(--custom-card-shadow);
+      }
+    }
+
+    .floating-label {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: var(
+        --bg-secondary,
+        #121212
+      ); 
+      padding: 0 6px;
+      color: #888888;
+      font-size: 15px;
+      pointer-events: none; 
+      transition:
+        transform 0.2s ease,
+        font-size 0.2s ease,
+        color 0.2s ease,
+        top 0.2s ease;
+    }
+
+    .floating-input:focus ~ .floating-label,
+    .floating-input:not(:placeholder-shown) ~ .floating-label {
+      top: 0;
+      transform: translateY(-41.5%) scale(0.85);
+      transform-origin: left top;
+      color: #8a4fff; 
+    }
+
+    .floating-input:not(:focus):not(:placeholder-shown) ~ .floating-label {
+      color: #888888;
+    }
+  }
+  .init-btn {
+    margin-bottom:15px;
     padding: 10px 0;
     border-radius: 10px;
     background: var(--primary-puple);
     color: var(--primary-white);
+    font-weight: 500;
+    transition: 0.3s all;
+    &:hover{
+      filter:brightness(0.7);
+    }
   }
   .after-password-spans {
     .range {
@@ -492,15 +572,19 @@ button.user-block {
   }
   .or-span span {
     padding: 2px 10px;
-    background: var(--bg-main);
+    background: var(--bg-secondary);
     position: absolute;
     transform: translate(-50%, -30px);
     left: 50%;
   }
   .showpass-btn-block i {
-    transform: translate(-150%, 12px);
+    color: var(--text-muted);
+    position: absolute;
+    top: 51%;
+    right: 12px;
+    transform: translateY(-50%);
   }
-  .googlelogin-btn {
+  .google-init-btn {
     border: 2px solid var(--primary-grey);
     border-radius: 10px;
     margin-top: 15px;
@@ -508,7 +592,12 @@ button.user-block {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-inline: auto;
     color: var(--text-main);
+    transition: .3s all;
+    &:hover{
+      filter:brightness(0.9);
+    }
   }
   .googleicon {
     width: 25px;
