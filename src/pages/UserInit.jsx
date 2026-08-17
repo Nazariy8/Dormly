@@ -258,7 +258,7 @@ function UserInit(props) {
 
             {props.goal === "reg" && (
               <>
-                <div className="floating-group w-100">
+                <div className="floating-group w-100 mb-4">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder=""
