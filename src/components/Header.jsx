@@ -66,7 +66,7 @@ const Header = ({ user }) => {
             {/* ms-auto притискає всі лінки вправо */}
             <ul className="navbar-nav ms-auto text-center align-items-center mb-2 mb-lg-0 gap-2">
               <li className="nav-item">
-                <Link className="nav-link link px-3" to="/aboutUs" smooth>
+                <Link className="nav-link link px-3" to="/aboutUs">
                   Питання
                 </Link>
               </li>

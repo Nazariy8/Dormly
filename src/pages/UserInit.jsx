@@ -1,32 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import googleicon from "../img/icons/google.png";
-import { auth, db } from "../firebase";
+import { auth, db, googleProvider } from "../firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendEmailVerification,
   signOut,
   sendPasswordResetEmail,
+  signInWithPopup,
 } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
-import {
-  signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult,
-  onAuthStateChanged,
-} from "firebase/auth";
-import { googleProvider } from "../firebase";
-
 function UserInit(props) {
   const [showPassword, setShowPassword] = useState(false);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [confirmPassword, setConfirmPassword] = useState("");
-
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
@@ -36,40 +26,9 @@ function UserInit(props) {
     setShowPassword(!showPassword);
   }
 
-  const [emailInput, setEmailInput] = useState("");
-  const [status, setStatus] = useState("idle"); // idle, valid, invalid
-
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        try {
-          const userDocRef = doc(db, "users", currentUser.uid);
-          const userDocSnap = await getDoc(userDocRef);
-
-          if (!userDocSnap.exists()) {
-            await setDoc(userDocRef, {
-              uid: currentUser.uid,
-              email: currentUser.email,
-              name: currentUser.displayName || "Студент",
-              photoURL: currentUser.photoURL || "",
-              status: "Шукаю кімнату",
-              createdAt: new Date(),
-            });
-          }
-
-          navigate("/profile");
-        } catch (error) {
-          console.error("Помилка обробки профілю:", error);
-        }
-      }
-    });
-
-    return () => unsubscribe();
-  }, [navigate]);
-
+  // Прямий виклик через Popup
   const handleGoogleSignIn = async (e) => {
-    if (e) e.preventDefault();
+    e.preventDefault();
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
@@ -78,49 +37,31 @@ function UserInit(props) {
       const userDocSnap = await getDoc(userDocRef);
 
       if (!userDocSnap.exists()) {
+        const nameParts = (user.displayName || "Студент").split(" ");
         await setDoc(userDocRef, {
           uid: user.uid,
           email: user.email,
-          name: user.displayName || "Студент",
+          firstName: nameParts[0] || "Студент",
+          lastName: nameParts.slice(1).join(" ") || "",
           photoURL: user.photoURL || "",
           status: "Шукаю кімнату",
           createdAt: new Date(),
         });
       }
 
-      navigate("/profile");
+      navigate("/search-roommate");
     } catch (error) {
       console.error("Помилка Google Auth:", error);
+      alert("Помилка авторизації через Google: " + error.message);
     }
   };
 
-  const validateEmail = (input) => {
-    setEmailInput(input);
-
-    if (!input) {
-      setStatus("idle");
-      return;
-    }
-
-    // Regex to match strictly @gmail.com or @lpnu.ua at the end
-    const pattern = /^[a-zA-Z0-9._%+-]+@(gmail\.com|lpnu\.ua)$/i;
-
-    if (pattern.test(input)) {
-      setStatus("valid");
-    } else {
-      setStatus("invalid");
-    }
-  };
-
-  // --- 3. Потужна функція валідації ---
   const validateInputs = () => {
-    // Скидаємо старі помилки
     setEmailError("");
     setPasswordError("");
     let isValid = true;
 
-    // A. Валідація Email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Стандартний RegEx для email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) {
       setEmailError("Email не може бути порожнім");
       isValid = false;
@@ -129,7 +70,6 @@ function UserInit(props) {
       isValid = false;
     }
 
-    // Б. Валідація Пароля
     if (!password) {
       setPasswordError("Пароль не може бути порожнім");
       isValid = false;
@@ -138,7 +78,6 @@ function UserInit(props) {
       isValid = false;
     }
 
-    // В. Валідація для Реєстрації (перевірка співпадіння паролів)
     if (props.goal === "reg") {
       if (!confirmPassword) {
         setPasswordError("Будь ласка, підтвердіть пароль");
@@ -156,7 +95,6 @@ function UserInit(props) {
 
   const handleResetPassword = async (email) => {
     try {
-      // Firebase сам згенерує унікальне посилання і відправить його
       await sendPasswordResetEmail(auth, email);
       alert("Лист для відновлення пароля надіслано! Перевірте пошту.");
     } catch (error) {
@@ -165,7 +103,6 @@ function UserInit(props) {
     }
   };
 
-  // --- 4. Функція, що викликається при відправці форми ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     const isValid = validateInputs();
@@ -173,8 +110,6 @@ function UserInit(props) {
     if (isValid) {
       try {
         if (props.goal === "reg") {
-          // === РЕЄСТРАЦІЯ ===
-          // 1. Створюємо технічний акаунт у Firebase Auth
           const userCredential = await createUserWithEmailAndPassword(
             auth,
             email,
@@ -182,21 +117,14 @@ function UserInit(props) {
           );
           const user = userCredential.user;
 
-          // 2. Відправляємо лист підтвердження
           await sendEmailVerification(user);
-
-          // 3. Одразу "викидаємо" користувача (розлогінюємо), щоб він не пройшов далі без підтвердження
           await signOut(auth);
 
-          // 4. Показуємо повідомлення користувачу
           alert(
             "Акаунт створено! Будь ласка, перевірте вашу пошту та перейдіть за посиланням для підтвердження.",
           );
-
-          // Перекидаємо на сторінку логіну
           navigate("/login");
         } else {
-          // === ЛОГІН (ВХІД) ===
           const userCredential = await signInWithEmailAndPassword(
             auth,
             email,
@@ -204,33 +132,30 @@ function UserInit(props) {
           );
           const user = userCredential.user;
 
-          // 1. Перевіряємо, чи підтверджена пошта
           if (!user.emailVerified) {
-            await signOut(auth); // Викидаємо назад
+            await signOut(auth);
             alert(
               "Будь ласка, підтвердіть вашу електронну пошту перед входом!",
             );
-            return; // Зупиняємо виконання коду
+            return;
           }
 
-          // 2. Якщо пошта підтверджена, перевіряємо чи є вже профіль у базі даних (Firestore)
           const userDocRef = doc(db, "users", user.uid);
           const userDocSnap = await getDoc(userDocRef);
 
-          // 3. Якщо профілю ще немає (перший вхід після підтвердження) — створюємо його
           if (!userDocSnap.exists()) {
             await setDoc(userDocRef, {
               uid: user.uid,
               email: user.email,
-              name: "Студент",
+              firstName: "Студент",
+              lastName: "",
               status: "Не шукаю",
               photoURL: "",
               createdAt: new Date(),
             });
           }
 
-          console.log("Успішний вхід:", user.email);
-          navigate("/search-roommate"); // Пускаємо на сайт
+          navigate("/search-roommate");
         }
       } catch (error) {
         console.error("Помилка Firebase:", error.code);
@@ -256,53 +181,48 @@ function UserInit(props) {
           На головну
         </Link>
 
-        {/* 6. Використовуємо onSubmit для форми */}
-        <form onSubmit={handleSubmit} className="">
+        <form onSubmit={handleSubmit}>
           <h3>Ласкаво просимо!</h3>
           <p>Знайди свого ідеального сусіда по кімнаті</p>
           <span>Email</span>
           <input
             type="email"
             className="mb-2"
-            name=""
-            // id=""
             placeholder="Ваш email"
             required
-            // title="Please provide only a Best Startup Ever corporate email address"
             maxLength="64"
-            // 7. ВИПРАВЛЕНІ БАГИ: Додано value та правильний onChange
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          {/* 8. Повідомлення про помилку для Email */}
           {emailError && <p className="error-message">{emailError}</p>}
 
           <span>Пароль</span>
           <div className="input-password w-100">
             <input
               type={showPassword ? "text" : "password"}
-              name=""
-              id=""
               placeholder="Пароль"
               className="mb-2 w-100"
               required
-              // 7. ВИПРАВЛЕНІ БАГИ: Додано value та правильний onChange
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Link to="#" className="text-dark showpass-btn-block">
+            <span
+              className="text-dark showpass-btn-block"
+              style={{ cursor: "pointer" }}
+              onClick={changeShowPassword}
+            >
               <i
                 className={`bi ${
                   showPassword ? "bi-eye" : "bi-eye-slash"
                 } fs-4 position-absolute`}
                 id="showpass-btn"
-                onClick={changeShowPassword}
               ></i>
-            </Link>
+            </span>
           </div>
+
           <div className="row after-password-spans d-flex justify-content-between align-items-center">
             <span className="col-6 mb-4 range text-secondary">
-              Має бути 8-20 символів{" "}
+              Має бути 8-20 символів
             </span>
             <span className="col-6 mb-4 range text-secondary text-end">
               <Link to="/resetPass" className="resetPass ms-2">
@@ -310,46 +230,42 @@ function UserInit(props) {
               </Link>
             </span>
           </div>
-          {/* 8. Повідомлення про помилку для Пароля */}
 
-          {/* --- 9. Блок для підтвердження пароля при реєстрації --- */}
-          {props.goal === "reg" ? (
+          {props.goal === "reg" && (
             <>
               <span>Підтвердіть пароль</span>
               <div className="input-password w-100">
                 <input
                   type={showPassword ? "text" : "password"}
-                  name=""
-                  // id=""
                   placeholder="Підтвердіть пароль"
                   className="mb-2 w-100"
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
-                <Link to="#" className="text-dark showpass-btn-block">
+                <span
+                  className="text-dark showpass-btn-block"
+                  style={{ cursor: "pointer" }}
+                  onClick={changeShowPassword}
+                >
                   <i
                     className={`bi ${
                       showPassword ? "bi-eye" : "bi-eye-slash"
                     } fs-4 position-absolute`}
                     id="showpass-btn"
-                    onClick={changeShowPassword}
                   ></i>
-                </Link>
+                </span>
               </div>
             </>
-          ) : (
-            <></>
           )}
 
-          {/* 10. Кнопка тепер має тип "submit" і не має onClick */}
-          <button type="submit" className="w-100 log-reg-btn w-100">
+          <button type="submit" className="w-100 log-reg-btn">
             {props.goal === "log" ? "Увійти" : "Зареєструватися"}
           </button>
 
-          <hr></hr>
+          <hr />
           <div className="or-span">
-            <span className="fw-normal text-center ">або</span>
+            <span className="fw-normal text-center">або</span>
           </div>
 
           <button
@@ -357,34 +273,32 @@ function UserInit(props) {
             onClick={handleGoogleSignIn}
             style={{
               color: "var(--text-main)",
-              backgroundColor: "transparent",
-              border: "1px solid var(--border-color, #e0e0e0)",
+              backgroundColor: "var(--bg-input)",
+              border: "1px solid var(--border-color)",
               cursor: "pointer",
             }}
-            className="googlelogin-btn p-2 w-100 d-flex justify-content-center align-items-center rounded-3"
+            className="googlelogin-btn p-2 w-100 d-flex justify-content-center align-items-center rounded-3 shadow-sm"
           >
-            <span className="p-0 m-0 me-2">
-              <img
-                src={googleicon}
-                className="googleicon"
-                alt="Google"
-                style={{ width: "20px", height: "20px" }}
-              />
-            </span>
-            Продовжити з <span className="p-0 m-0 ms-1 fw-bold">Google</span>
+            <img
+              src={googleicon}
+              className="googleicon me-2"
+              alt="Google"
+              style={{ width: "20px", height: "20px" }}
+            />
+            Продовжити з <span className="fw-bold ms-1">Google</span>
           </button>
 
-          <p className="question">
+          <p className="question mt-3">
             {props.goal === "log" ? (
               <>
-                Ще немаєте аккаунту?
+                Ще не маєте акаунту?
                 <Link to="/regist" className="regist-link ms-2">
                   Реєстрація
                 </Link>
               </>
             ) : (
               <>
-                Вже маєте аккаунт?
+                Вже маєте акаунт?
                 <Link to="/login" className="regist-link ms-2">
                   Увійти
                 </Link>
@@ -392,21 +306,6 @@ function UserInit(props) {
             )}
           </p>
         </form>
-        {props.goal === "reg" ? (
-          <>
-            <div className="row d-flex justify-content-center">
-              <div className="col-8">
-                <p className="terms">
-                  Реєструючись, ви погоджуєтесь з нашими{" "}
-                  <span className="accent">Умовами використання</span> та{" "}
-                  <span className="accent">Політикою конфіденційності.</span>
-                </p>
-              </div>
-            </div>
-          </>
-        ) : (
-          ""
-        )}
       </section>
     </div>
   );
