@@ -6,10 +6,7 @@ import { doc, updateDoc } from "firebase/firestore";
 
 const Test = () => {
   const navigate = useNavigate();
-
-
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
-  // --- СТАН ---
+// --- СТАН ---
   // Індекс поточного питання (починаємо з 0)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   // Збережені відповіді

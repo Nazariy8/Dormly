@@ -378,13 +378,7 @@ function App() {
 
   const [userAnswers, setUserAnswers] = useState(null);
 
-  useEffect(() => {
-    const currentTheme = localStorage.getItem("theme") || "dark";
-    document.documentElement.setAttribute("data-theme", currentTheme);
-    document.body.className = currentTheme;
-  }, []);
-  
-  useEffect(() => {
+useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
 

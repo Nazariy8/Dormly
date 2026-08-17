@@ -1,56 +1,77 @@
 import React from "react";
 
 const Advan = () => {
-	return (
-		<div>
-			<section className="advantages-section">
-				<h6 className="section-pretitle">Переваги платформи</h6>
-				<div className="row">
-					<div className="col"></div>
-				</div>
-				<h2 className="section-title" id="advantage-heading">
-					Чому обирають <span className="accent">Dormly?</span>
-				</h2>
-				<p className="section-text">
-					Ми допомагаємо створити комфортне та безпечне середовище для життя.{" "}
-				</p>
-				<div className="container-fluid">
-					<div className="row advantages d-flex justify-content-center">
-						<div className="col-9 col-xl-4 col-xxl-3 my-3 col-lg-4 col-md-4 col-sm-5 advantage-card mx-3 p-5">
-							<div className="icon mx-auto">
-								<i className=" bi bi-shield-check"></i>
-							</div>
-							<h4>Безпека</h4>
-							<p>
-								Ми перевірямо кожного користувача, щоб забезпечити вашу безпеку
-								та спокій.
-							</p>
-						</div>
-						<div className="col-9 col-xl-4 col-xxl-3 my-3 col-lg-4 col-md-4 col-sm-5 advantage-card mx-3 p-5">
-							<div className="icon mx-auto">
-								<i className=" bi bi-person-check-fill"></i>
-							</div>
-							<h4>Сумісність</h4>
-							<p>
-								Наш алгоритм на основі тесту особистості підбирає ідеального
-								сусіда для вас
-							</p>
-						</div>
-						<div className="col-9 col-xl-8 col-xxl-3  my-3 col-lg-9 col-md-9 col-sm-5 advantage-card mx-3 p-5">
-							<div className="icon mx-auto">
-								<i className=" bi bi-people-fill"></i>
-							</div>
-							<h4>Спільнота</h4>
-							<p>
-								Приєднуйтесь до спільноти студентів та знаходьте нових друзів у
-								вашому гуртожитку.
-							</p>
-						</div>
-					</div>
-				</div>
-			</section>
-		</div>
-	);
+  return (
+    <div>
+      <section className="advantages-section" id="advantage-heading">
+        <div
+          className="container"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            minHeight: "80vh",
+            height: "auto",
+          }}
+        >
+          {/* Заголовок секції */}
+          <div className="text-center mb-5">
+            <span className="section-badge mb-3">Переваги платформи</span>
+            <h2 className="section-heading">Чому обирають Dormly?</h2>
+            <p className="section-description">
+              Ми створюємо прозоре, безпечне та комфортне середовище для
+              студентського життя.
+            </p>
+          </div>
+
+          {/* Сітка карток (Bento Grid) */}
+          <div className="row g-4 justify-content-center">
+            {/* Картка 1 */}
+            <div className="col-12 col-md-6 col-lg-4">
+              <div className="feature-card h-100">
+                <div className="feature-icon-wrapper">
+                  <i className="bi bi-shield-check"></i>
+                </div>
+                <h3 className="feature-title">Безпека та верифікація</h3>
+                <p className="feature-text">
+                  Перевірка студентських профілів та модерація для вашого спокою
+                  і захисту особистого простору.
+                </p>
+              </div>
+            </div>
+
+            {/* Картка 2 */}
+            <div className="col-12 col-md-6 col-lg-4">
+              <div className="feature-card h-100">
+                <div className="feature-icon-wrapper">
+                  <i className="bi bi-sliders"></i>
+                </div>
+                <h3 className="feature-title">Точна сумісність</h3>
+                <p className="feature-text">
+                  Алгоритм зіставляє ваші біоритми, звички прибирання, графік
+                  навчання та хобі для ідеального збігу.
+                </p>
+              </div>
+            </div>
+
+            {/* Картка 3 */}
+            <div className="col-12 col-md-6 col-lg-4">
+              <div className="feature-card h-100">
+                <div className="feature-icon-wrapper">
+                  <i className="bi bi-people"></i>
+                </div>
+                <h3 className="feature-title">Студентська спільнота</h3>
+                <p className="feature-text">
+                  Знаходьте однодумців зі свого факультету чи гуртожитку ще до
+                  початку навчального семестру.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
 };
 
 export default Advan;

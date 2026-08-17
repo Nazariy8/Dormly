@@ -20,8 +20,6 @@ function UserInit(props) {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
-  
   const navigate = useNavigate();
 
   function changeShowPassword() {

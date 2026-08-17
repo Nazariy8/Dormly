@@ -5,83 +5,89 @@ import user3 from "../img/main-feedback-users/user3.png"
 
 const Feedbacks = () => {
 
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
-	
 	
 	return (
-		<div>
-			<section className="feedbacks-section py-5">
-				<div className="text text-center">
-					<h2 className="section-minititle mb-4" id="feedbacks-heading">Що кажуть наші користувачі</h2>
-					<p>
-						Історії успіху від студентів, які знайшли ідеальних сусідів з
-						Dormly.
-					</p>
-				</div>
-				<div className="container-fluid">
-					<div className="row feedbacks d-flex justify-content-center">
-						<div className="col-9 col-xxl-3 my-3 col-lg-9 col-md-9 col-sm-5 feedback-card p-5 mx-3"
-						style={{boxShadow:`${theme === 'light' ? '' : 'var(--bg-main) 0px 0px 20px -12px'}`}}>
-							<div className="user-info-block">
-								<div className="user-avatar">
-									<img src={user1} alt="" />
-								</div>
-								<div className="user-info">
-									<h4>Олена К.</h4>
-									<h5>Студентка, 1-курс</h5>
-								</div>
-							</div>
-							<div className="feedback-text">
-								<p>
-									"Dormly допоміг мені знайти не просто сусіда, а справжню
-									подругу! Ми чудово ладнаємо, і наше спільне проживання - це
-									суцільне задоволення."
-								</p>
-							</div>
-						</div>
-						<div className="col-9 col-xxl-3 my-3 col-lg-9 col-md-9 col-sm-5 feedback-card p-5 mx-3"
-						style={{boxShadow:`${theme === 'light' ? '' : 'var(--bg-main) 0px 0px 20px -12px'}`}}>
-							<div className="user-info-block">
-								<div className="user-avatar">
-									<img src={user2} alt="" />
-								</div>
-								<div className="user-info">
-									<h4>Максим П.</h4>
-									<h5>Студент, 2-курс</h5>
-								</div>
-							</div>
-							<div className="feedback-text">
-								<p>
-									"Я був скептично налаштований, але тест дійсно працює. Мій
-									сусід по кімнаті - спокійна та охайна людина, саме те, що я
-									шукав."
-								</p>
-							</div>
-						</div>
-						<div className="col-9 col-xxl-3 my-3 col-lg-9 col-md-9 col-sm-5 feedback-card p-5 mx-3"
-						style={{boxShadow:`${theme === 'light' ? '' : 'var(--bg-main) 0px 0px 20px -12px'}`}}>
-							<div className="user-info-block">
-								<div className="user-avatar">
-									<img src={user3} alt="" />
-								</div>
-								<div className="user-info">
-									<h4>Ірина Л.</h4>
-									<h5>Студентка, 3-курс</h5>
-								</div>
-							</div>
-							<div className="feedback-text">
-								<p>
-									"Завдяки платформі я уникнула багатьох конфліктів, які були у
-									моїх друзів з їхніми сусідами. Дуже рекомендую всім
-									першокурсникам!"
-								</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-		</div>
-	);
+    <div>
+      <section className="feedbacks-section" id="feedbacks-heading">
+        <div
+          className="container"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            minHeight: "80vh",
+            height: "auto",
+          }}
+        >
+          {/* Заголовок */}
+          <div className="text-center mb-5">
+            <span className="section-badge mb-3">Відгуки</span>
+            <h2 className="section-heading">Що кажуть наші користувачі</h2>
+            <p className="section-description">
+              Історії студентів, які знайшли ідеальних сусідів завдяки Dormly.
+            </p>
+          </div>
+
+          {/* Сітка відгуків */}
+          <div className="row g-4 justify-content-center">
+            {/* Відгук 1 */}
+            <div className="col-12 col-md-6 col-lg-4">
+              <div className="feedback-card h-100">
+                <p className="feedback-quote">
+                  «Dormly допоміг мені знайти не просто сусідку, а справжню
+                  подругу! Ми чудово ладнаємо, а спільне проживання стало
+                  суцільним задоволенням.»
+                </p>
+                <div className="feedback-user-info">
+                  <div className="feedback-avatar-placeholder">ОК</div>
+                  <div>
+                    <h4 className="user-name">Олена К.</h4>
+                    <span className="user-role">Студентка, 1-й курс</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Відгук 2 */}
+            <div className="col-12 col-md-6 col-lg-4">
+              <div className="feedback-card h-100">
+                <p className="feedback-quote">
+                  «Був скептично налаштований, але алгоритм дійсно спрацював.
+                  Мій співмешканець — спокійна й охайна людина, саме те, що я
+                  шукав для комфортного навчання.»
+                </p>
+                <div className="feedback-user-info">
+                  <div className="feedback-avatar-placeholder">МП</div>
+                  <div>
+                    <h4 className="user-name">Максим П.</h4>
+                    <span className="user-role">Студент, 2-й курс</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Відгук 3 */}
+            <div className="col-12 col-md-6 col-lg-4">
+              <div className="feedback-card h-100">
+                <p className="feedback-quote">
+                  «Завдяки платформі уникнула побутових конфліктів, які часто
+                  бувають на початку року. Дуже рекомендую всім першокурсникам
+                  перед заселенням!»
+                </p>
+                <div className="feedback-user-info">
+                  <div className="feedback-avatar-placeholder">ІЛ</div>
+                  <div>
+                    <h4 className="user-name">Ірина Л.</h4>
+                    <span className="user-role">Студентка, 3-й курс</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
 };
 
 export default Feedbacks;

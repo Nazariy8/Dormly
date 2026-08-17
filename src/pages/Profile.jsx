@@ -3,7 +3,6 @@ import Header from "../components/Header";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../css/profile.scss";
 import defaultUser from "../img/profile/user.jpg";
-import UserForRoom from "../components/UserForRoom";
 import { Link } from "react-router-dom";
 
 import { auth, db } from "../firebase"; // Перевір, щоб шлях був правильним
@@ -68,8 +67,7 @@ const SearchRoommate = ({ user }) => {
   );
 
   const [loading, setLoading] = useState(true);
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
-  // 1. Стан для аватара
+ // 1. Стан для аватара
   const [avatar, setAvatar] = useState("");
   // 2. Стан для імені та прізвища
 

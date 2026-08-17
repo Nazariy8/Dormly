@@ -191,7 +191,4 @@
 
 .btn-close {
   // Якщо тема темна (текст білий), інвертуємо колір хрестика, щоб він став білим
-  [data-theme="dark"] & {
-    filter: invert(1) grayscale(100%) brightness(200%);
-  }
 }
