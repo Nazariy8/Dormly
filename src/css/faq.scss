@@ -1,0 +1,170 @@
+/* --- FAQ & Support Styles --- */
+.faq-page {
+  background-color: var(--bg-main, #0a0a0a);
+  color: var(--text-primary, #ededed);
+
+  .faq-search-wrapper {
+    position: relative;
+    max-width: 550px;
+
+    .search-icon {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary, #a1a1a1);
+    }
+
+    .faq-search-input {
+      width: 100%;
+      height: 48px;
+      padding-left: 48px;
+      padding-right: 20px;
+      background-color: #121212;
+      border: 1px solid var(--border-subtle, #262626);
+      border-radius: 12px;
+      color: #ffffff;
+      outline: none;
+      transition: border-color 0.2s ease;
+
+      &:focus {
+        border-color: var(--border-focus, #404040);
+      }
+    }
+  }
+
+  .quick-link-btn {
+    width: 100%;
+    text-align: left;
+    background-color: #121212;
+    border: 1px solid var(--border-subtle, #262626);
+    color: var(--text-primary, #ededed);
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    font-size: 14.5px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: #181818;
+      border-color: var(--border-focus, #404040);
+    }
+  }
+
+  .support-card {
+    background-color: #121212;
+    border: 1px solid var(--border-subtle, #262626);
+    border-radius: 16px;
+
+    .support-icon-wrapper {
+      width: 44px;
+      height: 44px;
+      margin: 0 auto;
+      border-radius: 10px;
+      background: rgba(100, 223, 223, 0.1);
+      color: var(--accent-cyan, #64dfdf);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .support-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .support-text {
+      font-size: 13.5px;
+      color: var(--text-secondary, #a1a1a1);
+      line-height: 1.5;
+    }
+
+    .btn-support {
+      background: #ffffff;
+      color: #000000;
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 9px;
+      font-size: 14px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: #e5e5e5;
+      }
+    }
+  }
+
+  /* Акордеон */
+  .custom-faq-accordion {
+    .accordion-item {
+      background-color: #121212 !important;
+      border: 1px solid var(--border-subtle, #262626) !important;
+      border-radius: 12px !important;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .accordion-button {
+      background-color: #121212 !important;
+      color: #ffffff !important;
+      font-size: 15.5px;
+      font-weight: 600;
+      box-shadow: none !important;
+      padding: 18px 20px;
+
+      &::after {
+        filter: invert(1);
+      }
+    }
+
+    .accordion-body {
+      color: var(--text-secondary, #a1a1a1);
+      font-size: 14.5px;
+      line-height: 1.6;
+      padding: 0 20px 18px;
+    }
+  }
+}
+
+/* --- Team Page Styles --- */
+.team-card {
+  background-color: #121212;
+  border: 1px solid var(--border-subtle, #262626);
+  border-radius: 16px;
+  padding: 24px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    border-color: var(--border-focus, #404040);
+    transform: translateY(-2px);
+  }
+
+  .team-img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border-subtle, #262626);
+  }
+
+  .team-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 4px;
+  }
+
+  .team-role {
+    font-size: 13px;
+    color: var(--accent-cyan, #64dfdf);
+    margin: 0;
+  }
+}
+
+.cta-box {
+  background: radial-gradient(circle at 50% 50%, rgba(105, 48, 195, 0.15) 0%, rgba(18, 18, 18, 1) 100%);
+  border: 1px solid var(--border-subtle, #262626);
+  border-radius: 16px;
+}

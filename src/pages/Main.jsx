@@ -3,23 +3,15 @@ import Header from "../components/Header";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { HashLink } from "react-router-hash-link";
 
 const Main = ({ user }) => {
   const { t } = useTranslation();
 
   const navigate = useNavigate();
 
-  const handleStartTest = () => {
-    if (user) {
-      navigate("/test"); 
-    } else {
-      navigate("/login");
-    }
-  };
-
   return (
-    <div>
-      <Header user={user} />
+    <main>
       <section className="hero-section text-center">
         <div
           className="container d-flex flex-column align-items-center"
@@ -51,12 +43,15 @@ const Main = ({ user }) => {
 
           {/* Кнопки дій */}
           <div className="hero-actions d-flex gap-3 justify-content-center flex-wrap">
-            <Link to="/test" className="btn btn-hero-primary">
+            <Link to={user ? "/test" : "login" } className="btn btn-hero-primary">
               {t("hero.passTest", "Пройти тест")}
             </Link>
-            <a href="#advantage-heading" className="btn btn-hero-secondary">
+            <HashLink
+              to="#advantage-heading"
+              className="btn btn-hero-secondary"
+            >
               {t("hero.howItWorks", "Як це працює")}
-            </a>
+            </HashLink>
           </div>
 
           {/* Інтерактивне прев'ю інтерфейсу Dormly (ТЕПЕР ВОНО ТУТ, ПІД КНОПКАМИ) */}
@@ -249,7 +244,7 @@ const Main = ({ user }) => {
           </div>
         </div>
       </section>
-    </div>
+    </main>
   );
 };
 

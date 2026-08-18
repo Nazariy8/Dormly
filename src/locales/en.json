@@ -69,5 +69,54 @@
         "role": "Student, 3rd year"
       }
     }
+  },
+  "faq": {
+    "badge": "Help Center",
+    "title": "How can we help you?",
+    "subtitle": "Find answers to your questions below or contact our support team.",
+    "searchPlaceholder": "Search for a question...",
+    "quickLinks": {
+      "profile": "Registration & Profile",
+      "test": "Compatibility Test"
+    },
+    "support": {
+      "title": "Can't find an answer?",
+      "text": "Our support team is always ready to help you resolve any issues.",
+      "button": "Contact Us"
+    },
+    "questions": {
+      "q1": {
+        "question": "What is Dormly?",
+        "answer": "Dormly is a platform designed to help students find the perfect roommate based on a personality and lifestyle compatibility test."
+      },
+      "q2": {
+        "question": "How does the compatibility test work?",
+        "answer": "Our test analyzes your answers about habits, lifestyle, social activity, and personal preferences to find users with the highest compatibility percentage."
+      },
+      "q3": {
+        "question": "Is Dormly free?",
+        "answer": "Yes, basic Dormly features (profile creation, taking the test, and finding roommates) are completely free for students."
+      },
+      "q4": {
+        "question": "Can I change my test answers later?",
+        "answer": "Absolutely! You can retake the test or update your profile details in the settings at any time."
+      }
+    }
+  },
+  "about": {
+    "badge": "Team",
+    "title": "About Us",
+    "subtitle": "We are a team of students and developers who strive to make dorm living comfortable and safe for everyone.",
+    "team": {
+      "nazar": { "name": "Nazarii Yavorskyi", "role": "Lead Developer" },
+      "olena": { "name": "Olena Kozak", "role": "Project Manager" },
+      "julia": { "name": "Yulia Matviishyn", "role": "Business Analyst" },
+      "zlata": { "name": "Zlatoslava Nysynets", "role": "UX/UI Designer" },
+      "maks": { "name": "Maksym Plechiy", "role": "QA Engineer" }
+    },
+    "cta": {
+      "title": "Ready to find your ideal roommate?",
+      "button": "Take the test now"
+    }
   }
 }

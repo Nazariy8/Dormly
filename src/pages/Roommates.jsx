@@ -293,7 +293,6 @@ const Roommates = ({ user }) => {
       className="roommates-page"
       style={{ minHeight: "100vh", paddingBottom: "40px" }}
     >
-      <Header user={user} />
 
       {/* --- МІНІ-МЕНЮ (ТАБИ) --- */}
       <div className="d-flex justify-content-center mt-4 mb-2">

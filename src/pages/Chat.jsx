@@ -634,8 +634,6 @@ const Chat = ({ user }) => {
 
   return (
     <div className="chat-page-wrapper">
-      <Header user={user} />
-
       <div
         className={`chat-container ${activeChatUser ? "mobile-chat-active" : ""}`}
       >

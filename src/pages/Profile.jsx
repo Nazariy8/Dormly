@@ -187,8 +187,6 @@ const SearchRoommate = ({ user }) => {
 
   return (
     <div>
-      <Header user={user} />
-
       <div className="profile rounded-5 p-4 p-md-5 mb-5 mt-4 custom-shadow">
         <div className="w-100">
           <div className="d-flex justify-content-between align-items-center mb-4 m-0">

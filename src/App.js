@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { auth, db } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import "./i18n";
 
 import Header from "./components/Header";
-import Homepage from "./pages/Main.jsx";
-import UserInit from "./pages/UserInit.jsx";
+
+import Main from "./pages/Main.jsx";
+import Auth from "./pages/Auth.jsx";
 import ResultOfTest from "./pages/ResultOfTest.jsx";
-
+import Roommates from "./pages/Roommates.jsx";
 import Profile from "./pages/Profile.jsx";
-
 import Test from "./pages/Test.jsx";
-import Aboutus from "./pages/AboutUs.jsx";
+import FAQ from "./pages/FAQ.jsx";
+import AboutUs from "./pages/AboutUs.jsx";
 import Chat from "./pages/Chat.jsx";
 import ResetPass from "./pages/ResetPass.jsx";
 
 import "./css/main.scss";
-import Roommates from "./pages/Roommates.jsx";
+
 
 const users = [
   {
@@ -374,12 +375,19 @@ const users = [
 ];
 
 function App() {
+  const location = useLocation();
+
+  const hideHeaderRoutes = ["/test", "/resultoftest", "/login", "/regist"];
+  const shouldShowHeader = !hideHeaderRoutes.includes(
+    location.pathname.toLowerCase(),
+  );
+
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const [userAnswers, setUserAnswers] = useState(null);
 
-useEffect(() => {
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
 
@@ -406,11 +414,13 @@ useEffect(() => {
 
   return (
     <div className="App">
-      <Routes>
-        <Route path="/" element={<Homepage user={user} />} />
+      {shouldShowHeader && <Header user={user} />}
 
-        <Route path="/login" element={<UserInit goal="log" user={user} />} />
-        <Route path="/regist" element={<UserInit goal="reg" user={user} />} />
+      <Routes>
+        <Route path="/" element={<Main user={user} />} />
+
+        <Route path="/login" element={<Auth goal="log" user={user} />} />
+        <Route path="/regist" element={<Auth goal="reg" user={user} />} />
         <Route path="/resetPass" element={<ResetPass />} />
         <Route
           path="/profile"
@@ -421,14 +431,14 @@ useEffect(() => {
         <Route path="/resultoftest" element={<ResultOfTest user={user} />} />
 
         <Route
-          path="/search-roommate"
+          path="/roommates"
           element={
             <Roommates userAnswers={userAnswers} users={users} user={user} />
           }
         />
 
-        <Route path="/aboutus" element={<Aboutus user={user} />} />
-
+        <Route path="/faq" element={<FAQ user={user} />} />
+        <Route path="/aboutus" element={<AboutUs user={user} />} />
         <Route path="/chat" element={<Chat user={user} />} />
       </Routes>
     </div>

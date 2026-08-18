@@ -41,7 +41,7 @@ const Header = ({ user }) => {
           >
             <ul className="navbar-nav align-items-lg-center gap-lg-2 my-3 my-lg-0">
               <li className="nav-item">
-                <Link className="nav-link px-3" to="/aboutUs">
+                <Link className="nav-link px-3" to="/faq">
                   {t("header.questions")}
                 </Link>
               </li>
@@ -93,7 +93,7 @@ const Header = ({ user }) => {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="/search-roommate" className="nav-link px-3">
+                    <Link to="/roommates" className="nav-link px-3">
                       {t("header.roommates")}
                     </Link>
                   </li>
