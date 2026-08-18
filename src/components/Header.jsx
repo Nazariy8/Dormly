@@ -1,14 +1,22 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
+import { useTranslation } from "react-i18next";
 
 const Header = ({ user }) => {
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language?.startsWith("en") ? "en" : "ua";
+
+  const toggleLanguage = (lang) => {
+    i18n.changeLanguage(lang);
+  };
+
   return (
     <header className="custom-header sticky-top">
       <nav className="navbar navbar-expand-lg custom-navbar">
         <div className="container-xl d-flex align-items-center justify-content-between">
           {/* ЛОГОТИП */}
-          <Link className="navbar-brand p-0 logo-link" to="/">
+          <Link className="navbar-brand p-0 logo-link" to="/" title="logo">
             Dormly
           </Link>
 
@@ -21,6 +29,7 @@ const Header = ({ user }) => {
             aria-controls="navbarSupportedContent"
             aria-expanded="false"
             aria-label="Toggle navigation"
+            title="navbar-toggler"
           >
             <i className="bi bi-list fs-2 text-white"></i>
           </button>
@@ -33,7 +42,7 @@ const Header = ({ user }) => {
             <ul className="navbar-nav align-items-lg-center gap-lg-2 my-3 my-lg-0">
               <li className="nav-item">
                 <Link className="nav-link px-3" to="/aboutUs">
-                  Питання
+                  {t("header.questions")}
                 </Link>
               </li>
 
@@ -45,7 +54,7 @@ const Header = ({ user }) => {
                       to="/#advantage-heading"
                       smooth
                     >
-                      Переваги
+                      {t("header.advantages")}
                     </HashLink>
                   </li>
                   <li className="nav-item">
@@ -54,17 +63,17 @@ const Header = ({ user }) => {
                       to="/#feedbacks-heading"
                       smooth
                     >
-                      Відгуки
+                      {t("header.feedbacks")}
                     </HashLink>
                   </li>
 
-                  {/* Кнопки авторизації для гостей */}
+                  {/* Кнопки авторизації */}
                   <li className="nav-item ms-lg-2 mt-2 mt-lg-0">
                     <Link
                       className="btn-auth-outline d-inline-block text-center w-100"
                       to="/login"
                     >
-                      Увійти
+                      {t("header.login")}
                     </Link>
                   </li>
                   <li className="nav-item ms-lg-1 mt-2 mt-lg-0">
@@ -72,7 +81,7 @@ const Header = ({ user }) => {
                       className="btn-auth-solid d-inline-block text-center w-100"
                       to="/regist"
                     >
-                      Зареєструватись
+                      {t("header.register")}
                     </Link>
                   </li>
                 </>
@@ -80,12 +89,12 @@ const Header = ({ user }) => {
                 <>
                   <li className="nav-item">
                     <Link to="/chat" className="nav-link px-3">
-                      Чат
+                      {t("header.chat")}
                     </Link>
                   </li>
                   <li className="nav-item">
                     <Link to="/search-roommate" className="nav-link px-3">
-                      Співжителі
+                      {t("header.roommates")}
                     </Link>
                   </li>
                   <li className="nav-item ms-lg-2 mt-2 mt-lg-0">
@@ -93,11 +102,31 @@ const Header = ({ user }) => {
                       className="btn-auth-solid d-inline-block text-center px-4"
                       to="/profile"
                     >
-                      Профіль
+                      {t("header.profile")}
                     </Link>
                   </li>
                 </>
               )}
+
+              {/* ПОВЗУНОК МОВИ UA / EN */}
+              <li className="nav-item ms-lg-3 mt-3 mt-lg-0 d-flex justify-content-center">
+                <div className="lang-switcher">
+                  <button
+                    type="button"
+                    className={`lang-btn ${currentLang === "ua" ? "active" : ""}`}
+                    onClick={() => toggleLanguage("ua")}
+                  >
+                    UA
+                  </button>
+                  <button
+                    type="button"
+                    className={`lang-btn ${currentLang === "en" ? "active" : ""}`}
+                    onClick={() => toggleLanguage("en")}
+                  >
+                    EN
+                  </button>
+                </div>
+              </li>
             </ul>
           </div>
         </div>

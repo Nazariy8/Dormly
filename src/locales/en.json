@@ -1,0 +1,73 @@
+{
+  "header": {
+    "questions": "FAQ",
+    "advantages": "Advantages",
+    "feedbacks": "Feedbacks",
+    "chat": "Chat",
+    "roommates": "Roommates",
+    "profile": "Profile",
+    "login": "Log in",
+    "register": "Sign up"
+  },
+  "hero": {
+    "badge": "Dormly 2.0 for students",
+    "title": "Find your ideal roommate",
+    "subtitle": "Roommate matching algorithm based on shared interests, habits, and study schedules.",
+    "passTest": "Take the test",
+    "howItWorks": "How it works",
+    "preview": {
+      "avatar": "DN",
+      "matchFound": "Match found • 98% compatibility",
+      "perfectMatch": "Perfect Match",
+      "name": "Denys, 19 y.o.",
+      "meta": "CS • 2nd year • Early bird",
+      "tagGames": "🎮 Gaming",
+      "tagDev": "💻 Coding",
+      "tagQuiet": "🔇 Enjoys quiet evenings"
+    }
+  },
+  "advantages": {
+    "badge": "Platform Advantages",
+    "title": "Why Choose Dormly?",
+    "subtitle": "We create a transparent, safe, and comfortable environment for student living.",
+    "cards": {
+      "security": {
+        "title": "Safety & Verification",
+        "description": "Student profile verification and moderation for your peace of mind and personal space protection."
+      },
+      "match": {
+        "title": "Precise Matching",
+        "description": "The algorithm compares your daily routines, cleaning habits, study schedule, and hobbies for the best match."
+      },
+      "community": {
+        "title": "Student Community",
+        "description": "Connect with like-minded peers from your faculty or dorm before the academic term even begins."
+      }
+    }
+  },
+  "feedbacks": {
+    "badge": "Feedbacks",
+    "title": "What Our Users Say",
+    "subtitle": "Success stories from students who found their perfect roommates through Dormly.",
+    "reviews": {
+      "user1": {
+        "quote": "“Dormly helped me find not just a roommate, but a true friend! We get along great, and living together has been an absolute pleasure.”",
+        "avatar": "OK",
+        "name": "Olena K.",
+        "role": "Student, 1st year"
+      },
+      "user2": {
+        "quote": "“I was skeptical at first, but the algorithm actually works. My roommate is calm and tidy—exactly what I needed for focused studying.”",
+        "avatar": "MP",
+        "name": "Maksym P.",
+        "role": "Student, 2nd year"
+      },
+      "user3": {
+        "quote": "“Thanks to the platform, I avoided the typical dormitory conflicts early in the year. Highly recommend to all incoming freshmen!”",
+        "avatar": "IL",
+        "name": "Iryna L.",
+        "role": "Student, 3rd year"
+      }
+    }
+  }
+}

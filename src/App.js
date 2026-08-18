@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { auth, db } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
+import "./i18n";
 
 import Header from "./components/Header";
 import Homepage from "./pages/Main.jsx";
