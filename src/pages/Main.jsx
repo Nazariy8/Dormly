@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../components/Header";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,10 @@ const Main = ({ user }) => {
   const { t } = useTranslation();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    alert("Product is on the beta-test. Full version will be soon!")
+  }, [])
 
   return (
     <main>
@@ -22,6 +26,9 @@ const Main = ({ user }) => {
             height: "auto",
           }}
         >
+          <span className="hero-subtitle mb-4 bg-warning text-black fw-bold px-2 rounded-pill">
+            Product is in beta testing. Full version coming soon!
+          </span>
           {/* Акуратний бейдж Vercel */}
           <div className="hero-badge mb-4">
             <span className="badge-dot"></span>
@@ -43,7 +50,10 @@ const Main = ({ user }) => {
 
           {/* Кнопки дій */}
           <div className="hero-actions d-flex gap-3 justify-content-center flex-wrap">
-            <Link to={user ? "/test" : "login" } className="btn btn-hero-primary">
+            <Link
+              to={user ? "/test" : "login"}
+              className="btn btn-hero-primary"
+            >
               {t("hero.passTest", "Пройти тест")}
             </Link>
             <HashLink
