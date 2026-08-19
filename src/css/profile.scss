@@ -1,3 +1,4 @@
+@use "sass:color";
 /* Main Container */
 .profile {
   margin: 0 auto;
@@ -187,8 +188,7 @@
     &:hover {
       cursor: pointer;
       scale: 1.02;
-      /* Додав трохи затемнення при наведенні, щоб краще вписувалося в новий стиль */
-      background-color: darken(#8a4fff, 10%);
+      background-color: color.adjust(#8a4fff, $lightness: -10%);
     }
   }
   .user-photo {

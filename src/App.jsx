@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-import { auth, db } from "./firebase";
+import { auth, db } from "./firebase.js";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import "./i18n";
+import "./i18n.js";
 
-import Header from "./components/Header";
+import Header from "./components/Header.jsx";
 
 import Main from "./pages/Main.jsx";
 import Auth from "./pages/Auth.jsx";
