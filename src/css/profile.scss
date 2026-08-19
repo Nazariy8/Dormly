@@ -1,270 +1,348 @@
 @use "sass:color";
-/* Main Container */
-.profile {
-  margin: 0 auto;
-  width: 95%;
-  max-width: 1400px;
-  background-color: var(--bg-secondary);
 
-  input{
-    &::placeholder{
-      color: var(--text-muted);
-    }
-    &:active{
-      border: none;
-      box-shadow: none;
-    }
-  }
-  
-  
-  .custom-shadow {
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+.profile-page-wrapper {
+  min-height: 100vh;
+  background-color: var(--bg-main, #0a0a0a);
+  color: var(--text-primary, #ededed);
+  padding: 32px 16px 80px;
+
+  .profile-container {
+    max-width: 1100px;
+    margin: 0 auto;
   }
 
-  /* Avatar Block */
-  @media (min-width: 300px) and (max-width: 453px){
-    .new-ava-btn{
+  /* Загальна картка секції */
+  .profile-card {
+    background-color: var(--bg-card, #121212);
+    border: 1px solid var(--border-subtle, #262626);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    
+    @media (min-width: 768px) {
+      padding: 32px;
+    }
+  }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #ffffff;
+    margin-bottom: 20px;
+  }
+
+  /* Шапка профілю (Аватар + інфо) */
+  .profile-header-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    .avatar-wrapper {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 1px solid var(--border-focus, #404040);
+      overflow: hidden;
+      flex-shrink: 0;
+
+      .profile-avatar-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .user-meta {
+      .user-handle {
+        font-size: 18px;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: -0.01em;
+      }
+
+      .user-fullname {
+        font-size: 14px;
+        color: var(--text-secondary, #a1a1a1);
+      }
+    }
+  }
+
+  /* Поля введення */
+  .form-group-custom {
+    display: flex;
+    flex-direction: column;
+
+    .form-label-custom {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary, #a1a1a1);
+      margin-bottom: 6px;
+    }
+
+    .custom-input,
+    .custom-select,
+    .custom-textarea {
       width: 100%;
+      background-color: var(--bg-main, #0a0a0a);
+      border: 1px solid var(--border-subtle, #262626);
+      border-radius: 8px;
+      color: #ffffff;
+      font-size: 14px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.15s ease;
+
+      &::placeholder {
+        color: #525252;
+      }
+
+      &:focus {
+        border-color: var(--border-focus, #525252);
+      }
+    }
+
+    .custom-select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23a1a1a1' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 12px;
+    }
+
+    .input-prefix-group {
+      display: flex;
+      align-items: center;
+      background-color: var(--bg-main, #0a0a0a);
+      border: 1px solid var(--border-subtle, #262626);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: border-color 0.15s ease;
+
+      &:focus-within {
+        border-color: var(--border-focus, #525252);
+      }
+
+      .prefix-icon {
+        padding: 0 12px;
+        color: var(--text-muted, #666666);
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+      }
+
+      .custom-input {
+        border: none;
+        border-radius: 0;
+        background: transparent;
+        padding-left: 0;
+
+        &:focus {
+          border-color: transparent;
+        }
+      }
     }
   }
 
-  .cursor-pointer {
+  /* Світч статусу та налаштувань */
+  .setting-row {
+    background-color: var(--bg-main, #0a0a0a);
+    border: 1px solid var(--border-subtle, #262626);
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+
+    .setting-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #ededed;
+      margin-bottom: 2px;
+    }
+
+    .setting-desc {
+      font-size: 12.5px;
+      color: var(--text-secondary, #a1a1a1);
+    }
+  }
+
+  /* Bootstrap Switch Restyle */
+  .form-switch .form-check-input {
+    width: 2.4em;
+    height: 1.25em;
+    background-color: #262626;
+    border: 1px solid #404040;
     cursor: pointer;
-  }
-  /* Custom Buttons */
-
-  .btn-action-primary,
-  .add-photo {
-    background-color: var(--primary-puple);
-    color: var(--bg-main);
-    transition: 0.3s;
-    border: none;
-    &:hover {
-      box-shadow: 0 0 0 0.2rem rgba(138, 79, 255, 0.15);
-
-      filter: hue-rotate(-30deg);
-    }
-  }
-  .add-photo {
-    color: #f1f1f1;
-  }
-  [data-theme="dark"] {
-    .btn-action-primary,
-    .add-photo {
-      color: var(--text-main);
-      &:hover {
-        color: var(--text-main);
-      }
-    }
-  }
-  .btn-action-primary_logOut,
-  .retest-btn {
-    background: var(--text-main);
-    color: var(--bg-main);
-    &:hover {
-      background: var(--text-muted);
-      box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.15);
-      filter: hue-rotate(-30deg);
-    }
-  }
-  [data-theme="dark"] {
-    .btn-action-primary_logOut,
-    .retest-btn {
-      &:hover {
-        background: var(--text-muted);
-      }
-    }
-  }
-  .btn-action-light {
-    background-color: var(--primary-purple-light);
-    color: var(--primary-puple);
-    border: none;
-    transition: 0.3s;
-    &:hover {
-      filter: hue-rotate(-30deg);
-    }
-  }
-
-  /* Form Controls */
-  .form-control {
-    border: 1px solid #dee2e6;
-    transition: border-color 0.2s;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23a1a1a1'/%3e%3c/svg%3e");
 
     &:focus {
-      border-color: none;
-      box-shadow:none;
+      box-shadow: none;
+      border-color: #525252;
     }
-  }
-
-  /* Badges */
-  .badge-custom {
-    background-color: var(--primary-purple-light);
-    color: var(--primary-puple);
-    border: 1px solid rgba(138, 79, 255, 0.2);
-  }
-
-  /* Settings List Cards */
-  .set-card {
-    background-color: var(--primary-purple-light);
-    padding: 20px 25px;
-    border-radius: 16px;
-  }
-
-  .icon-block {
-    min-width: 45px ;
-    min-height: 45px ;
-    display: flex;
-    border-radius: 50%;
-    justify-content: center;
-    align-items: center;
-    background: #def6ec; /* Світло-зелений фон */
-
-    .bi {
-      color: #17a96e; /* Темно-зелена іконка */
-    }
-  }
-
-  /* Custom Bootstrap Switch Override */
-  .form-switch .custom-switch {
-    width: 2.8em;
-    height: 1.4em;
-    cursor: pointer;
 
     &:checked {
-      background-color: var(--primary-puple);
-      border-color: var(--primary-puple);
-    }
-
-    &:focus {
-      box-shadow: none;
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%238a4fff'/%3e%3c/svg%3e");
-    }
-
-    &:checked:focus {
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+      background-color: #ffffff;
+      border-color: #ffffff;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23000000'/%3e%3c/svg%3e");
     }
   }
 
-  /* Scrollbar for roommates */
-  .custom-scroll {
-    max-height: 800px;
-    overflow-y: auto;
+  /* Складані блоки Звички та Фото */
+  .accordion-custom-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
 
-    &::-webkit-scrollbar {
-      width: 6px;
+    .accordion-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #ffffff;
     }
-    &::-webkit-scrollbar-track {
-      background: #f1f1f1;
+
+    .toggle-icon-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-main, #0a0a0a);
+      border: 1px solid var(--border-subtle, #262626);
+      border-radius: 50%;
+      color: var(--text-secondary, #a1a1a1);
+      transition: all 0.15s ease;
+
+      &:hover {
+        border-color: var(--border-focus, #525252);
+        color: #ffffff;
+      }
+    }
+  }
+
+  .habit-pill {
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-subtle, #262626);
+    color: var(--text-primary, #ededed);
+    font-size: 13px;
+    padding: 6px 14px;
+    border-radius: 50px;
+    display: inline-block;
+  }
+
+  /* Галерея */
+  .gallery-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    .gallery-item {
+      position: relative;
+      width: 100px;
+      height: 100px;
       border-radius: 10px;
-    }
-    &::-webkit-scrollbar-thumb {
-      background: var(--primary-grey);
-      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle, #262626);
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .btn-del-photo {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 20px;
+        height: 20px;
+        background-color: rgba(0, 0, 0, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+
+        &:hover {
+          background-color: #ef4444;
+          border-color: #ef4444;
+        }
+      }
     }
   }
 
-  .roommate-card {
-    background-color: var(--primary-white);
-    border-radius: 16px;
-    border: 1px solid #eaeaea;
-    margin-bottom: 15px;
-    padding: 20px;
-  }
-  /* Кнопка "Додати в друзі" (UserForRoom) */
-  .add-friend {
-    background: var(--primary-puple);
-    padding: 10px 20px;
-    margin-top: 10px;
-    border-radius: 10px;
-    color: var(--primary-white);
-    transition: 0.5s;
-    border: none;
-
-    &.activated {
-      background: var(--primary-purple-light);
-      color: var(--primary-dark);
-    }
+  /* Загальні кнопки */
+  .btn-solid-light {
+    background-color: #ffffff;
+    color: #000000;
+    font-weight: 600;
+    font-size: 13.5px;
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: 1px solid #ffffff;
+    transition: all 0.2s ease;
+    cursor: pointer;
 
     &:hover {
+      background-color: #e5e5e5;
+      border-color: #e5e5e5;
+    }
+  }
+
+  .btn-outline-custom {
+    background-color: transparent;
+    border: 1px solid var(--border-subtle, #262626);
+    color: var(--text-secondary, #a1a1a1);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 8px;
+    transition: all 0.15s ease;
+
+    &:hover {
+      border-color: var(--border-focus, #525252);
+      color: #ffffff;
       cursor: pointer;
-      scale: 1.02;
-      background-color: color.adjust(#8a4fff, $lightness: -10%);
-    }
-  }
-  .user-photo {
-    width: 100px;
-    height: 100px;
-  }
-  /* Блок спільних інтересів (права колонка) */
-  .simil-block {
-    display: flex;
-    flex-direction: column;
-    height: 100%; /* Розтягуємо на всю висоту батьківського елемента (ряду) */
-  }
-
-  .list-of-users {
-    flex-grow: 1; /* Змушує список зайняти весь вільний простір по висоті */
-    width: 100%;
-    height: max-content;
-    /* Можеш використовувати фіксовану висоту або адаптивну через vh */
-    max-height: 750px;
-    overflow-y: auto;
-    padding-right: 10px; /* Трохи відступу, щоб скролбар не прилипав до карток */
-
-    @media (max-width: 1200px) {
-      align-items: stretch;
     }
   }
 
+  /* Модалка кропера */
   .custom-cropper-modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.9);
-    z-index: 10000;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 99999;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-  }
-  .cropper-container {
-    position: relative;
-    width: 90%;
-    height: 70vh;
-  }
-  .cropper-controls {
-    margin-top: 20px;
-    display: flex;
-    gap: 20px;
-  }
-  @media (min-width: 300px) and (max-width: 991px) {
-    .message-sets {
-      margin-top: 30px;
-    }
-  }
 
-  // --------------
-  .my-features {
-  
-    .card{
-      background: var(--bg-secondary);
-      box-shadow: var(--custom-card-shadow);
-      border: var(--custom-card-border);
+    .cropper-container {
+      position: relative;
+      width: 90%;
+      max-width: 500px;
+      height: 400px;
+      background: #121212;
+      border-radius: 12px;
       overflow: hidden;
+      border: 1px solid #262626;
     }
-    .card-header {
-      background: transparent !important;
-      border-bottom: none !important;
-    }
-    .habits-header,
-    .photos-header {
-      background: var(--bg-secondary);
-      .card-header-title {
-        color: var(--text-main);
-      }
+
+    .cropper-controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 12px;
     }
   }
 }
-

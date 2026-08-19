@@ -21,32 +21,27 @@ import "../css/roommate.scss";
 const Roommates = ({ user }) => {
   const navigate = useNavigate();
 
-  // --- СТАНИ ДЛЯ ДАНИХ З БАЗИ ---
   const [currentUserData, setCurrentUserData] = useState(null);
   const [roommates, setRoommates] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [myFriends, setMyFriends] = useState([]);
 
-  // Нові стани для системи метчингу
   const [currentUserAnswers, setCurrentUserAnswers] = useState(null);
   const [potentialMatches, setPotentialMatches] = useState([]);
   const [isLoadingMatches, setIsLoadingMatches] = useState(false);
 
-  // --- СТАНИ ДЛЯ UI ---
   const [activeTab, setActiveTab] = useState("room");
-  const [isRoommatesOpen, setIsRoommatesOpen] = useState(false);
-  const [isTasksOpen, setIsTasksOpen] = useState(false);
+  const [isRoommatesOpen, setIsRoommatesOpen] = useState(true);
+  const [isTasksOpen, setIsTasksOpen] = useState(true);
   const [searchFriendTerm, setSearchFriendTerm] = useState("");
   const [newTask, setNewTask] = useState("");
 
-  // --- СТАНИ ДЛЯ КОЛЕСА ФОРТУНИ ---
-  const [spinStage, setSpinStage] = useState("task"); // 'task' | 'person'
+  const [spinStage, setSpinStage] = useState("task");
   const [selectedTask, setSelectedTask] = useState(null);
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
   const [winner, setWinner] = useState(null);
 
-  // --- СИНХРОНІЗАЦІЯ ПРОФІЛЮ КОРИСТУВАЧА ---
   useEffect(() => {
     if (!user) return;
     const userRef = doc(db, "users", user.uid);
@@ -54,7 +49,6 @@ const Roommates = ({ user }) => {
     const unsubscribe = onSnapshot(userRef, async (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
-
         setCurrentUserData({ id: user.uid, ...data });
 
         if (data.tasks) setTasks(data.tasks);
@@ -88,7 +82,6 @@ const Roommates = ({ user }) => {
     return () => unsubscribe();
   }, [user]);
 
-  // --- ЗАВАНТАЖЕННЯ КАНДИДАТІВ ДЛЯ МЕТЧИНГУ ---
   useEffect(() => {
     if (activeTab === "search" && currentUserAnswers) {
       const fetchMatches = async () => {
@@ -139,7 +132,7 @@ const Roommates = ({ user }) => {
       key: "rules",
       ids: ["10", "11", "12"],
       icon: "🤝",
-      label: "Правила і відповідальність",
+      label: "Правила і обов'язки",
     },
     {
       key: "comfort",
@@ -219,7 +212,6 @@ const Roommates = ({ user }) => {
     return currentUserData ? [currentUserData, ...roommates] : roommates;
   }, [currentUserData, roommates]);
 
-  // Безпечне формування списку секторів (завжди >= 2 елементів)
   const wheelData = useMemo(() => {
     if (spinStage === "person") {
       if (allParticipants.length === 0) {
@@ -231,7 +223,6 @@ const Roommates = ({ user }) => {
       return mapped.length === 1 ? [...mapped, ...mapped] : mapped;
     }
 
-    // Для стадії "task"
     if (tasks.length === 0) {
       return [{ option: "Додайте завдання" }, { option: "Додайте завдання" }];
     }
@@ -241,7 +232,6 @@ const Roommates = ({ user }) => {
       : mappedTasks;
   }, [spinStage, allParticipants, tasks, user]);
 
-  // 1. Старт першого раунду (Завдання)
   const handleSpinClick = () => {
     if (tasks.length === 0 || allParticipants.length === 0 || mustSpin) return;
 
@@ -254,7 +244,6 @@ const Roommates = ({ user }) => {
     setMustSpin(true);
   };
 
-  // 2. Зупинка обертання
   const handleStopSpinning = () => {
     setMustSpin(false);
 
@@ -262,10 +251,8 @@ const Roommates = ({ user }) => {
       const chosenTask = wheelData[prizeNumber]?.option || tasks[0];
       setSelectedTask(chosenTask);
 
-      // Перемикаємось на етап людей через невелику паузу
       setTimeout(() => {
         setSpinStage("person");
-
         setTimeout(() => {
           const personDataLength =
             allParticipants.length === 1
@@ -284,88 +271,56 @@ const Roommates = ({ user }) => {
         person: chosenPerson,
         task: selectedTask,
       });
-      setSpinStage("task"); // скидання для наступного разу
+      setSpinStage("task");
     }
   };
 
   return (
-    <div
-      className="roommates-page"
-      style={{ minHeight: "100vh", paddingBottom: "40px" }}
-    >
-
-      {/* --- МІНІ-МЕНЮ (ТАБИ) --- */}
-      <div className="d-flex justify-content-center mt-4 mb-2">
-        <div
-          className="tabs p-1 rounded-pill shadow-sm d-inline-flex"
-          style={{ border: "1px solid #eee" }}
-        >
-          <button
-            onClick={() => setActiveTab("search")}
-            className={`btn rounded-pill px-4 py-2 fw-bold ${
-              activeTab === "search" ? "active" : ""
-            }`}
-            style={{
-              backgroundColor:
-                activeTab === "search" ? "#8a4fff" : "transparent",
-              transition: "all 0.3s ease",
-              border: "none",
-            }}
-          >
-            Знайти співжителя
-          </button>
+    <div className="roommates-page">
+      {/* Таби */}
+      <div className="d-flex justify-content-center mt-4 mb-4">
+        <div className="tabs-wrapper">
           <button
             onClick={() => setActiveTab("room")}
-            className={`btn rounded-pill px-4 py-2 fw-bold ${
-              activeTab === "room" ? "active" : ""
-            }`}
-            style={{
-              backgroundColor: activeTab === "room" ? "#8a4fff" : "transparent",
-              transition: "all 0.3s ease",
-              border: "none",
-            }}
+            className={`tab-btn ${activeTab === "room" ? "active" : ""}`}
           >
             Кімната
+          </button>
+          <button
+            onClick={() => setActiveTab("search")}
+            className={`tab-btn ${activeTab === "search" ? "active" : ""}`}
+          >
+            Знайти співжителя
           </button>
         </div>
       </div>
 
-      {/* ВКЛАДКА "КІМНАТА" (КОЛЕСО) */}
+      {/* Вкладка Кімната */}
       {activeTab === "room" && (
-        <div className="container mt-4 text-center">
-          <h2 className="fw-bold mb-2">
-            Колесо фортуни для сусідів по кімнаті
-          </h2>
-          <p className="mb-5 fw-bold text-secondary">
-            Не можете вирішити хто що робить? Нехай колесо вирішить!
+        <div className="container text-center">
+          <h1 className="h3 fw-bold text-white mb-2">Колесо фортуни кімнати</h1>
+          <p className="text-secondary small mb-5">
+            Справедливий розподіл домашніх обов'язків між сусідами
           </p>
 
-          {/* === ОБГОРТКА ДЛЯ БЛОКІВ У ДВІ КОЛОНКИ === */}
           <div
-            className="row justify-content-center mx-auto mb-5"
-            style={{ maxWidth: "1200px" }}
+            className="row justify-content-center g-4 mb-5 mx-auto"
+            style={{ maxWidth: "1100px" }}
           >
-            {/* --- БЛОК СУСІДІВ (ЛІВА КОЛОНКА) --- */}
-            <div className="col-12 col-lg-6 mb-4 mb-lg-0 align-self-start">
-              <div className="card roommates-block rounded-4 w-100">
+            {/* Блок сусідів */}
+            <div className="col-12 col-lg-6 text-start">
+              <section className="roommate-card-block">
                 <div
-                  className="card-header border-0 d-flex justify-content-between align-items-center p-3 rounded-4"
-                  style={{ cursor: "pointer" }}
+                  className="card-toggle-header"
                   onClick={() => setIsRoommatesOpen(!isRoommatesOpen)}
                 >
-                  <span className="fw-bold">Сусіди ({roommates.length})</span>
-                  <button
-                    className="btn btn-sm border-1 border-secondary rounded-pill"
-                    style={{
-                      backgroundColor: "var(--bg-input)",
-                      color: "var(--text-main)",
-                    }}
-                  >
-                    {isRoommatesOpen ? (
-                      <i className="bi bi-dash"></i>
-                    ) : (
-                      <i className="bi bi-plus"></i>
-                    )}
+                  <span className="block-title">
+                    Сусіди по кімнаті ({roommates.length})
+                  </span>
+                  <button type="button" className="toggle-btn">
+                    <i
+                      className={`bi ${isRoommatesOpen ? "bi-dash" : "bi-plus"}`}
+                    ></i>
                   </button>
                 </div>
 
@@ -373,64 +328,45 @@ const Roommates = ({ user }) => {
                   style={{
                     display: "grid",
                     gridTemplateRows: isRoommatesOpen ? "1fr" : "0fr",
-                    transition: "grid-template-rows 0.3s ease-out",
+                    transition: "grid-template-rows 0.25s ease",
                   }}
                 >
-                  <div style={{ overflow: "hidden" }}>
-                    <div className="card-body rounded-bottom-4">
-                      <div className="position-relative mb-3 text-start">
+                  <div className="overflow-hidden">
+                    <div className="card-inner-body">
+                      <div className="position-relative mb-3">
                         <input
                           type="text"
-                          className="form-control"
-                          placeholder="Введіть ім'я..."
+                          className="custom-input w-100"
+                          placeholder="Пошук серед ваших друзів..."
                           value={searchFriendTerm}
                           onChange={(e) => setSearchFriendTerm(e.target.value)}
                         />
                         {searchFriendTerm.length > 0 && (
-                          <div
-                            className="position-absolute w-100 shadow rounded-3 mt-1 bg-white"
-                            style={{
-                              zIndex: 1000,
-                              maxHeight: "200px",
-                              overflowY: "auto",
-                            }}
-                          >
+                          <div className="friend-search-dropdown">
                             {filteredFriends.length > 0 ? (
                               filteredFriends.map((friend) => (
                                 <div
                                   key={friend.id}
-                                  className="d-flex align-items-center p-2 border-bottom"
-                                  style={{ cursor: "pointer" }}
+                                  className="friend-search-item"
                                   onClick={() => handleAddRoommate(friend.id)}
-                                  onMouseEnter={(e) =>
-                                    (e.currentTarget.style.backgroundColor =
-                                      "#e9ecef")
-                                  }
-                                  onMouseLeave={(e) =>
-                                    (e.currentTarget.style.backgroundColor =
-                                      "transparent")
-                                  }
                                 >
                                   <img
                                     src={friend.avatar || defaultUser}
                                     alt="avatar"
                                     className="rounded-circle me-2"
                                     style={{
-                                      width: "30px",
-                                      height: "30px",
+                                      width: "26px",
+                                      height: "26px",
                                       objectFit: "cover",
                                     }}
                                   />
-                                  <span
-                                    className="fw-bold"
-                                    style={{ fontSize: "14px", color: "#333" }}
-                                  >
+                                  <span className="small fw-semibold text-white">
                                     {friend.firstName} {friend.lastName}
                                   </span>
                                 </div>
                               ))
                             ) : (
-                              <div className="p-2 text-muted small">
+                              <div className="p-2 text-secondary small">
                                 Друзів не знайдено
                               </div>
                             )}
@@ -438,42 +374,27 @@ const Roommates = ({ user }) => {
                         )}
                       </div>
 
-                      <h6 className="text-start mt-2 fw-bold">Ваша кімната</h6>
-                      <div className="d-flex flex-wrap gap-2 mt-2">
+                      <div className="d-flex flex-wrap gap-2">
                         {roommates.length === 0 && (
-                          <p className="small w-100 mb-0 empty-roommates-text text-start">
-                            Ви ще не додали сусідів
+                          <p className="text-secondary small mb-0">
+                            Сусідів ще не додано
                           </p>
                         )}
                         {roommates.map((rm) => (
-                          <div
-                            key={rm.id}
-                            className="badge rounded-pill d-flex align-items-center px-3 py-2"
-                            style={{
-                              backgroundColor: "var(--bg-input)",
-                              color: "var(--text-main)",
-                              border: "1px solid var(--border-color)",
-                            }}
-                          >
+                          <div key={rm.id} className="tag-pill-item">
                             <img
                               src={rm.avatar || defaultUser}
                               alt="avatar"
                               className="rounded-circle me-2"
                               style={{
-                                width: "24px",
-                                height: "24px",
+                                width: "20px",
+                                height: "20px",
                                 objectFit: "cover",
                               }}
                             />
-                            <span
-                              className="fw-bold me-2"
-                              style={{ fontSize: "13px" }}
-                            >
-                              {rm.firstName}
-                            </span>
+                            <span>{rm.firstName}</span>
                             <i
-                              className="bi bi-x-circle-fill text-danger"
-                              style={{ cursor: "pointer", fontSize: "16px" }}
+                              className="bi bi-x tag-close-icon"
                               onClick={() => handleDeleteRoommate(rm.id)}
                             ></i>
                           </div>
@@ -482,30 +403,21 @@ const Roommates = ({ user }) => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </section>
             </div>
 
-            {/* --- БЛОК ЗАВДАНЬ (ПРАВА КОЛОНКА) --- */}
-            <div className="col-12 col-lg-6 align-self-start">
-              <div className="card tasks-block rounded-4 w-100">
+            {/* Блок завдань */}
+            <div className="col-12 col-lg-6 text-start">
+              <section className="roommate-card-block">
                 <div
-                  className="card-header border-0 d-flex justify-content-between align-items-center p-3 rounded-4"
-                  style={{ cursor: "pointer" }}
+                  className="card-toggle-header"
                   onClick={() => setIsTasksOpen(!isTasksOpen)}
                 >
-                  <span className="fw-bold">Завдання ({tasks.length})</span>
-                  <button
-                    className="btn btn-sm rounded-pill border-1 border-secondary"
-                    style={{
-                      backgroundColor: "var(--bg-input)",
-                      color: "var(--text-main)",
-                    }}
-                  >
-                    {isTasksOpen ? (
-                      <i className="bi bi-dash"></i>
-                    ) : (
-                      <i className="bi bi-plus"></i>
-                    )}
+                  <span className="block-title">Завдання ({tasks.length})</span>
+                  <button type="button" className="toggle-btn">
+                    <i
+                      className={`bi ${isTasksOpen ? "bi-dash" : "bi-plus"}`}
+                    ></i>
                   </button>
                 </div>
 
@@ -513,16 +425,17 @@ const Roommates = ({ user }) => {
                   style={{
                     display: "grid",
                     gridTemplateRows: isTasksOpen ? "1fr" : "0fr",
-                    transition: "grid-template-rows 0.3s ease-out",
+                    transition: "grid-template-rows 0.25s ease",
                   }}
                 >
                   <div style={{ overflow: "hidden" }}>
-                    <div className="card-body rounded-bottom-4">
-                      <div className="input-group mb-3">
+                    <div className="card-inner-body">
+                      <div className="d-flex mb-3">
                         <input
                           type="text"
-                          className="form-control"
-                          placeholder="Додати завдання..."
+                          className="custom-input flex-grow-1"
+                          style={{ borderRadius: "8px 0 0 8px" }}
+                          placeholder="Нове завдання (напр. Винести сміття)..."
                           value={newTask}
                           onChange={(e) => setNewTask(e.target.value)}
                           onKeyDown={(e) =>
@@ -530,40 +443,24 @@ const Roommates = ({ user }) => {
                           }
                         />
                         <button
-                          className="btn fw-bold text-white"
-                          style={{ backgroundColor: "#8a4fff" }}
+                          className="btn-add-task"
                           onClick={handleAddTask}
                         >
-                          <i className="bi bi-plus-lg"></i>
+                          +
                         </button>
                       </div>
 
-                      <h6 className="text-start mt-2 fw-bold">Ваші завдання</h6>
-                      <div className="d-flex flex-wrap gap-2 mt-2">
+                      <div className="d-flex flex-wrap gap-2">
                         {tasks.length === 0 && (
-                          <p className="small w-100 text-muted text-start mb-0 empty-roommates-text">
+                          <p className="text-secondary small mb-0">
                             Список завдань порожній
                           </p>
                         )}
                         {tasks.map((task, index) => (
-                          <div
-                            key={index}
-                            className="badge rounded-pill d-flex align-items-center px-3 py-2"
-                            style={{
-                              backgroundColor: "var(--bg-input)",
-                              color: "var(--text-main)",
-                              border: "1px solid var(--border-color)",
-                            }}
-                          >
-                            <span
-                              className="fw-bold me-2 text-wrap text-start"
-                              style={{ fontSize: "13px" }}
-                            >
-                              {task}
-                            </span>
+                          <div key={index} className="tag-pill-item">
+                            <span>{task}</span>
                             <i
-                              className="bi bi-x-circle-fill text-danger"
-                              style={{ cursor: "pointer", fontSize: "16px" }}
+                              className="bi bi-x tag-close-icon"
                               onClick={() => handleDeleteTask(task)}
                             ></i>
                           </div>
@@ -572,97 +469,59 @@ const Roommates = ({ user }) => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </section>
             </div>
           </div>
-          {/* === КІНЕЦЬ ОБГОРТКИ === */}
 
-          {/* КОНТЕЙНЕР КОЛЕСА ТА КНОПОК */}
+          {/* Колесо та керування */}
           <div
             className="d-flex flex-column flex-md-row justify-content-center align-items-center gap-5 mx-auto"
-            style={{ maxWidth: "1000px" }}
+            style={{ maxWidth: "950px" }}
           >
-            {/* КОЛЕСО */}
-            <div
-              className="d-flex justify-content-center align-items-center position-relative"
-              style={{
-                width: "450px",
-                height: "450px",
-                flexShrink: 0,
-                overflow: "hidden",
-              }}
-            >
+            <div style={{ width: "380px", height: "380px", flexShrink: 0 }}>
               <Wheel
                 mustStartSpinning={mustSpin}
                 prizeNumber={prizeNumber}
                 data={wheelData}
                 backgroundColors={
                   spinStage === "person"
-                    ? ["#3b82f6", "#10b981", "#f59e0b", "#ec4899"]
-                    : ["#8a4fff", "#20c997", "#ffcc00"]
+                    ? ["#1a1a1a", "#262626", "#333333", "#404040"]
+                    : ["#6930c3", "#5390d9", "#48bfe3", "#64dfdf"]
                 }
-                textColors={["#ffffff", "#ffffff", "#1a1a1a", "#ffffff"]}
-                outerBorderColor="#ffffff"
-                outerBorderWidth={10}
-                innerBorderColor="#ffffff"
-                innerBorderWidth={20}
-                innerRadius={20}
-                radiusLineColor="#ffffff"
-                radiusLineWidth={2}
+                textColors={["#ffffff"]}
+                outerBorderColor="#262626"
+                outerBorderWidth={6}
+                innerBorderColor="#121212"
+                innerBorderWidth={14}
+                innerRadius={15}
+                radiusLineColor="#262626"
+                radiusLineWidth={1}
                 fontSize={13}
                 onStopSpinning={handleStopSpinning}
               />
             </div>
 
-            {/* ПРАВА ПАНЕЛЬ */}
-            <div
-              className="game-controls text-center text-md-start"
-              style={{ flexGrow: 1, maxWidth: "450px", width: "100%" }}
-            >
+            <div className="game-controls-panel text-start ms-5">
               {selectedTask && (
-                <div
-                  className="p-3 mb-3 rounded-4 shadow-sm border text-center"
-                  style={{
-                    backgroundColor: "var(--bg-secondary)",
-                    borderColor: "#8a4fff",
-                    animation: "modalFadeIn 0.3s ease",
-                  }}
-                >
-                  <span className="small text-secondary d-block fw-bold mb-1">
+                <div className="selected-task-banner">
+                  <span className="small text-secondary d-block mb-1">
                     📌 Обране завдання:
                   </span>
-                  <strong className="text-primary fs-5">{selectedTask}</strong>
+                  <strong className="text-white fs-6">{selectedTask}</strong>
                 </div>
               )}
 
-              <h6 className="fw-bold mb-3">Учасники кімнати:</h6>
-
-              <div className="d-flex flex-wrap gap-2 mb-4 justify-content-center justify-content-md-start">
-                {allParticipants.map((participant) => (
-                  <span
-                    key={participant.id}
-                    className="badge rounded-pill px-3 py-2 fw-bold"
-                    style={{
-                      fontSize: "15px",
-                      backgroundColor: "var(--bg-input)",
-                      color: "var(--text-main)",
-                      border: "1px solid var(--border-color)",
-                    }}
-                  >
-                    {participant.firstName}{" "}
-                    {participant.id === user.uid && "(Ви)"}
+              <div className="small text-secondary mb-2">Учасники кімнати:</div>
+              <div className="d-flex flex-wrap gap-2 mb-4">
+                {allParticipants.map((p) => (
+                  <span key={p.id} className="tag-pill-item">
+                    {p.firstName} {p.id === user.uid && "(Ви)"}
                   </span>
                 ))}
               </div>
 
               <button
-                className="btn fw-bold text-white px-5 py-3 shadow"
-                style={{
-                  backgroundColor: "#8a4fff",
-                  borderRadius: "15px",
-                  width: "100%",
-                  fontSize: "20px",
-                }}
+                className="btn-spin-wheel"
                 disabled={
                   allParticipants.length === 0 || tasks.length === 0 || mustSpin
                 }
@@ -671,195 +530,140 @@ const Roommates = ({ user }) => {
                 {mustSpin
                   ? spinStage === "task"
                     ? "Обираємо завдання..."
-                    : "Обираємо людину..."
-                  : "Покрутити колесо!"}
+                    : "Обираємо сусіда..."
+                  : "Крутити колесо"}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* --- МОДАЛЬНЕ ВІКНО ПЕРЕМОЖЦЯ --- */}
+      {/* Модалка переможця */}
       {winner && !mustSpin && (
-        <div
-          className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-          style={{
-            backgroundColor: "rgba(0, 0, 0, 0.65)",
-            backdropFilter: "blur(4px)",
-            zIndex: 1050,
-          }}
-          onClick={() => {
-            setWinner(null);
-            setSelectedTask(null);
-          }}
-        >
+        <div className="congr-modal-overlay" onClick={() => setWinner(null)}>
           <div
-            className="congr-modal card  rounded-4 p-4 text-center mx-3"
-            style={{
-              maxWidth: "420px",
-              width: "100%",
-              backgroundColor: "var(--bg-secondary)",
-              color: "var(--text-main)",
-              animation: "modalFadeIn 0.3s ease-out",
-            }}
+            className="congr-modal-card"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="mb-2" style={{ fontSize: "3rem" }}>
-              🎉
-            </div>
-
-            <h4 className="fw-bold mb-2" style={{ color: "#8a4fff" }}>
-              Вітаємо, {winner?.person?.firstName}!
-            </h4>
-
-            <p className="fs-5 mb-4 text-break">
-              Твоє завдання:{" "}
-              <strong className="text-decoration-underline">
-                {winner?.task}
-              </strong>
+            <div className="mb-3 fs-1">🎯</div>
+            <h2 className="h4 fw-bold text-white mb-2">
+              Вибір зроблено: {winner?.person?.firstName}!
+            </h2>
+            <p className="text-secondary mb-4">
+              Завдання:{" "}
+              <span className="winner-task-highlight">{winner?.task}</span>
             </p>
-
             <button
-              className="btn text-white fw-bold py-2 px-4 rounded-pill shadow-sm"
-              style={{ backgroundColor: "#8a4fff" }}
+              className="btn-spin-wheel"
+              style={{ height: "42px" }}
               onClick={() => {
                 setWinner(null);
                 setSelectedTask(null);
               }}
             >
-              Зрозуміло!
+              Зрозуміло
             </button>
           </div>
         </div>
       )}
 
+      {/* Вкладка Пошук */}
       {activeTab === "search" && (
-        <div className="container mt-4">
-          <h2 className="fw-bold mb-2 text-center">Пошук ідеального сусіда</h2>
-          <p className="text-center mb-5">
-            Аналізуємо сумісність за 5 основними категоріями побуту
-          </p>
+        <div className="container mt-2">
+          <div className="text-center mb-5">
+            <h1 className="h3 fw-bold text-white mb-2">
+              Сумісність кандидатів
+            </h1>
+            <p className="text-secondary small m-0">
+              Порівняння побутових звичок за 5 ключовими категоріями
+            </p>
+          </div>
 
           {!currentUserAnswers ? (
             <div
-              className="text-center mt-5 p-5 bg-white rounded-4 shadow-sm mx-auto"
-              style={{ maxWidth: "600px" }}
+              className="roommate-card-block text-center p-5 mx-auto"
+              style={{ maxWidth: "500px" }}
             >
-              <i
-                className="bi bi-ui-checks-grid text-muted mb-3 d-block"
-                style={{ fontSize: "3rem" }}
-              ></i>
-              <h4 className="fw-bold">Ви ще не пройшли тест!</h4>
-              <p className="text-secondary mb-4">
-                Щоб ми могли підібрати вам ідеального сусіда, потрібно дізнатися
-                про ваші побутові звички.
+              <i className="bi bi-clipboard2-check fs-1 text-secondary mb-3 d-block"></i>
+              <h2 className="h5 fw-bold text-white mb-2">
+                Тест ще не пройдено
+              </h2>
+              <p className="text-secondary small mb-4">
+                Пройдіть швидкий тест звичок, щоб система підібрала для вас
+                ідеальних сусідів.
               </p>
               <button
-                className="btn text-white fw-bold px-4 py-2 rounded-pill shadow-sm"
-                style={{ backgroundColor: "#8a4fff" }}
+                className="btn-spin-wheel"
+                style={{ height: "42px" }}
                 onClick={() => navigate("/test")}
               >
-                Пройти тест на сумісність
+                Пройти тест
               </button>
             </div>
           ) : isLoadingMatches ? (
-            <div className="text-center mt-5">
+            <div className="text-center py-5">
               <div
-                className="spinner-border"
-                style={{ color: "#8a4fff" }}
+                className="spinner-border text-light mb-3"
                 role="status"
               ></div>
-              <p className="mt-2 fw-bold">Шукаємо кандидатів...</p>
-            </div>
-          ) : potentialMatches.length === 0 ? (
-            <div className="text-center mt-5">
-              <p>
-                Поки немає користувачів, які пройшли тест. Запросіть друзів!
+              <p className="text-secondary small">
+                Підбираємо сумісних користувачів...
               </p>
             </div>
+          ) : potentialMatches.length === 0 ? (
+            <div className="text-center py-5 text-secondary">
+              <p>Поки що немає інших користувачів, які пройшли опитування.</p>
+            </div>
           ) : (
-            <div className="row justify-content-center">
+            <div className="row g-4 justify-content-center">
               {potentialMatches.map((candidate) => {
                 const theirAnswers = candidate.answers || {};
                 return (
                   <div
                     key={candidate.id}
-                    className="candidates col-12 col-md-6 col-lg-3 mb-4"
+                    className="col-12 col-sm-6 col-lg-4 col-xl-3"
                   >
-                    <div className="card border-0 shadow-sm rounded-4 h-100">
-                      <div className="card-body text-center p-4">
-                        <div className=" card-main-info mb-4">
-                          <img
-                            src={candidate.avatar || defaultUser}
-                            alt="avatar"
-                            className="rounded-circle shadow-s mb-3"
-                            style={{
-                              width: "90px",
-                              height: "90px",
-                              objectFit: "cover",
-                            }}
-                          />
-                          <h4
-                            className="fw-bold m-0 text-truncate"
-                            title={`${candidate.firstName} ${candidate.lastName}`} // підказка при наведенні
-                            style={{ fontSize: "1.1rem" }}
-                          >
-                            {candidate.firstName} {candidate.lastName}
-                          </h4>
-                        </div>
+                    <article className="candidate-card">
+                      <img
+                        src={candidate.avatar || defaultUser}
+                        alt="avatar"
+                        className="candidate-avatar"
+                      />
+                      <h2 className="candidate-name text-truncate">
+                        {candidate.firstName} {candidate.lastName}
+                      </h2>
 
-                        <div className="d-flex justify-content-center gap-2 mb-3">
-                          {matchCategories.map((cat) => {
-                            const status = calculateBlockStatus(
-                              currentUserAnswers,
-                              theirAnswers,
-                              cat.ids,
-                            );
-                            const bgColor =
-                              status === "green" ? "#20c997" : "#ff6b6b";
-                            return (
-                              <div
-                                key={cat.key}
-                                className="rounded-circle d-flex justify-content-center align-items-center shadow-sm"
-                                title={`${cat.label} (${
-                                  status === "green"
-                                    ? "Сумісно"
-                                    : "Різні погляди"
-                                })`}
-                                style={{
-                                  width: "40px",
-                                  height: "40px",
-                                  backgroundColor: bgColor,
-                                  cursor: "help",
-                                  transition: "transform 0.2s",
-                                }}
-                                onMouseEnter={(e) =>
-                                  (e.currentTarget.style.transform =
-                                    "scale(1.1)")
-                                }
-                                onMouseLeave={(e) =>
-                                  (e.currentTarget.style.transform = "scale(1)")
-                                }
-                              >
-                                <span style={{ fontSize: "1.1rem" }}>
-                                  {cat.icon}
-                                </span>
-                              </div>
-                            );
-                          })}
-                        </div>
-                        <button
-                          className="btn btn-outline-purple text-btn w-100 mt-2 rounded-pill fw-bold"
-                          onClick={() =>
-                            navigate("/chat", {
-                              state: { startChatWith: candidate },
-                            })
-                          }
-                        >
-                          <i className="bi bi-chat-dots me-2"></i>Написати
-                        </button>
+                      <div className="d-flex justify-content-center gap-2 mb-4">
+                        {matchCategories.map((cat) => {
+                          const status = calculateBlockStatus(
+                            currentUserAnswers,
+                            theirAnswers,
+                            cat.ids,
+                          );
+                          return (
+                            <div
+                              key={cat.key}
+                              className={`compat-icon-badge ${status === "green" ? "compat-green" : "compat-red"}`}
+                              title={`${cat.label}: ${status === "green" ? "Сумісно" : "Різні погляди"}`}
+                            >
+                              <span>{cat.icon}</span>
+                            </div>
+                          );
+                        })}
                       </div>
-                    </div>
+
+                      <button
+                        type="button"
+                        className="btn-message-candidate"
+                        onClick={() =>
+                          navigate("/chat", {
+                            state: { startChatWith: candidate },
+                          })
+                        }
+                      >
+                        <i className="bi bi-chat-text"></i> Написати
+                      </button>
+                    </article>
                   </div>
                 );
               })}

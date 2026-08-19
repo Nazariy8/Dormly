@@ -1,104 +1,85 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import "../css/test.scss"; // Можна використати ті самі стилі або створити нові
+import "../css/test.scss";
 
 const ResultOfTest = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  console.log("Дані з тесту:", location.state);
-  // Дістаємо дані, які ми передали через navigate
-  // Використовуємо "через або" (|| {}), щоб код не впав, якщо хтось зайде на сторінку напряму
   const { userAnswers, userAnswerIds, questions } = location.state || {};
 
   const handleSubmitForSearch = () => {
-    // ✅ ЗМІНЕНО: Передаємо обидва об'єкти на search-roommate
     navigate("/profile", {
       state: {
-        userAnswers: userAnswers, // Текст
-        userAnswerIds: userAnswerIds, // ID
+        userAnswers: userAnswers,
+        userAnswerIds: userAnswerIds,
         questions: questions,
       },
     });
   };
-  // Якщо даних немає (наприклад, користувач просто ввів посилання в браузер)
+
   if (!userAnswers || !questions) {
     return (
-      <div
-        className="test-container"
-        style={{ textAlign: "center", marginTop: "50px" }}
-      >
-        <h2>Результатів немає</h2>
-        <p>Будь ласка, спочатку пройдіть тест.</p>
-        <button onClick={() => navigate("/test")}>Пройти тест</button>
-      </div>
+      <main className="results-page-wrapper d-flex align-items-center justify-content-center">
+        <section className="empty-results-card">
+          <i className="bi bi-clipboard-x empty-icon"></i>
+          <h2>Результатів немає</h2>
+          <p>Будь ласка, пройдіть тест для отримання рекомендацій.</p>
+          <button className="btn-profile-go" onClick={() => navigate("/test")}>
+            Пройти тест
+          </button>
+        </section>
+      </main>
     );
   }
 
   return (
-    <div
-      className="test-container"
-      style={{ maxWidth: "800px", margin: "0 auto", padding: "20px" }}
-    >
-      <h1 style={{ textAlign: "center", marginBottom: "30px" }}>
-        Результати вашого тесту
-      </h1>
-
-      <div className="results-list">
-        {/* Вивід результатів тесту */}
-        {questions.map((q) => (
-          <div
-            key={q.id}
-            className="result-item"
-            style={{
-              marginBottom: "15px",
-              padding: "15px",
-              borderBottom: "1px solid #eee",
-              backgroundColor: "#f9f9f9",
-              borderRadius: "8px",
-            }}
-          >
-            <h4 style={{ margin: "0 0 10px 0", color: "#333" }}>
-              {q.id}. {q.questionText}
-            </h4>
-            <div style={{ color: "#007bff", fontWeight: "bold" }}>
-              Ваша відповідь:
-              <span
-                style={{
-                  color: "#000",
-                  fontWeight: "normal",
-                  marginLeft: "10px",
-                }}
-              >
-                {userAnswers[q.id]}
-              </span>
-            </div>
+    <main className="results-page-wrapper">
+      <div className="results-container">
+        <header className="results-header">
+          <div className="results-badge">
+            <i className="bi bi-check2-circle"></i> Тест завершено
           </div>
-        ))}
-      </div>
+          <h1 className="results-title">Ваші звички та вподобання</h1>
+          <p className="results-subtitle">
+            Ось сформовані параметри, які допоможуть знайти найбільш сумісного
+            сусіда
+          </p>
+        </header>
 
-      <div className="row">
-        <div className="col-6  d-flex justify-content-start">
+        <section className="results-list" aria-label="Список відповідей">
+          {questions.map((q) => (
+            <article key={q.id} className="result-card">
+              <h2 className="result-question">
+                {q.id}. {q.questionText}
+              </h2>
+              <div className="result-answer-box">
+                <span>Відповідь:</span>
+                <span className="answer-pill">{userAnswers[q.id]}</span>
+              </div>
+            </article>
+          ))}
+        </section>
+
+        <footer className="results-actions">
           <button
-            className="testagain-btn"
-            onClick={() => navigate("/test")} // Кнопка, щоб пройти тест заново
+            type="button"
+            className="btn-retest"
+            onClick={() => navigate("/test")}
           >
             Пройти знову
           </button>
-        </div>
 
-        <div className="col-6 d-flex justify-content-end">
           <button
-            className="next-btn"
-            onClick={() => {
-              handleSubmitForSearch();
-            }}
+            type="button"
+            className="btn-profile-go"
+            onClick={handleSubmitForSearch}
           >
-            До профілю
+            Перейти до профілю
           </button>
-        </div>
+        </footer>
       </div>
-    </div>
+    </main>
   );
 };
 
