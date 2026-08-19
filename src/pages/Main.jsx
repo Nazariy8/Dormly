@@ -10,10 +10,6 @@ const Main = ({ user }) => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    alert("Product is on the beta-test. Full version will be soon!")
-  }, [])
-
   return (
     <main>
       <section className="hero-section text-center">
