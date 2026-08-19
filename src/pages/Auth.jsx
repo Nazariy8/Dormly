@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import googleicon from "../img/icons/google.png";
 import { auth, db, googleProvider } from "../firebase";
 import {
@@ -11,7 +12,11 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
-function UserInit(props) {
+
+function Auth({ goal }) {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -20,17 +25,6 @@ function UserInit(props) {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  const navigate = useNavigate();
-
-  function changeShowPassword() {
-    setShowPassword(!showPassword);
-  }
-
-  function changeShowConfirmPassword() {
-    setShowConfirmPassword(!showConfirmPassword);
-  }
-
-  // Прямий виклик через Popup
   const handleGoogleSignIn = async (e) => {
     e.preventDefault();
     try {
@@ -53,10 +47,17 @@ function UserInit(props) {
         });
       }
 
-      navigate("/search-roommate");
+      navigate("/profile");
     } catch (error) {
-      console.error("Помилка Google Auth:", error);
-      alert("Помилка авторизації через Google: " + error.message);
+      // Ігноруємо закриття попапу або конфлікт паралельних запитів
+      if (
+        error.code === "auth/popup-closed-by-user" ||
+        error.code === "auth/cancelled-popup-request"
+      ) {
+        return;
+      }
+      console.error("Google Auth Error:", error);
+      alert("Помилка авторизації: " + error.message);
     }
   };
 
@@ -70,7 +71,7 @@ function UserInit(props) {
       setEmailError("Email не може бути порожнім");
       isValid = false;
     } else if (!emailRegex.test(email)) {
-      setEmailError("Введіть коректний формат email (напр. example@mail.com)");
+      setEmailError("Введіть коректний формат email");
       isValid = false;
     }
 
@@ -82,14 +83,12 @@ function UserInit(props) {
       isValid = false;
     }
 
-    if (props.goal === "reg") {
+    if (goal === "reg") {
       if (!confirmPassword) {
         setPasswordError("Будь ласка, підтвердіть пароль");
         isValid = false;
       } else if (password !== confirmPassword) {
-        setPasswordError(
-          <div className="text-danger">Паролі не співпадають</div>,
-        );
+        setPasswordError("Паролі не співпадають");
         isValid = false;
       }
     }
@@ -97,248 +96,218 @@ function UserInit(props) {
     return isValid;
   };
 
-  const handleResetPassword = async (email) => {
-    try {
-      await sendPasswordResetEmail(auth, email);
-      alert("Лист для відновлення пароля надіслано! Перевірте пошту.");
-    } catch (error) {
-      console.error("Помилка:", error.code);
-      alert("Не вдалося надіслати лист. Перевірте правильність Email.");
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const isValid = validateInputs();
+    if (!validateInputs()) return;
 
-    if (isValid) {
-      try {
-        if (props.goal === "reg") {
-          const userCredential = await createUserWithEmailAndPassword(
-            auth,
-            email,
-            password,
-          );
-          const user = userCredential.user;
+    try {
+      if (goal === "reg") {
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password,
+        );
+        await sendEmailVerification(userCredential.user);
+        await signOut(auth);
+        alert("Акаунт створено! Перевірте пошту для підтвердження.");
+        navigate("/login");
+      } else {
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password,
+        );
+        const user = userCredential.user;
 
-          await sendEmailVerification(user);
+        if (!user.emailVerified) {
           await signOut(auth);
-
-          alert(
-            "Акаунт створено! Будь ласка, перевірте вашу пошту та перейдіть за посиланням для підтвердження.",
-          );
-          navigate("/login");
-        } else {
-          const userCredential = await signInWithEmailAndPassword(
-            auth,
-            email,
-            password,
-          );
-          const user = userCredential.user;
-
-          if (!user.emailVerified) {
-            await signOut(auth);
-            alert(
-              "Будь ласка, підтвердіть вашу електронну пошту перед входом!",
-            );
-            return;
-          }
-
-          const userDocRef = doc(db, "users", user.uid);
-          const userDocSnap = await getDoc(userDocRef);
-
-          if (!userDocSnap.exists()) {
-            await setDoc(userDocRef, {
-              uid: user.uid,
-              email: user.email,
-              firstName: "Студент",
-              lastName: "",
-              status: "Не шукаю",
-              photoURL: "",
-              createdAt: new Date(),
-            });
-          }
-
-          navigate("/search-roommate");
+          alert("Будь ласка, підтвердіть пошту перед входом!");
+          return;
         }
-      } catch (error) {
-        console.error("Помилка Firebase:", error.code);
-        if (error.code === "auth/email-already-in-use") {
-          alert("Користувач з таким email вже існує");
-        } else if (
-          error.code === "auth/invalid-credential" ||
-          error.code === "auth/wrong-password"
-        ) {
-          alert("Неправильний email або пароль");
-        } else {
-          alert("Сталася помилка. Спробуйте ще раз.");
+
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (!userDocSnap.exists()) {
+          await setDoc(userDocRef, {
+            uid: user.uid,
+            email: user.email,
+            firstName: "Студент",
+            lastName: "",
+            status: "Не шукаю",
+            photoURL: "",
+            createdAt: new Date(),
+          });
         }
+
+        navigate("/search-roommate");
+      }
+    } catch (error) {
+      if (error.code === "auth/email-already-in-use") {
+        alert("Користувач з таким email вже існує");
+      } else if (
+        error.code === "auth/invalid-credential" ||
+        error.code === "auth/wrong-password"
+      ) {
+        alert("Неправильний email або пароль");
+      } else {
+        alert("Сталася помилка. Спробуйте ще раз.");
       }
     }
   };
 
   return (
-    <div>
-      <section className="login-section px-1">
-        <div>
-          <Link
-            to="/"
-            className=" m-4 btn back-btn rounded-circle d-flex align-items-center justify-content-center"
-            style={{
-              width: "42px",
-              height: "42px",
-            }}
-            title="На головну"
-          >
-            <i className="bi bi-arrow-left fs-5"></i>
-          </Link>
+    <main className="auth-wrapper">
+      <Link to="/" className="auth-back-btn d-flex align-items-center justify-content-center mb-4" title="На головну">
+        <i className="bi bi-arrow-left"></i>
+      </Link>
 
-          <form onSubmit={handleSubmit} className="init-form">
-            <h3>Ласкаво просимо!</h3>
-            <p className="mb-4">Знайди свого ідеального сусіда по кімнаті</p>
-            {/* <span className="text-secondary">Email</span> */}
-            <div className="floating-group mb-3">
-              <input
-                type="email"
-                className="floating-input"
-                id="emailInput"
-                placeholder=""
-                required
-                maxLength="64"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <label className="floating-label" htmlFor="emailInput">
-                Електронна адреса
+      <section className="auth-card" aria-labelledby="auth-heading">
+        <header className="auth-header text-center">
+          <h1 id="auth-heading" className="auth-title">
+            {goal === "log" ? t("auth.welcome") : t("auth.createAccount")}
+          </h1>
+          <p className="auth-subtitle">
+            {goal === "log" ? t("auth.subtitleLogin") : t("auth.subtitleReg")}
+          </p>
+        </header>
+
+        <form onSubmit={handleSubmit} className="auth-form" noValidate>
+          <div className="auth-field mb-3">
+            <label className="auth-label" htmlFor="emailInput">
+              {t("auth.emailLabel")}
+            </label>
+            <input
+              type="email"
+              id="emailInput"
+              name="email"
+              autoComplete="email"
+              className="auth-input"
+              placeholder="student@lpnu.ua"
+              required
+              maxLength="64"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            {emailError && <p className="auth-error">{emailError}</p>}
+          </div>
+
+          <div className="auth-field mb-2">
+            <div className="d-flex justify-content-between align-items-center mb-1">
+              <label className="auth-label m-0" htmlFor="passwordInput">
+                {t("auth.passwordLabel")}
               </label>
+              {goal === "log" && (
+                <Link to="/resetPass" className="auth-link">
+                  {t("auth.forgotPassword")}
+                </Link>
+              )}
             </div>
-
-            {emailError && <p className="error-message">{emailError}</p>}
-
-            {/* <span className="text-secondary">Пароль</span> */}
-            <div className="floating-group mb-2 w-100">
+            <div className="auth-input-wrapper">
               <input
                 type={showPassword ? "text" : "password"}
-                placeholder=""
-                className="w-100 floating-input"
                 id="passwordInput"
+                name="password"
+                autoComplete={
+                  goal === "log" ? "current-password" : "new-password"
+                }
+                className="auth-input pe-5"
+                placeholder="••••••••"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <label className="floating-label" htmlFor="passwordInput">
-                Пароль
-              </label>
-              <span
-                className="showpass-btn-block"
-                style={{ cursor: "pointer" }}
-                onClick={changeShowPassword}
+              <button
+                type="button"
+                className="auth-eye-btn"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Сховати пароль" : "Показати пароль"}
               >
                 <i
-                  className={`bi ${
-                    showPassword ? "bi-eye" : "bi-eye-slash"
-                  } fs-4 position-absolute`}
-                  id="showpass-btn"
+                  className={`bi ${showPassword ? "bi-eye" : "bi-eye-slash"}`}
                 ></i>
-              </span>
+              </button>
             </div>
+            <span className="auth-hint">{t("auth.passwordHint")}</span>
+          </div>
 
-            <div className="row after-password-spans d-flex justify-content-between align-items-center">
-              <span className="col-6 mb-4 range text-secondary">
-                Має бути 8-20 символів
-              </span>
-              <span className="col-6 mb-4 range text-secondary text-end">
-                <Link to="/resetPass" className="resetPass ms-2">
-                  Забули пароль?
-                </Link>
-              </span>
+          {goal === "reg" && (
+            <div className="auth-field mb-3 mt-3">
+              <label className="auth-label" htmlFor="confirmPasswordInput">
+                {t("auth.confirmPasswordLabel")}
+              </label>
+              <div className="auth-input-wrapper">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  id="confirmPasswordInput"
+                  name="confirmPassword"
+                  autoComplete="new-password"
+                  className="auth-input pe-5"
+                  placeholder="••••••••"
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className="auth-eye-btn"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  aria-label={
+                    showConfirmPassword
+                      ? "Сховати підтвердження"
+                      : "Показати підтвердження"
+                  }
+                >
+                  <i
+                    className={`bi ${showConfirmPassword ? "bi-eye" : "bi-eye-slash"}`}
+                  ></i>
+                </button>
+              </div>
             </div>
+          )}
 
-            {props.goal === "reg" && (
+          {passwordError && <p className="auth-error mb-2">{passwordError}</p>}
+
+          <button type="submit" className="btn-auth-submit w-100 mt-2">
+            {goal === "log" ? t("auth.loginBtn") : t("auth.registerBtn")}
+          </button>
+
+          <div className="auth-divider my-4">
+            <span>{t("auth.or")}</span>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            className="btn-google-auth w-100"
+          >
+            <img src={googleicon} alt="Google" className="google-icon" />
+            {t("auth.googleBtn")}
+          </button>
+        </form>
+
+        <footer className="auth-footer text-center mt-4">
+          <p className="auth-footer-text m-0">
+            {goal === "log" ? (
               <>
-                <div className="floating-group w-100 mb-4">
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    placeholder=""
-                    className="w-100 floating-input"
-                    id="confirmPasswordInput"
-                    required
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                  />
-                  <label
-                    className="floating-label"
-                    htmlFor="confirmPasswordInput"
-                  >
-                    Підтвердіть пароль
-                  </label>
-                  <span
-                    className="showpass-btn-block"
-                    style={{ cursor: "pointer" }}
-                    onClick={changeShowConfirmPassword}
-                  >
-                    <i
-                      className={`bi ${
-                        showConfirmPassword ? "bi-eye" : "bi-eye-slash"
-                      } fs-4 position-absolute`}
-                      id="showpass-btn"
-                    ></i>
-                  </span>
-                </div>
+                {t("auth.noAccount")}{" "}
+                <Link to="/regist" className="auth-link-bold">
+                  {t("auth.toRegister")}
+                </Link>
+              </>
+            ) : (
+              <>
+                {t("auth.haveAccount")}{" "}
+                <Link to="/login" className="auth-link-bold">
+                  {t("auth.toLogin")}
+                </Link>
               </>
             )}
-
-            <button type="submit" className="w-100 init-btn">
-              {props.goal === "log" ? "Увійти" : "Зареєструватися"}
-            </button>
-
-            <hr />
-            <div className="or-span">
-              <span className="fw-normal text-center">або</span>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleGoogleSignIn}
-              style={{
-                color: "var(--text-main)",
-                backgroundColor: "var(--bg-input)",
-                border: "1px solid var(--border-color)",
-                cursor: "pointer",
-              }}
-              className="google-init-btn p-2 w-100 d-flex justify-content-center align-items-center rounded-3 shadow-sm fw-medium"
-            >
-              <img
-                src={googleicon}
-                className="googleicon me-2"
-                alt="Google"
-                style={{ width: "20px", height: "20px" }}
-              />
-              Продовжити з Google
-            </button>
-
-            <p className="question mt-3">
-              {props.goal === "log" ? (
-                <>
-                  Ще не маєте акаунту?
-                  <Link to="/regist" className="regist-link ms-2">
-                    Реєстрація
-                  </Link>
-                </>
-              ) : (
-                <>
-                  Вже маєте акаунт?
-                  <Link to="/login" className="regist-link ms-2">
-                    Увійти
-                  </Link>
-                </>
-              )}
-            </p>
-          </form>
-        </div>
+          </p>
+        </footer>
       </section>
-    </div>
+    </main>
   );
 }
 
-export default UserInit;
+export default Auth;

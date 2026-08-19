@@ -16,7 +16,7 @@ const Header = ({ user }) => {
       <nav className="navbar navbar-expand-lg custom-navbar">
         <div className="container-xl d-flex align-items-center justify-content-between">
           {/* ЛОГОТИП */}
-          <Link className="navbar-brand p-0 logo-link" to="/" title="logo">
+          <Link className="navbar-brand p-0 logo-link text-decoration-none" to="/" title="logo">
             Dormly
           </Link>
 
@@ -34,7 +34,6 @@ const Header = ({ user }) => {
             <i className="bi bi-list fs-2 text-white"></i>
           </button>
 
-          {/* НАВІГАЦІЯ ТА КНОПКИ */}
           <div
             className="collapse navbar-collapse justify-content-end"
             id="navbarSupportedContent"

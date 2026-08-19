@@ -118,5 +118,24 @@
       "title": "Ready to find your ideal roommate?",
       "button": "Take the test now"
     }
+  },
+  "auth": {
+    "welcome": "Welcome back!",
+    "createAccount": "Create an account",
+    "subtitleLogin": "Find your ideal dorm roommate",
+    "subtitleReg": "Join the Dormly student community",
+    "emailLabel": "Email address",
+    "passwordLabel": "Password",
+    "confirmPasswordLabel": "Confirm password",
+    "passwordHint": "Must be 8-20 characters",
+    "forgotPassword": "Forgot password?",
+    "loginBtn": "Sign In",
+    "registerBtn": "Sign Up",
+    "or": "or",
+    "googleBtn": "Continue with Google",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "toRegister": "Sign Up",
+    "toLogin": "Sign In"
   }
 }

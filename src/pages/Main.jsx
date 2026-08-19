@@ -22,7 +22,7 @@ const Main = ({ user }) => {
             height: "auto",
           }}
         >
-          <span className="hero-subtitle mb-4 bg-warning text-black fw-bold px-2 rounded-pill">
+          <span className="hero-subtitle mb-4 bg-warning text-black fw-bold p-2 px-3 rounded-pill fs-6">
             Product is in beta testing. Full version coming soon!
           </span>
           {/* Акуратний бейдж Vercel */}
@@ -60,7 +60,6 @@ const Main = ({ user }) => {
             </HashLink>
           </div>
 
-          {/* Інтерактивне прев'ю інтерфейсу Dormly (ТЕПЕР ВОНО ТУТ, ПІД КНОПКАМИ) */}
           <div className="hero-preview-card mt-5 text-start">
             <div className="preview-header d-flex align-items-center justify-content-between">
               <div className="d-flex align-items-center gap-2">

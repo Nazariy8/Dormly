@@ -118,5 +118,24 @@
       "title": "Готові знайти свого ідеального сусіда?",
       "button": "Пройти тест зараз"
     }
+  },
+  "auth": {
+    "welcome": "Ласкаво просимо!",
+    "createAccount": "Створити акаунт",
+    "subtitleLogin": "Знайди свого ідеального сусіда по кімнаті",
+    "subtitleReg": "Приєднуйтесь до спільноти Dormly",
+    "emailLabel": "Електронна адреса",
+    "passwordLabel": "Пароль",
+    "confirmPasswordLabel": "Підтвердіть пароль",
+    "passwordHint": "Має бути 8-20 символів",
+    "forgotPassword": "Забули пароль?",
+    "loginBtn": "Увійти",
+    "registerBtn": "Зареєструватися",
+    "or": "або",
+    "googleBtn": "Продовжити з Google",
+    "noAccount": "Ще не маєте акаунту?",
+    "haveAccount": "Вже маєте акаунт?",
+    "toRegister": "Реєстрація",
+    "toLogin": "Увійти"
   }
 }
