@@ -16,9 +16,19 @@ import defaultUser from "../img/profile/user.jpg";
 import { Wheel } from "react-custom-roulette";
 import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "../css/roommate.scss";
 
+const matchCategories = [
+  { key: "cleanliness", ids: ["1", "2", "3"], icon: "🧹" },
+  { key: "routine", ids: ["4", "5", "6"], icon: "⏰" },
+  { key: "social", ids: ["7", "8", "9"], icon: "🍕" },
+  { key: "rules", ids: ["10", "11", "12"], icon: "🤝" },
+  { key: "comfort", ids: ["13", "14", "15"], icon: "🛋️" },
+];
+
 const Roommates = ({ user }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [currentUserData, setCurrentUserData] = useState(null);
@@ -109,39 +119,7 @@ const Roommates = ({ user }) => {
     }
   }, [activeTab, currentUserAnswers, user]);
 
-  const matchCategories = [
-    {
-      key: "cleanliness",
-      ids: ["1", "2", "3"],
-      icon: "🧹",
-      label: "Чистота і порядок",
-    },
-    {
-      key: "routine",
-      ids: ["4", "5", "6"],
-      icon: "⏰",
-      label: "Режим дня і шум",
-    },
-    {
-      key: "social",
-      ids: ["7", "8", "9"],
-      icon: "🍕",
-      label: "Соціальна поведінка",
-    },
-    {
-      key: "rules",
-      ids: ["10", "11", "12"],
-      icon: "🤝",
-      label: "Правила і обов'язки",
-    },
-    {
-      key: "comfort",
-      ids: ["13", "14", "15"],
-      icon: "🛋️",
-      label: "Побут і комфорт",
-    },
-  ];
-
+  // Метчинг за ідентифікаторами варіантів (1.1, 1.2 тощо)
   const calculateBlockStatus = (myAnswers, theirAnswers, questionIds) => {
     if (!myAnswers || !theirAnswers) return "red";
     let matchCount = 0;
@@ -234,11 +212,9 @@ const Roommates = ({ user }) => {
 
   const handleSpinClick = () => {
     if (tasks.length === 0 || allParticipants.length === 0 || mustSpin) return;
-
     setWinner(null);
     setSelectedTask(null);
     setSpinStage("task");
-
     const targetIndex = Math.floor(Math.random() * wheelData.length);
     setPrizeNumber(targetIndex);
     setMustSpin(true);
@@ -246,7 +222,6 @@ const Roommates = ({ user }) => {
 
   const handleStopSpinning = () => {
     setMustSpin(false);
-
     if (spinStage === "task") {
       const chosenTask = wheelData[prizeNumber]?.option || tasks[0];
       setSelectedTask(chosenTask);
@@ -277,25 +252,24 @@ const Roommates = ({ user }) => {
 
   return (
     <div className="roommates-page">
-      {/* Таби */}
+
       <div className="d-flex justify-content-center mt-4 mb-4">
         <div className="tabs-wrapper">
           <button
             onClick={() => setActiveTab("room")}
             className={`tab-btn ${activeTab === "room" ? "active" : ""}`}
           >
-            Кімната
+            {t("roommates.tabRoom")}
           </button>
           <button
             onClick={() => setActiveTab("search")}
             className={`tab-btn ${activeTab === "search" ? "active" : ""}`}
           >
-            Знайти співжителя
+            {t("roommates.tabSearch")}
           </button>
         </div>
       </div>
 
-      {/* Вкладка Кімната */}
       {activeTab === "room" && (
         <div className="container text-center">
           <h1 className="h3 fw-bold text-white mb-2">Колесо фортуни кімнати</h1>
@@ -307,7 +281,6 @@ const Roommates = ({ user }) => {
             className="row justify-content-center g-4 mb-5 mx-auto"
             style={{ maxWidth: "1100px" }}
           >
-            {/* Блок сусідів */}
             <div className="col-12 col-lg-6 text-start">
               <section className="roommate-card-block">
                 <div
@@ -406,7 +379,6 @@ const Roommates = ({ user }) => {
               </section>
             </div>
 
-            {/* Блок завдань */}
             <div className="col-12 col-lg-6 text-start">
               <section className="roommate-card-block">
                 <div
@@ -435,7 +407,7 @@ const Roommates = ({ user }) => {
                           type="text"
                           className="custom-input flex-grow-1"
                           style={{ borderRadius: "8px 0 0 8px" }}
-                          placeholder="Нове завдання (напр. Винести сміття)..."
+                          placeholder="Нове завдання..."
                           value={newTask}
                           onChange={(e) => setNewTask(e.target.value)}
                           onKeyDown={(e) =>
@@ -473,7 +445,6 @@ const Roommates = ({ user }) => {
             </div>
           </div>
 
-          {/* Колесо та керування */}
           <div
             className="d-flex flex-column flex-md-row justify-content-center align-items-center gap-5 mx-auto"
             style={{ maxWidth: "950px" }}
@@ -501,7 +472,7 @@ const Roommates = ({ user }) => {
               />
             </div>
 
-            <div className="game-controls-panel text-start ms-5">
+            <div className="game-controls-panel text-start">
               {selectedTask && (
                 <div className="selected-task-banner">
                   <span className="small text-secondary d-block mb-1">
@@ -538,7 +509,6 @@ const Roommates = ({ user }) => {
         </div>
       )}
 
-      {/* Модалка переможця */}
       {winner && !mustSpin && (
         <div className="congr-modal-overlay" onClick={() => setWinner(null)}>
           <div
@@ -567,15 +537,14 @@ const Roommates = ({ user }) => {
         </div>
       )}
 
-      {/* Вкладка Пошук */}
       {activeTab === "search" && (
         <div className="container mt-2">
           <div className="text-center mb-5">
             <h1 className="h3 fw-bold text-white mb-2">
-              Сумісність кандидатів
+              {t("roommates.searchTitle")}
             </h1>
             <p className="text-secondary small m-0">
-              Порівняння побутових звичок за 5 ключовими категоріями
+              {t("roommates.searchSubtitle")}
             </p>
           </div>
 
@@ -586,18 +555,17 @@ const Roommates = ({ user }) => {
             >
               <i className="bi bi-clipboard2-check fs-1 text-secondary mb-3 d-block"></i>
               <h2 className="h5 fw-bold text-white mb-2">
-                Тест ще не пройдено
+                {t("roommates.notPassedTest")}
               </h2>
               <p className="text-secondary small mb-4">
-                Пройдіть швидкий тест звичок, щоб система підібрала для вас
-                ідеальних сусідів.
+                {t("roommates.notPassedTestDesc")}
               </p>
               <button
                 className="btn-spin-wheel"
                 style={{ height: "42px" }}
                 onClick={() => navigate("/test")}
               >
-                Пройти тест
+                {t("roommates.passTestBtn")}
               </button>
             </div>
           ) : isLoadingMatches ? (
@@ -607,12 +575,12 @@ const Roommates = ({ user }) => {
                 role="status"
               ></div>
               <p className="text-secondary small">
-                Підбираємо сумісних користувачів...
+                {t("roommates.loadingMatches")}
               </p>
             </div>
           ) : potentialMatches.length === 0 ? (
             <div className="text-center py-5 text-secondary">
-              <p>Поки що немає інших користувачів, які пройшли опитування.</p>
+              <p>{t("roommates.noCandidates")}</p>
             </div>
           ) : (
             <div className="row g-4 justify-content-center">
@@ -640,11 +608,17 @@ const Roommates = ({ user }) => {
                             theirAnswers,
                             cat.ids,
                           );
+                          const categoryTitle = t(`test.categories.${cat.key}`);
+                          const matchVerdict =
+                            status === "green"
+                              ? t("roommates.compatible")
+                              : t("roommates.incompatible");
+
                           return (
                             <div
                               key={cat.key}
                               className={`compat-icon-badge ${status === "green" ? "compat-green" : "compat-red"}`}
-                              title={`${cat.label}: ${status === "green" ? "Сумісно" : "Різні погляди"}`}
+                              title={`${categoryTitle}: ${matchVerdict}`}
                             >
                               <span>{cat.icon}</span>
                             </div>
@@ -661,7 +635,8 @@ const Roommates = ({ user }) => {
                           })
                         }
                       >
-                        <i className="bi bi-chat-text"></i> Написати
+                        <i className="bi bi-chat-text"></i>{" "}
+                        {t("roommates.writeMessage")}
                       </button>
                     </article>
                   </div>

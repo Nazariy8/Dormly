@@ -71,37 +71,40 @@
     }
   },
   "faq": {
-    "badge": "Help Center",
+    "badge": "Help & Support",
     "title": "How can we help you?",
-    "subtitle": "Find answers to your questions below or contact our support team.",
-    "searchPlaceholder": "Search for a question...",
-    "quickLinks": {
-      "profile": "Registration & Profile",
-      "test": "Compatibility Test"
+    "subtitle": "Find answers to frequently asked questions below or reach out to our support team.",
+    "searchPlaceholder": "Search questions...",
+    "noResults": "No questions found matching your search",
+    "sidebar": {
+      "profileLink": "Account & Profile",
+      "testLink": "Compatibility Test",
+      "supportTitle": "Didn't find an answer?",
+      "supportText": "Our support team is always ready to assist you with any questions or issues.",
+      "contactBtn": "Contact Us"
     },
-    "support": {
-      "title": "Can't find an answer?",
-      "text": "Our support team is always ready to help you resolve any issues.",
-      "button": "Contact Us"
-    },
-    "questions": {
-      "q1": {
+    "items": [
+      {
+        "id": "faq-1",
         "question": "What is Dormly?",
-        "answer": "Dormly is a platform designed to help students find the perfect roommate based on a personality and lifestyle compatibility test."
+        "answer": "Dormly is a platform designed to help university students find their ideal dorm roommate based on lifestyle habits and personality compatibility."
       },
-      "q2": {
+      {
+        "id": "faq-2",
         "question": "How does the compatibility test work?",
-        "answer": "Our test analyzes your answers about habits, lifestyle, social activity, and personal preferences to find users with the highest compatibility percentage."
+        "answer": "Our test analyzes your answers regarding daily routines, cleanliness, social habits, and dorm living preferences to find roommates with the highest match score."
       },
-      "q3": {
-        "question": "Is Dormly free?",
-        "answer": "Yes, basic Dormly features (profile creation, taking the test, and finding roommates) are completely free for students."
+      {
+        "id": "faq-3",
+        "question": "Is Dormly free to use?",
+        "answer": "Yes, all core features of Dormly (profile creation, habit testing, and searching for roommates) are completely free for students."
       },
-      "q4": {
-        "question": "Can I change my test answers later?",
-        "answer": "Absolutely! You can retake the test or update your profile details in the settings at any time."
+      {
+        "id": "faq-4",
+        "question": "Can I update my test answers later?",
+        "answer": "Absolutely! You can retake the compatibility test anytime or edit your profile details directly in your account settings."
       }
-    }
+    ]
   },
   "about": {
     "badge": "Team",
@@ -137,5 +140,207 @@
     "haveAccount": "Already have an account?",
     "toRegister": "Sign Up",
     "toLogin": "Sign In"
+  },
+  "test": {
+    "backHome": "Back Home",
+    "btnBack": "Back",
+    "btnNext": "Next",
+    "btnFinish": "Finish",
+    "stepIndicator": "Question {{current}} of {{total}}",
+    "alertSelect": "Please select an answer to continue!",
+    "categories": {
+      "cleanliness": "🧹 Cleanliness & Order",
+      "routine": "⏰ Daily Routine & Noise",
+      "social": "🍕 Social Life",
+      "rules": "🤝 Rules & Responsibilities",
+      "comfort": "🛋️ Living & Comfort"
+    },
+    "questions": {
+      "1": {
+        "text": "How often do you clean your personal space (bed, desk)?",
+        "options": {
+          "1.1": "Daily cleaning / Perfectionist.",
+          "1.2": "Every few days / When clutter is visible.",
+          "1.3": "Rarely, I prefer creative mess."
+        }
+      },
+      "2": {
+        "text": "How do you handle dirty dishes?",
+        "options": {
+          "2.1": "Wash immediately after eating.",
+          "2.2": "Can leave them in the sink until morning/evening.",
+          "2.3": "Wash only when clean dishes run out."
+        }
+      },
+      "3": {
+        "text": "What is the best way to manage shared area cleaning?",
+        "options": {
+          "3.1": "Set up a strict rotation schedule.",
+          "3.2": "Clean together on a dedicated day.",
+          "3.3": "Everyone cleans up after themselves when needed."
+        }
+      },
+      "4": {
+        "text": "What is your typical weekday sleep schedule?",
+        "options": {
+          "4.1": "Early bird: Sleep before 23:00, wake up before 08:00.",
+          "4.2": "Night owl: Sleep after 00:00, wake up after 09:00.",
+          "4.3": "Flexible: Schedule varies regularly."
+        }
+      },
+      "5": {
+        "text": "What are your ideal sleeping conditions?",
+        "options": {
+          "5.1": "Complete darkness and absolute silence.",
+          "5.2": "Darkness, but mild background noise is fine.",
+          "5.3": "Deep sleeper: Can sleep through light and noise."
+        }
+      },
+      "6": {
+        "text": "Attitude towards playing audio/video without headphones?",
+        "options": {
+          "6.1": "Headphones only at all times.",
+          "6.2": "Low volume is fine if nobody minds.",
+          "6.3": "I like loud sound and see no issue with it."
+        }
+      },
+      "7": {
+        "text": "How often do you plan to invite guests?",
+        "options": {
+          "7.1": "Very rarely or never.",
+          "7.2": "A few times a month (with prior agreement).",
+          "7.3": "Frequently, I love company."
+        }
+      },
+      "8": {
+        "text": "Your ideal evening in the room after classes?",
+        "options": {
+          "8.1": "Everyone does their own thing in quiet.",
+          "8.2": "Chats, board games, or watching movies together.",
+          "8.3": "Depends entirely on my mood."
+        }
+      },
+      "9": {
+        "text": "Attitude towards overnight guests (friends, partners)?",
+        "options": {
+          "9.1": "Strictly against it.",
+          "9.2": "Rarely, and only with everyone's consent.",
+          "9.3": "Completely normal if not overly frequent."
+        }
+      },
+      "10": {
+        "text": "How to handle shared household expenses (soap, toilet paper)?",
+        "options": {
+          "10.1": "Split equally into a shared budget.",
+          "10.2": "Buy on turns (me today, you tomorrow).",
+          "10.3": "Everyone buys and uses their own items."
+        }
+      },
+      "11": {
+        "text": "Attitude towards roommates borrowing your personal items?",
+        "options": {
+          "11.1": "Strictly against it, do not touch my things.",
+          "11.2": "Only with explicit permission each time.",
+          "11.3": "Small items (salt, kitchenware) are fine without asking."
+        }
+      },
+      "12": {
+        "text": "How do you usually resolve conflicts or misunderstandings?",
+        "options": {
+          "12.1": "Directly address what bothers me immediately.",
+          "12.2": "Wait for the right moment for a calm discussion.",
+          "12.3": "Avoid conflict and try to stay quiet."
+        }
+      },
+      "13": {
+        "text": "What room temperature is most comfortable for you?",
+        "options": {
+          "13.1": "Prefer cool air, frequently open windows.",
+          "13.2": "Prefer warm air, keep windows closed.",
+          "13.3": "I adapt easily to any temperature."
+        }
+      },
+      "14": {
+        "text": "Attitude towards phone/video calls inside the dorm room?",
+        "options": {
+          "14.1": "Always step out into the hallway to avoid disturbing.",
+          "14.2": "Talk in the room, but quietly and briefly.",
+          "14.3": "Talk freely, it is my room too."
+        }
+      },
+      "15": {
+        "text": "How do you usually eat/cook?",
+        "options": {
+          "15.1": "Regularly cook complex meals (lots of kitchen time).",
+          "15.2": "Quick, simple meals or semi-prepared food.",
+          "15.3": "Mostly cafeteria meals or delivery."
+        }
+      }
+    }
+  },
+  "roommates": {
+    "tabRoom": "Room",
+    "tabSearch": "Find Roommate",
+    "searchTitle": "Candidate Compatibility",
+    "searchSubtitle": "Comparing living habits across 5 key categories",
+    "notPassedTest": "Test not completed yet",
+    "notPassedTestDesc": "Take a quick habit survey so our algorithm can match you with compatible roommates.",
+    "passTestBtn": "Take Test",
+    "loadingMatches": "Matching candidates...",
+    "noCandidates": "No other candidates have completed the test yet.",
+    "writeMessage": "Message",
+    "compatible": "Compatible",
+    "incompatible": "Different views"
+  },
+  "profile": {
+    "title": "Profile Settings",
+    "subtitle": "Manage your personal details and account visibility",
+    "logoutBtn": "Sign Out",
+    "changePhoto": "Change photo",
+    "noName": "Name not provided",
+    "personalData": "Personal Information",
+    "username": "Unique username",
+    "gender": "Gender",
+    "genderMale": "Male",
+    "genderFemale": "Female",
+    "genderOther": "Other / Prefer not to say",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "bio": "About me",
+    "bioPlaceholder": "Tell us about yourself, hobbies, study routines, or habits...",
+    "roomStatus": "Room search status",
+    "statusLooking": "Looking for a room",
+    "statusNotLooking": "Not looking",
+    "contactsTitle": "Contacts & Social Media",
+    "telegram": "Telegram",
+    "instagram": "Instagram",
+    "myHabits": "My Habits",
+    "retestBtn": "Retake Test",
+    "noHabits": "You haven't completed the habit survey yet.",
+    "passTestBtn": "Take Test",
+    "myPhotos": "My Photos",
+    "addPhoto": "+ Add",
+    "noPhotos": "You have no uploaded photos yet.",
+    "privacyTitle": "Privacy Settings",
+    "photoAccess": "Who can see my photos",
+    "allUsers": "All users",
+    "nobody": "Nobody",
+    "sendAllow": "Who can send me messages",
+    "all": "Everyone",
+    "contactsOnly": "Contacts only",
+    "hideActivity": "Hide my activity",
+    "statusHidden": "Status hidden",
+    "statusVisible": "Status visible",
+    "notificationsTitle": "Notifications",
+    "chatMessages": "New chat messages",
+    "push": "Push notifications",
+    "friendRequests": "Friend requests",
+    "friendActivity": "Friends activity",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "cropper": {
+      "cancel": "Cancel",
+      "save": "Save"
+    }
   }
 }

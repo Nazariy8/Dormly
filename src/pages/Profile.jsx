@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import Header from "../components/Header";
 import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "../css/profile.scss";
 import defaultUser from "../img/profile/user.jpg";
 
@@ -24,42 +24,14 @@ import {
   handleUsernameBlur,
 } from "../utils/functions.jsx";
 
-const questions = [
-  {
-    id: 1,
-    questionText:
-      "Чи є у вас якась звичка, яка може бути незвичною/дратівливою для інших?",
-  },
-  {
-    id: 2,
-    questionText: "Як ви ставитеся до поділу/спільного використання продуктів?",
-  },
-  {
-    id: 3,
-    questionText:
-      "Як ви ставитеся до накопичення особистих речей та одягу у кімнаті?",
-  },
-  { id: 4, questionText: "Яка ваша частота прибирання власного простору?" },
-  { id: 5, questionText: "Який ваш типовий режим сну у будні дні?" },
-  { id: 6, questionText: "Чи є у вас підтверджена алергія на щось?" },
-  { id: 7, questionText: "Який ваш улюблений спосіб релаксу?" },
-  { id: 8, questionText: "Як часто ви плануєте запрошувати гостей?" },
-  { id: 9, questionText: "Як організувати прибирання спільних зон?" },
-  { id: 10, questionText: "Спільні витрати на побутові речі?" },
-  { id: 11, questionText: "Ставлення до розмов по телефону в кімнаті?" },
-  { id: 12, questionText: "Улюблений жанр музики?" },
-  { id: 13, questionText: "Атмосфера для навчання?" },
-  { id: 14, questionText: "Умови для сну?" },
-  { id: 15, questionText: "Вільний вечір у будній день?" },
-];
-
 const Profile = () => {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
   const [userAnswers, setUserAnswers] = useState(
-    location.state?.userAnswers || null,
+    location.state?.userAnswers || location.state?.userAnswerIds || null,
   );
   const [loading, setLoading] = useState(true);
 
@@ -95,11 +67,10 @@ const Profile = () => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
 
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
@@ -127,7 +98,9 @@ const Profile = () => {
             setFriendsActivity(data.friendsActivity ?? false);
             setShowMessages(data.showMessages ?? false);
 
-            if (location.state?.userAnswers) {
+            if (location.state?.userAnswerIds) {
+              setUserAnswers(location.state.userAnswerIds);
+            } else if (location.state?.userAnswers) {
               setUserAnswers(location.state.userAnswers);
             } else if (data.answers) {
               setUserAnswers(data.answers);
@@ -146,22 +119,33 @@ const Profile = () => {
     return () => unsubscribe();
   }, [location.state]);
 
+  // Функція для отримання локалізованого тексту відповіді за ключем/ID
+  const getLocalizedAnswer = (questionId, value) => {
+    // Якщо збережено як ID ("1.1", "4.2")
+    if (value && value.includes(".")) {
+      return t(`test.questions.${questionId}.options.${value}`, {
+        defaultValue: value,
+      });
+    }
+    return value;
+  };
+
   return (
     <div className="profile-page-wrapper">
       <main className="profile-container mt-4">
         {/* Заголовок і кнопка виходу */}
         <header className="d-flex justify-content-between align-items-center mb-4">
           <div>
-            <h1 className="h3 fw-bold text-white m-0">Налаштування профілю</h1>
+            <h1 className="h3 fw-bold text-white m-0">{t("profile.title")}</h1>
             <p className="text-secondary small m-0 mt-1">
-              Керуйте своїми персональними даними та видимістю
+              {t("profile.subtitle")}
             </p>
           </div>
           <button
             onClick={() => handleLogout(navigate)}
             className="btn-outline-custom"
           >
-            Вийти
+            {t("profile.logoutBtn")}
           </button>
         </header>
 
@@ -180,13 +164,13 @@ const Profile = () => {
               <div className="user-fullname">
                 {firstName || lastName
                   ? `${firstName} ${lastName}`.trim()
-                  : "Ім'я не вказано"}
+                  : t("profile.noName")}
               </div>
             </div>
           </div>
 
           <label className="btn-solid-light m-0">
-            Змінити фото
+            {t("profile.changePhoto")}
             <input
               type="file"
               accept="image/*"
@@ -201,13 +185,13 @@ const Profile = () => {
 
         {/* Особисті дані */}
         <section className="profile-card">
-          <h2 className="section-title">Особисті дані</h2>
+          <h2 className="section-title">{t("profile.personalData")}</h2>
 
           <div className="row g-3">
             <div className="col-12 col-md-6">
               <div className="form-group-custom">
                 <label className="form-label-custom" htmlFor="usernameField">
-                  Унікальний логін <span className="text-danger">*</span>
+                  {t("profile.username")} <span className="text-danger">*</span>
                 </label>
                 <div className="input-prefix-group">
                   <span className="prefix-icon">@</span>
@@ -242,7 +226,7 @@ const Profile = () => {
             <div className="col-12 col-md-6">
               <div className="form-group-custom">
                 <label className="form-label-custom" htmlFor="genderField">
-                  Стать
+                  {t("profile.gender")}
                 </label>
                 <select
                   id="genderField"
@@ -257,9 +241,9 @@ const Profile = () => {
                     )
                   }
                 >
-                  <option value="male">Чоловіча</option>
-                  <option value="female">Жіноча</option>
-                  <option value="other">Інша / Не вказувати</option>
+                  <option value="male">{t("profile.genderMale")}</option>
+                  <option value="female">{t("profile.genderFemale")}</option>
+                  <option value="other">{t("profile.genderOther")}</option>
                 </select>
               </div>
             </div>
@@ -267,13 +251,13 @@ const Profile = () => {
             <div className="col-12 col-md-6">
               <div className="form-group-custom">
                 <label className="form-label-custom" htmlFor="firstNameField">
-                  Ім'я
+                  {t("profile.firstName")}
                 </label>
                 <input
                   id="firstNameField"
                   type="text"
                   className="custom-input"
-                  placeholder="Ім'я"
+                  placeholder={t("profile.firstName")}
                   value={firstName}
                   onChange={(e) =>
                     handleProfileUpdate(
@@ -290,13 +274,13 @@ const Profile = () => {
             <div className="col-12 col-md-6">
               <div className="form-group-custom">
                 <label className="form-label-custom" htmlFor="lastNameField">
-                  Прізвище
+                  {t("profile.lastName")}
                 </label>
                 <input
                   id="lastNameField"
                   type="text"
                   className="custom-input"
-                  placeholder="Прізвище"
+                  placeholder={t("profile.lastName")}
                   value={lastName}
                   onChange={(e) =>
                     handleProfileUpdate(
@@ -314,7 +298,7 @@ const Profile = () => {
               <div className="form-group-custom">
                 <div className="d-flex justify-content-between align-items-center mb-1">
                   <label className="form-label-custom m-0" htmlFor="bioField">
-                    Про себе
+                    {t("profile.bio")}
                   </label>
                   <span className="text-secondary small">
                     {bio.length} / 300
@@ -325,7 +309,7 @@ const Profile = () => {
                   className="custom-textarea"
                   rows="3"
                   maxLength={300}
-                  placeholder="Розкажіть про себе, хобі, графік навчання або звички..."
+                  placeholder={t("profile.bioPlaceholder")}
                   value={bio}
                   onChange={(e) =>
                     handleProfileUpdate(
@@ -342,9 +326,11 @@ const Profile = () => {
 
           <div className="setting-row mt-4">
             <div>
-              <div className="setting-title">Статус пошуку кімнати</div>
+              <div className="setting-title">{t("profile.roomStatus")}</div>
               <div className="setting-desc">
-                {isLookingForRoom ? "Шукаю кімнату" : "Не шукаю"}
+                {isLookingForRoom
+                  ? t("profile.statusLooking")
+                  : t("profile.statusNotLooking")}
               </div>
             </div>
             <div className="form-check form-switch m-0">
@@ -360,11 +346,13 @@ const Profile = () => {
 
         {/* Контакти */}
         <section className="profile-card">
-          <h2 className="section-title">Контакти та соцмережі</h2>
+          <h2 className="section-title">{t("profile.contactsTitle")}</h2>
           <div className="row g-3">
             <div className="col-12 col-md-6">
               <div className="form-group-custom">
-                <label className="form-label-custom">Telegram</label>
+                <label className="form-label-custom">
+                  {t("profile.telegram")}
+                </label>
                 <div className="input-prefix-group">
                   <span className="prefix-icon">
                     <i className="bi bi-telegram"></i>
@@ -389,7 +377,9 @@ const Profile = () => {
 
             <div className="col-12 col-md-6">
               <div className="form-group-custom">
-                <label className="form-label-custom">Instagram</label>
+                <label className="form-label-custom">
+                  {t("profile.instagram")}
+                </label>
                 <div className="input-prefix-group">
                   <span className="prefix-icon">
                     <i className="bi bi-instagram"></i>
@@ -422,7 +412,7 @@ const Profile = () => {
                 className="accordion-custom-header"
                 onClick={() => setIsHabitsOpen(!isHabitsOpen)}
               >
-                <span className="accordion-title">Мої звички</span>
+                <span className="accordion-title">{t("profile.myHabits")}</span>
                 <button type="button" className="toggle-icon-btn">
                   <i
                     className={`bi ${isHabitsOpen ? "bi-dash" : "bi-plus"}`}
@@ -430,7 +420,8 @@ const Profile = () => {
                 </button>
               </div>
 
-              <div className="d-grid"
+              <div
+                className="d-grid"
                 style={{
                   gridTemplateRows: isHabitsOpen ? "1fr" : "0fr",
                   transition: "grid-template-rows 0.3s ease",
@@ -443,7 +434,10 @@ const Profile = () => {
                         <div className="d-flex flex-wrap gap-2 mb-4">
                           {Object.keys(userAnswers).map((questionId) => (
                             <span key={questionId} className="habit-pill">
-                              {userAnswers[questionId]}
+                              {getLocalizedAnswer(
+                                questionId,
+                                userAnswers[questionId],
+                              )}
                             </span>
                           ))}
                         </div>
@@ -451,19 +445,19 @@ const Profile = () => {
                           to="/test"
                           className="btn-outline-custom d-inline-block"
                         >
-                          Перепройти тест
+                          {t("profile.retestBtn")}
                         </Link>
                       </div>
                     ) : (
                       <div>
                         <p className="text-secondary small mb-3">
-                          Ви ще не пройшли опитування про звички.
+                          {t("profile.noHabits")}
                         </p>
                         <button
                           className="btn-solid-light"
                           onClick={() => handleGoTest(navigate)}
                         >
-                          Пройти тест
+                          {t("profile.passTestBtn")}
                         </button>
                       </div>
                     )}
@@ -480,14 +474,14 @@ const Profile = () => {
                 onClick={() => setIsPhotosOpen(!isPhotosOpen)}
               >
                 <span className="accordion-title">
-                  Мої фото ({gallery ? gallery.length : 0})
+                  {t("profile.myPhotos")} ({gallery ? gallery.length : 0})
                 </span>
                 <div className="d-flex align-items-center gap-2">
                   <label
                     className="btn-outline-custom m-0 cursor-pointer"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    + Додати
+                    {t("profile.addPhoto")}
                     <input
                       type="file"
                       accept="image/*"
@@ -537,7 +531,7 @@ const Profile = () => {
                       </div>
                     ) : (
                       <p className="text-secondary small m-0">
-                        У вас ще немає доданих фотографій.
+                        {t("profile.noPhotos")}
                       </p>
                     )}
                   </div>
@@ -551,13 +545,15 @@ const Profile = () => {
         <div className="row g-4">
           <div className="col-12 col-lg-6">
             <section className="profile-card h-100">
-              <h2 className="section-title">Конфіденційність</h2>
+              <h2 className="section-title">{t("profile.privacyTitle")}</h2>
 
               <div className="setting-row">
                 <div>
-                  <div className="setting-title">Хто бачить мої фото</div>
+                  <div className="setting-title">
+                    {t("profile.photoAccess")}
+                  </div>
                   <div className="setting-desc">
-                    {photoAccess ? "Всі користувачі" : "Ніхто"}
+                    {photoAccess ? t("profile.allUsers") : t("profile.nobody")}
                   </div>
                 </div>
                 <div className="form-check form-switch m-0">
@@ -578,11 +574,9 @@ const Profile = () => {
 
               <div className="setting-row">
                 <div>
-                  <div className="setting-title">
-                    Хто може писати повідомлення
-                  </div>
+                  <div className="setting-title">{t("profile.sendAllow")}</div>
                   <div className="setting-desc">
-                    {sendAllow ? "Всі" : "Лише контакти"}
+                    {sendAllow ? t("profile.all") : t("profile.contactsOnly")}
                   </div>
                 </div>
                 <div className="form-check form-switch m-0">
@@ -603,9 +597,13 @@ const Profile = () => {
 
               <div className="setting-row mb-0">
                 <div>
-                  <div className="setting-title">Приховати активність</div>
+                  <div className="setting-title">
+                    {t("profile.hideActivity")}
+                  </div>
                   <div className="setting-desc">
-                    {hideActivity ? "Статус невидимий" : "Статус видимий"}
+                    {hideActivity
+                      ? t("profile.statusHidden")
+                      : t("profile.statusVisible")}
                   </div>
                 </div>
                 <div className="form-check form-switch m-0">
@@ -628,12 +626,16 @@ const Profile = () => {
 
           <div className="col-12 col-lg-6">
             <section className="profile-card h-100">
-              <h2 className="section-title">Повідомлення</h2>
+              <h2 className="section-title">
+                {t("profile.notificationsTitle")}
+              </h2>
 
               <div className="setting-row">
                 <div>
-                  <div className="setting-title">Нові повідомлення в чаті</div>
-                  <div className="setting-desc">Push-сповіщення</div>
+                  <div className="setting-title">
+                    {t("profile.chatMessages")}
+                  </div>
+                  <div className="setting-desc">{t("profile.push")}</div>
                 </div>
                 <div className="form-check form-switch m-0">
                   <input
@@ -654,9 +656,9 @@ const Profile = () => {
               <div className="setting-row">
                 <div>
                   <div className="setting-title">
-                    Запити на додавання в друзі
+                    {t("profile.friendRequests")}
                   </div>
-                  <div className="setting-desc">Push-сповіщення</div>
+                  <div className="setting-desc">{t("profile.push")}</div>
                 </div>
                 <div className="form-check form-switch m-0">
                   <input
@@ -676,9 +678,13 @@ const Profile = () => {
 
               <div className="setting-row mb-0">
                 <div>
-                  <div className="setting-title">Активність друзів</div>
+                  <div className="setting-title">
+                    {t("profile.friendActivity")}
+                  </div>
                   <div className="setting-desc">
-                    {friendsActivity ? "Увімкнено" : "Вимкнено"}
+                    {friendsActivity
+                      ? t("profile.enabled")
+                      : t("profile.disabled")}
                   </div>
                 </div>
                 <div className="form-check form-switch m-0">
@@ -720,7 +726,7 @@ const Profile = () => {
               className="btn-outline-custom"
               onClick={() => setShowCropper(false)}
             >
-              Скасувати
+              {t("profile.cropper.cancel")}
             </button>
             <button
               className="btn-solid-light"
@@ -733,7 +739,7 @@ const Profile = () => {
                 )
               }
             >
-              Зберегти
+              {t("profile.cropper.save")}
             </button>
           </div>
         </div>
