@@ -14,7 +14,6 @@ import {
 import { db } from "../firebase";
 import defaultUser from "../img/profile/user.jpg";
 import { Wheel } from "react-custom-roulette";
-import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "../css/roommate.scss";
@@ -41,8 +40,8 @@ const Roommates = ({ user }) => {
   const [isLoadingMatches, setIsLoadingMatches] = useState(false);
 
   const [activeTab, setActiveTab] = useState("room");
-  const [isRoommatesOpen, setIsRoommatesOpen] = useState(true);
-  const [isTasksOpen, setIsTasksOpen] = useState(true);
+  const [isRoommatesOpen, setIsRoommatesOpen] = useState(false);
+  const [isTasksOpen, setIsTasksOpen] = useState(false);
   const [searchFriendTerm, setSearchFriendTerm] = useState("");
   const [newTask, setNewTask] = useState("");
 
@@ -51,6 +50,25 @@ const Roommates = ({ user }) => {
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
   const [winner, setWinner] = useState(null);
+
+  // Динамічний розмір колеса для телефонів та ПК
+  const [wheelSize, setWheelSize] = useState(380);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const screenWidth = window.innerWidth;
+      if (screenWidth < 420) {
+        setWheelSize(280);
+      } else if (screenWidth < 768) {
+        setWheelSize(320);
+      } else {
+        setWheelSize(380);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -119,7 +137,6 @@ const Roommates = ({ user }) => {
     }
   }, [activeTab, currentUserAnswers, user]);
 
-  // Метчинг за ідентифікаторами варіантів (1.1, 1.2 тощо)
   const calculateBlockStatus = (myAnswers, theirAnswers, questionIds) => {
     if (!myAnswers || !theirAnswers) return "red";
     let matchCount = 0;
@@ -193,22 +210,31 @@ const Roommates = ({ user }) => {
   const wheelData = useMemo(() => {
     if (spinStage === "person") {
       if (allParticipants.length === 0) {
-        return [{ option: "Додайте сусідів" }, { option: "Додайте сусідів" }];
+        return [
+          { option: t("roommates.wheelAddRoommates") },
+          { option: t("roommates.wheelAddRoommates") },
+        ];
       }
       const mapped = allParticipants.map((p) => ({
-        option: p.id === user.uid ? `${p.firstName} (Ви)` : p.firstName,
+        option:
+          p.id === user.uid
+            ? `${p.firstName} (${t("roommates.you")})`
+            : p.firstName,
       }));
       return mapped.length === 1 ? [...mapped, ...mapped] : mapped;
     }
 
     if (tasks.length === 0) {
-      return [{ option: "Додайте завдання" }, { option: "Додайте завдання" }];
+      return [
+        { option: t("roommates.wheelAddTasks") },
+        { option: t("roommates.wheelAddTasks") },
+      ];
     }
     const mappedTasks = tasks.map((t) => ({ option: t }));
     return mappedTasks.length === 1
       ? [...mappedTasks, ...mappedTasks]
       : mappedTasks;
-  }, [spinStage, allParticipants, tasks, user]);
+  }, [spinStage, allParticipants, tasks, user, t]);
 
   const handleSpinClick = () => {
     if (tasks.length === 0 || allParticipants.length === 0 || mustSpin) return;
@@ -251,9 +277,8 @@ const Roommates = ({ user }) => {
   };
 
   return (
-    <div className="roommates-page">
-
-      <div className="d-flex justify-content-center mt-4 mb-4">
+    <main className="roommates-page">
+      <div className="d-flex justify-content-center pt-4 mb-4">
         <div className="tabs-wrapper">
           <button
             onClick={() => setActiveTab("room")}
@@ -272,15 +297,18 @@ const Roommates = ({ user }) => {
 
       {activeTab === "room" && (
         <div className="container text-center">
-          <h1 className="h3 fw-bold text-white mb-2">Колесо фортуни кімнати</h1>
+          <h1 className="h3 fw-bold text-white mb-2">
+            {t("roommates.roomTitle")}
+          </h1>
           <p className="text-secondary small mb-5">
-            Справедливий розподіл домашніх обов'язків між сусідами
+            {t("roommates.roomSubtitle")}
           </p>
 
           <div
             className="row justify-content-center g-4 mb-5 mx-auto"
             style={{ maxWidth: "1100px" }}
           >
+            {/* Блок сусідів */}
             <div className="col-12 col-lg-6 text-start">
               <section className="roommate-card-block">
                 <div
@@ -288,7 +316,7 @@ const Roommates = ({ user }) => {
                   onClick={() => setIsRoommatesOpen(!isRoommatesOpen)}
                 >
                   <span className="block-title">
-                    Сусіди по кімнаті ({roommates.length})
+                    {t("roommates.roommatesHeader")} ({roommates.length})
                   </span>
                   <button type="button" className="toggle-btn">
                     <i
@@ -310,7 +338,7 @@ const Roommates = ({ user }) => {
                         <input
                           type="text"
                           className="custom-input w-100"
-                          placeholder="Пошук серед ваших друзів..."
+                          placeholder={t("roommates.searchFriendPlaceholder")}
                           value={searchFriendTerm}
                           onChange={(e) => setSearchFriendTerm(e.target.value)}
                         />
@@ -340,7 +368,7 @@ const Roommates = ({ user }) => {
                               ))
                             ) : (
                               <div className="p-2 text-secondary small">
-                                Друзів не знайдено
+                                {t("roommates.noFriendsFound")}
                               </div>
                             )}
                           </div>
@@ -350,7 +378,7 @@ const Roommates = ({ user }) => {
                       <div className="d-flex flex-wrap gap-2">
                         {roommates.length === 0 && (
                           <p className="text-secondary small mb-0">
-                            Сусідів ще не додано
+                            {t("roommates.noRoommatesAdded")}
                           </p>
                         )}
                         {roommates.map((rm) => (
@@ -379,13 +407,16 @@ const Roommates = ({ user }) => {
               </section>
             </div>
 
+            {/* Блок завдань */}
             <div className="col-12 col-lg-6 text-start">
               <section className="roommate-card-block">
                 <div
                   className="card-toggle-header"
                   onClick={() => setIsTasksOpen(!isTasksOpen)}
                 >
-                  <span className="block-title">Завдання ({tasks.length})</span>
+                  <span className="block-title">
+                    {t("roommates.tasksHeader")} ({tasks.length})
+                  </span>
                   <button type="button" className="toggle-btn">
                     <i
                       className={`bi ${isTasksOpen ? "bi-dash" : "bi-plus"}`}
@@ -407,7 +438,7 @@ const Roommates = ({ user }) => {
                           type="text"
                           className="custom-input flex-grow-1"
                           style={{ borderRadius: "8px 0 0 8px" }}
-                          placeholder="Нове завдання..."
+                          placeholder={t("roommates.newTaskPlaceholder")}
                           value={newTask}
                           onChange={(e) => setNewTask(e.target.value)}
                           onKeyDown={(e) =>
@@ -425,7 +456,7 @@ const Roommates = ({ user }) => {
                       <div className="d-flex flex-wrap gap-2">
                         {tasks.length === 0 && (
                           <p className="text-secondary small mb-0">
-                            Список завдань порожній
+                            {t("roommates.noTasks")}
                           </p>
                         )}
                         {tasks.map((task, index) => (
@@ -445,11 +476,11 @@ const Roommates = ({ user }) => {
             </div>
           </div>
 
-          <div
-            className="d-flex flex-column flex-md-row justify-content-center align-items-center gap-5 mx-auto"
-            style={{ maxWidth: "950px" }}
-          >
-            <div style={{ width: "380px", height: "380px", flexShrink: 0 }}>
+          {/* Колесо фортуни та панель керування */}
+          <div className="wheel-section-wrapper mx-auto">
+            <div
+              className="wheel-outer-box"
+            >
               <Wheel
                 mustStartSpinning={mustSpin}
                 prizeNumber={prizeNumber}
@@ -467,7 +498,7 @@ const Roommates = ({ user }) => {
                 innerRadius={15}
                 radiusLineColor="#262626"
                 radiusLineWidth={1}
-                fontSize={13}
+                fontSize={wheelSize < 340 ? 11 : 13}
                 onStopSpinning={handleStopSpinning}
               />
             </div>
@@ -476,17 +507,20 @@ const Roommates = ({ user }) => {
               {selectedTask && (
                 <div className="selected-task-banner">
                   <span className="small text-secondary d-block mb-1">
-                    📌 Обране завдання:
+                    {t("roommates.selectedTaskLabel")}
                   </span>
                   <strong className="text-white fs-6">{selectedTask}</strong>
                 </div>
               )}
 
-              <div className="small text-secondary mb-2">Учасники кімнати:</div>
+              <div className="small text-secondary mb-2">
+                {t("roommates.roomParticipants")}
+              </div>
               <div className="d-flex flex-wrap gap-2 mb-4">
                 {allParticipants.map((p) => (
                   <span key={p.id} className="tag-pill-item">
-                    {p.firstName} {p.id === user.uid && "(Ви)"}
+                    {p.firstName}{" "}
+                    {p.id === user?.uid && `(${t("roommates.you")})`}
                   </span>
                 ))}
               </div>
@@ -500,15 +534,16 @@ const Roommates = ({ user }) => {
               >
                 {mustSpin
                   ? spinStage === "task"
-                    ? "Обираємо завдання..."
-                    : "Обираємо сусіда..."
-                  : "Крутити колесо"}
+                    ? t("roommates.spinningTask")
+                    : t("roommates.spinningPerson")
+                  : t("roommates.spinBtn")}
               </button>
             </div>
           </div>
         </div>
       )}
 
+      {/* Модалка переможця */}
       {winner && !mustSpin && (
         <div className="congr-modal-overlay" onClick={() => setWinner(null)}>
           <div
@@ -517,10 +552,10 @@ const Roommates = ({ user }) => {
           >
             <div className="mb-3 fs-1">🎯</div>
             <h2 className="h4 fw-bold text-white mb-2">
-              Вибір зроблено: {winner?.person?.firstName}!
+              {t("roommates.winnerTitle", { name: winner?.person?.firstName })}
             </h2>
             <p className="text-secondary mb-4">
-              Завдання:{" "}
+              {t("roommates.winnerTask")}{" "}
               <span className="winner-task-highlight">{winner?.task}</span>
             </p>
             <button
@@ -531,12 +566,13 @@ const Roommates = ({ user }) => {
                 setSelectedTask(null);
               }}
             >
-              Зрозуміло
+              {t("roommates.modalGotIt")}
             </button>
           </div>
         </div>
       )}
 
+      {/* Вкладка Пошук */}
       {activeTab === "search" && (
         <div className="container mt-2">
           <div className="text-center mb-5">
@@ -646,7 +682,7 @@ const Roommates = ({ user }) => {
           )}
         </div>
       )}
-    </div>
+    </main>
   );
 };
 
