@@ -140,7 +140,7 @@ function Auth({ goal }) {
           });
         }
 
-        navigate("/search-roommate");
+        navigate("/profile");
       }
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
