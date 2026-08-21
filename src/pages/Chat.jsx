@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import Header from "../components/Header";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -58,7 +57,6 @@ const Chat = ({ user }) => {
 
   const inputRef = useRef(null);
 
-  // Ловець активного чату з переходу з Roommates
   useEffect(() => {
     if (location.state && location.state.startChatWith) {
       const targetUser = location.state.startChatWith;
@@ -511,611 +509,639 @@ const Chat = ({ user }) => {
   };
 
   return (
-    <>
-      <main
-        className={`chat-page-wrapper ${activeChatUser ? "mobile-chat-active" : ""}`}
-      >
-        <div className="chat-container">
-          {/* ЛІВА ПАНЕЛЬ: Список чатів */}
-          <aside className="chat-sidebar">
-            <div className="sidebar-header">
+    <main
+      className={`chat-page-wrapper ${activeChatUser ? "mobile-chat-active" : ""}`}
+    >
+      <div className="chat-app-card">
+        {/* ЛІВА ПАНЕЛЬ */}
+        <aside className="chat-sidebar">
+          <div className="sidebar-header">
+            <div className="header-title-box">
+              <div className="mac-dots">
+                <span className="dot dot-red"></span>
+                <span className="dot dot-yellow"></span>
+                <span className="dot dot-green"></span>
+              </div>
               <h2>{t("chat.title")}</h2>
-              <div className="actions">
-                <div className="position-relative d-inline-block">
-                  <i
-                    className="bi bi-person-lines-fill"
-                    onClick={() => setShowSocialModal(true)}
-                    title={t("chat.modalTitle")}
-                  ></i>
-                  {incomingRequests.length > 0 && (
-                    <span className="position-absolute top-0 start-100 translate-middle p-1 bg-danger rounded-circle"></span>
-                  )}
-                </div>
+            </div>
+            <div className="actions">
+              <div className="position-relative d-inline-block">
+                <button
+                  type="button"
+                  className="action-icon-btn"
+                  onClick={() => setShowSocialModal(true)}
+                  title={t("chat.modalTitle")}
+                >
+                  <i className="bi bi-person-lines-fill"></i>
+                </button>
+                {incomingRequests.length > 0 && (
+                  <span className="position-absolute top-0 start-100 translate-middle p-1 bg-danger rounded-circle"></span>
+                )}
               </div>
             </div>
+          </div>
 
-            <div className="search-box">
-              <div className="search-input-wrapper">
-                <i className="bi bi-search"></i>
-                <input
-                  type="text"
-                  placeholder={t("chat.searchPlaceholder")}
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
+          <div className="search-box">
+            <div className="search-input-wrapper">
+              <i className="bi bi-search"></i>
+              <input
+                type="text"
+                placeholder={t("chat.searchPlaceholder")}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
+          </div>
 
-            <div className="chat-list custom-scroll">
-              {searchTerm.length > 0 ? (
-                <>
-                  <div className="text-secondary px-2 mb-2 mt-2 small fw-semibold text-uppercase">
-                    {t("chat.searchResults")}
-                  </div>
-                  {searchTerm.length < 3 ? (
-                    <p className="text-secondary text-center mt-4 small">
-                      {t("chat.searchMinChars")}
-                    </p>
-                  ) : isSearching ? (
-                    <p className="text-secondary text-center mt-4 small">
-                      {t("chat.searching")}
-                    </p>
-                  ) : searchResults.length > 0 ? (
-                    searchResults.map((u) => (
-                      <div
-                        key={u.id}
-                        className="user-search-card d-flex align-items-center"
-                        onClick={() => {
-                          setActiveChatUser(u);
-                          setSearchTerm("");
-                        }}
-                      >
-                        <img
-                          src={u.avatar || defaultUser}
-                          alt="avatar"
-                          className="rounded-circle object-fit-cover"
-                          style={{ width: "42px", height: "42px" }}
-                        />
-                        <div className="ms-3 overflow-hidden">
-                          <h6 className="m-0 text-truncate text-white fs-6">
-                            {u.firstName} {u.lastName}
-                          </h6>
-                          <small className="text-secondary">
-                            @{u.username}
-                          </small>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-secondary text-center mt-4 small">
-                      {t("chat.noUsersFound")}
-                    </p>
-                  )}
-                </>
-              ) : chatHistory.length === 0 ? (
-                <p className="text-secondary text-center mt-5 px-3 small">
-                  {t("chat.noChatsYet")}
-                </p>
-              ) : (
-                chatHistory.map((chat) => (
-                  <div
-                    key={chat.id}
-                    className={`user-search-card d-flex align-items-center ${
-                      activeChatUser?.id === chat.otherUser.id
-                        ? "active-chat"
-                        : ""
-                    }`}
-                    onClick={() => handleChatClick(chat)}
-                  >
-                    <img
-                      src={chat.otherUser.avatar || defaultUser}
-                      alt="avatar"
-                      className="rounded-circle object-fit-cover flex-shrink-0"
-                      style={{ width: "44px", height: "44px" }}
-                    />
-                    <div className="ms-3 overflow-hidden flex-grow-1">
-                      <div className="d-flex justify-content-between align-items-center">
-                        <span
-                          className="text-white fw-semibold text-truncate"
-                          style={{ fontSize: "14.5px" }}
-                        >
-                          {chat.otherUser.firstName} {chat.otherUser.lastName}
-                        </span>
-
-                        {chat.unreadCounts?.[user.uid] > 0 && (
-                          <span
-                            className="badge rounded-pill bg-danger ms-2"
-                            style={{ fontSize: "10.5px" }}
-                          >
-                            {chat.unreadCounts[user.uid]}
-                          </span>
-                        )}
-                      </div>
-
-                      <small
-                        className="text-secondary text-truncate d-block mt-1"
-                        style={{ fontSize: "12.5px" }}
-                      >
-                        {chat.lastMessageSender === user.uid && (
-                          <span className="text-white fw-medium">
-                            {t("chat.you")}{" "}
-                          </span>
-                        )}
-                        {chat.lastMessage || t("chat.noMessages")}
-                      </small>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </aside>
-
-          {/* ПРАВА ЧАСТИНА: Вікно діалогу */}
-          <section className="chat-main">
-            {activeChatUser ? (
+          <div className="chat-list custom-scroll">
+            {searchTerm.length > 0 ? (
               <>
-                <header className="chat-main-header">
-                  <button
-                    className="btn btn-link text-secondary p-0 me-3 d-md-none"
-                    onClick={() => setActiveChatUser(null)}
-                  >
-                    <i className="bi bi-arrow-left fs-4"></i>
-                  </button>
-
+                <div className="text-secondary px-2 mb-2 mt-2 small fw-semibold text-uppercase">
+                  {t("chat.searchResults")}
+                </div>
+                {searchTerm.length < 3 ? (
+                  <p className="text-secondary text-center mt-4 small">
+                    {t("chat.searchMinChars")}
+                  </p>
+                ) : isSearching ? (
+                  <p className="text-secondary text-center mt-4 small">
+                    {t("chat.searching")}
+                  </p>
+                ) : searchResults.length > 0 ? (
+                  searchResults.map((u) => (
+                    <div
+                      key={u.id}
+                      className="user-search-card d-flex align-items-center"
+                      onClick={() => {
+                        setActiveChatUser(u);
+                        setSearchTerm("");
+                      }}
+                    >
+                      <img
+                        src={u.avatar || defaultUser}
+                        alt="avatar"
+                        className="rounded-circle object-fit-cover"
+                        style={{ width: "40px", height: "40px" }}
+                      />
+                      <div className="ms-3 overflow-hidden">
+                        <div className="m-0 text-truncate text-white fw-medium small">
+                          {u.firstName} {u.lastName}
+                        </div>
+                        <small
+                          className="text-secondary"
+                          style={{ fontSize: "11.5px" }}
+                        >
+                          @{u.username}
+                        </small>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-secondary text-center mt-4 small">
+                    {t("chat.noUsersFound")}
+                  </p>
+                )}
+              </>
+            ) : chatHistory.length === 0 ? (
+              <p className="text-secondary text-center mt-5 px-3 small">
+                {t("chat.noChatsYet")}
+              </p>
+            ) : (
+              chatHistory.map((chat) => (
+                <div
+                  key={chat.id}
+                  className={`user-search-card d-flex align-items-center ${
+                    activeChatUser?.id === chat.otherUser.id
+                      ? "active-chat"
+                      : ""
+                  }`}
+                  onClick={() => handleChatClick(chat)}
+                >
                   <img
-                    src={activeChatUser.avatar || defaultUser}
+                    src={chat.otherUser.avatar || defaultUser}
                     alt="avatar"
-                    className="rounded-circle object-fit-cover"
-                    style={{ width: "40px", height: "40px" }}
+                    className="rounded-circle object-fit-cover flex-shrink-0"
+                    style={{ width: "42px", height: "42px" }}
                   />
-                  <div className="ms-3">
-                    <h1 className="h6 m-0 fw-bold text-white">
-                      {activeChatUser.firstName} {activeChatUser.lastName}
-                    </h1>
-                    <small className="text-secondary">
-                      @{activeChatUser.username}
+                  <div className="ms-3 overflow-hidden flex-grow-1">
+                    <div className="d-flex justify-content-between align-items-center">
+                      <span
+                        className="text-white fw-semibold text-truncate"
+                        style={{ fontSize: "14px" }}
+                      >
+                        {chat.otherUser.firstName} {chat.otherUser.lastName}
+                      </span>
+
+                      {chat.unreadCounts?.[user.uid] > 0 && (
+                        <span
+                          className="badge rounded-pill bg-danger ms-2"
+                          style={{ fontSize: "10px" }}
+                        >
+                          {chat.unreadCounts[user.uid]}
+                        </span>
+                      )}
+                    </div>
+
+                    <small
+                      className="text-secondary text-truncate d-block mt-1"
+                      style={{ fontSize: "12px" }}
+                    >
+                      {chat.lastMessageSender === user.uid && (
+                        <span className="text-white fw-medium">
+                          {t("chat.you")}{" "}
+                        </span>
+                      )}
+                      {chat.lastMessage || t("chat.noMessages")}
                     </small>
                   </div>
+                </div>
+              ))
+            )}
+          </div>
+        </aside>
 
-                  <div className="ms-auto d-flex align-items-center">
-                    {friendStatus === "none" && (
-                      <button
-                        className="btn btn-sm btn-outline-light rounded-pill px-3 me-2"
-                        onClick={handleAddFriend}
-                      >
-                        <i className="bi bi-person-plus"></i>{" "}
-                        {t("chat.addFriend")}
-                      </button>
-                    )}
+        {/* ПРАВА ПАНЕЛЬ */}
+        <section className="chat-main">
+          {activeChatUser ? (
+            <>
+              <header className="chat-main-header">
+                <button
+                  className="btn btn-link text-secondary p-0 me-3 d-md-none"
+                  onClick={() => setActiveChatUser(null)}
+                >
+                  <i className="bi bi-arrow-left fs-4"></i>
+                </button>
 
-                    {friendStatus === "pending" && (
-                      <button
-                        className="btn btn-sm btn-outline-danger rounded-pill px-3 me-2"
-                        onClick={handleCancelRequest}
-                      >
-                        <i className="bi bi-x-circle"></i>{" "}
-                        {t("chat.cancelRequest")}
-                      </button>
-                    )}
+                <img
+                  src={activeChatUser.avatar || defaultUser}
+                  alt="avatar"
+                  className="rounded-circle object-fit-cover"
+                  style={{ width: "38px", height: "38px" }}
+                />
+                <div className="ms-3">
+                  <h1 className="h6 m-0 fw-bold text-white">
+                    {activeChatUser.firstName} {activeChatUser.lastName}
+                  </h1>
+                  <small
+                    className="text-secondary"
+                    style={{ fontSize: "11.5px" }}
+                  >
+                    @{activeChatUser.username}
+                  </small>
+                </div>
 
-                    {friendStatus === "friends" && (
-                      <span className="badge rounded-pill bg-success-subtle text-success px-3 py-2 me-2">
-                        <i className="bi bi-person-check me-1"></i>{" "}
-                        {t("chat.friends")}
-                      </span>
-                    )}
-                  </div>
-                </header>
-
-                <div className="chat-messages custom-scroll">
-                  <div className="text-center my-3">
-                    <span
-                      className="px-3 py-1 rounded-pill small"
-                      style={{
-                        backgroundColor: "#161616",
-                        color: "#888888",
-                        border: "1px solid #262626",
-                      }}
+                <div className="ms-auto d-flex align-items-center">
+                  {friendStatus === "none" && (
+                    <button
+                      className="btn btn-sm btn-outline-light rounded-pill px-3 me-2"
+                      style={{ fontSize: "12px" }}
+                      onClick={handleAddFriend}
                     >
-                      {t("chat.chatHistoryStart", {
-                        name: activeChatUser.firstName,
-                      })}
+                      <i className="bi bi-person-plus"></i>{" "}
+                      {t("chat.addFriend")}
+                    </button>
+                  )}
+
+                  {friendStatus === "pending" && (
+                    <button
+                      className="btn btn-sm btn-outline-danger rounded-pill px-3 me-2"
+                      style={{ fontSize: "12px" }}
+                      onClick={handleCancelRequest}
+                    >
+                      <i className="bi bi-x-circle"></i>{" "}
+                      {t("chat.cancelRequest")}
+                    </button>
+                  )}
+
+                  {friendStatus === "friends" && (
+                    <span
+                      className="badge rounded-pill bg-success-subtle text-success px-3 py-1 me-2"
+                      style={{ fontSize: "11px" }}
+                    >
+                      <i className="bi bi-person-check me-1"></i>{" "}
+                      {t("chat.friends")}
                     </span>
-                  </div>
+                  )}
+                </div>
+              </header>
 
-                  {messages.map((msg, index) => {
-                    const isMine = msg.senderId === user.uid;
-                    let showDateDivider = false;
-                    let dateString = "";
+              <div className="chat-messages custom-scroll">
+                <div className="text-center my-3">
+                  <span
+                    className="px-3 py-1 rounded-pill small"
+                    style={{
+                      backgroundColor: "rgba(255,255,255,0.03)",
+                      color: "#777777",
+                      border: "1px solid rgba(255,255,255,0.06)",
+                      fontSize: "11.5px",
+                    }}
+                  >
+                    {t("chat.chatHistoryStart", {
+                      name: activeChatUser.firstName,
+                    })}
+                  </span>
+                </div>
 
-                    if (msg.createdAt) {
-                      dateString = formatDateDivider(msg.createdAt);
-                      if (index === 0) {
+                {messages.map((msg, index) => {
+                  const isMine = msg.senderId === user.uid;
+                  let showDateDivider = false;
+                  let dateString = "";
+
+                  if (msg.createdAt) {
+                    dateString = formatDateDivider(msg.createdAt);
+                    if (index === 0) {
+                      showDateDivider = true;
+                    } else {
+                      const prevMsg = messages[index - 1];
+                      if (
+                        prevMsg?.createdAt &&
+                        dateString !== formatDateDivider(prevMsg.createdAt)
+                      ) {
                         showDateDivider = true;
-                      } else {
-                        const prevMsg = messages[index - 1];
-                        if (
-                          prevMsg?.createdAt &&
-                          dateString !== formatDateDivider(prevMsg.createdAt)
-                        ) {
-                          showDateDivider = true;
-                        }
                       }
                     }
+                  }
 
-                    return (
-                      <div key={msg.id}>
-                        {showDateDivider && (
-                          <div className="d-flex justify-content-center my-3">
-                            <span
-                              className="px-3 py-1 rounded-pill small fw-medium"
-                              style={{
-                                backgroundColor: "#141414",
-                                color: "#777777",
-                                border: "1px solid #222222",
-                              }}
-                            >
-                              {dateString}
-                            </span>
-                          </div>
-                        )}
-
-                        <div
-                          className={`d-flex mb-2 ${isMine ? "justify-content-end" : "justify-content-start"}`}
-                        >
-                          <div
-                            className="px-3 py-2 position-relative"
-                            onContextMenu={(e) => handleMessageOptions(e, msg)}
-                            onClick={(e) => handleMessageOptions(e, msg)}
+                  return (
+                    <div key={msg.id}>
+                      {showDateDivider && (
+                        <div className="d-flex justify-content-center my-3">
+                          <span
+                            className="px-3 py-1 rounded-pill small fw-medium"
                             style={{
-                              maxWidth: "75%",
-                              wordBreak: "break-word",
-                              backgroundColor: isMine ? "#ffffff" : "#161616",
-                              color: isMine ? "#000000" : "#ededed",
-                              border: isMine
-                                ? "1px solid #ffffff"
-                                : "1px solid #262626",
-                              borderRadius: isMine
-                                ? "16px 16px 2px 16px"
-                                : "16px 16px 16px 2px",
-                              cursor: isMine ? "pointer" : "default",
+                              backgroundColor: "rgba(255,255,255,0.04)",
+                              color: "#888888",
+                              border: "1px solid rgba(255,255,255,0.06)",
+                              fontSize: "11px",
                             }}
                           >
-                            {msg.image && (
-                              <img
-                                src={msg.image}
-                                alt="attachment"
-                                className="rounded-3 mb-2 w-100"
-                                style={{
-                                  maxHeight: "280px",
-                                  objectFit: "cover",
-                                  cursor: "pointer",
-                                }}
-                                onClick={() => window.open(msg.image, "_blank")}
-                              />
-                            )}
-                            {msg.text && (
-                              <div
-                                style={{ fontSize: "14px", lineHeight: "1.4" }}
-                              >
-                                {msg.text}
-                              </div>
-                            )}
+                            {dateString}
+                          </span>
+                        </div>
+                      )}
 
+                      <div
+                        className={`d-flex mb-2 ${isMine ? "justify-content-end" : "justify-content-start"}`}
+                      >
+                        <div
+                          className="px-3 py-2 position-relative"
+                          onContextMenu={(e) => handleMessageOptions(e, msg)}
+                          onClick={(e) => handleMessageOptions(e, msg)}
+                          style={{
+                            maxWidth: "70%",
+                            wordBreak: "break-word",
+                            backgroundColor: isMine ? "#ffffff" : "#141414",
+                            color: isMine ? "#000000" : "#ededed",
+                            border: isMine
+                              ? "1px solid #ffffff"
+                              : "1px solid rgba(255, 255, 255, 0.08)",
+                            borderRadius: isMine
+                              ? "16px 16px 3px 16px"
+                              : "16px 16px 16px 3px",
+                            boxShadow: isMine
+                              ? "0 4px 12px rgba(255, 255, 255, 0.15)"
+                              : "none",
+                            cursor: isMine ? "pointer" : "default",
+                          }}
+                        >
+                          {msg.image && (
+                            <img
+                              src={msg.image}
+                              alt="attachment"
+                              className="rounded-3 mb-2 w-100"
+                              style={{
+                                maxHeight: "260px",
+                                objectFit: "cover",
+                                cursor: "pointer",
+                              }}
+                              onClick={() => window.open(msg.image, "_blank")}
+                            />
+                          )}
+                          {msg.text && (
                             <div
-                              className={`d-flex align-items-center mt-1 gap-1 ${
-                                isMine
-                                  ? "justify-content-end text-muted"
-                                  : "justify-content-start text-secondary"
-                              }`}
-                              style={{ fontSize: "11px" }}
+                              style={{ fontSize: "13.5px", lineHeight: "1.4" }}
                             >
-                              {msg.isEdited && (
-                                <span className="fst-italic">
-                                  ({t("chat.edited")})
-                                </span>
-                              )}
-                              <span>{formatTime(msg.createdAt)}</span>
-                              {isMine && (
-                                <i className="bi bi-check2-all ms-1"></i>
-                              )}
+                              {msg.text}
                             </div>
+                          )}
+
+                          <div
+                            className={`d-flex align-items-center mt-1 gap-1 ${
+                              isMine
+                                ? "justify-content-end text-muted"
+                                : "justify-content-start text-secondary"
+                            }`}
+                            style={{ fontSize: "10.5px" }}
+                          >
+                            {msg.isEdited && (
+                              <span className="fst-italic">
+                                ({t("chat.edited")})
+                              </span>
+                            )}
+                            <span>{formatTime(msg.createdAt)}</span>
+                            {isMine && (
+                              <i className="bi bi-check2-all ms-1"></i>
+                            )}
                           </div>
                         </div>
                       </div>
-                    );
-                  })}
-                  <div ref={messagesEndRef} />
-                </div>
-
-                <footer className="chat-input-area">
-                  {editingMessage && (
-                    <div className="d-flex justify-content-between align-items-center mb-2 px-2 text-warning small">
-                      <span>
-                        <i className="bi bi-pencil me-1"></i>{" "}
-                        {t("chat.editMessage")}
-                      </span>
-                      <i
-                        className="bi bi-x-lg cursor-pointer"
-                        onClick={() => setEditingMessage(null)}
-                      ></i>
                     </div>
-                  )}
-
-                  <div className="chat-input-box">
-                    <label
-                      htmlFor="image-input"
-                      className="btn border-0 text-secondary p-0 d-flex align-items-center justify-content-center"
-                      style={{
-                        width: "36px",
-                        height: "36px",
-                        cursor: isUploading ? "not-allowed" : "pointer",
-                      }}
-                    >
-                      {isUploading ? (
-                        <div
-                          className="spinner-border spinner-border-sm text-light"
-                          role="status"
-                        ></div>
-                      ) : (
-                        <i className="bi bi-paperclip fs-5"></i>
-                      )}
-                      <input
-                        type="file"
-                        id="image-input"
-                        accept="image/*"
-                        style={{ display: "none" }}
-                        onChange={handleImageUpload}
-                        disabled={isUploading}
-                      />
-                    </label>
-
-                    <input
-                      ref={inputRef}
-                      type="text"
-                      placeholder={
-                        editingMessage
-                          ? t("chat.editInputPlaceholder")
-                          : t("chat.inputPlaceholder")
-                      }
-                      value={
-                        editingMessage
-                          ? editDraft
-                          : drafts[activeChatUser.id] || ""
-                      }
-                      onChange={(e) => {
-                        const text = e.target.value;
-                        if (editingMessage) {
-                          setEditDraft(text);
-                        } else {
-                          setDrafts((prev) => {
-                            const newDrafts = {
-                              ...prev,
-                              [activeChatUser.id]: text,
-                            };
-                            localStorage.setItem(
-                              "chat_drafts",
-                              JSON.stringify(newDrafts),
-                            );
-                            return newDrafts;
-                          });
-                        }
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          editingMessage
-                            ? handleSaveEdit()
-                            : handleSendMessage();
-                        }
-                      }}
-                    />
-
-                    <button
-                      className="btn-send"
-                      onClick={
-                        editingMessage ? handleSaveEdit : handleSendMessage
-                      }
-                      aria-label="Send"
-                    >
-                      {editingMessage ? (
-                        <i className="bi bi-check-lg fs-5"></i>
-                      ) : (
-                        <i className="bi bi-arrow-up fs-5"></i>
-                      )}
-                    </button>
-                  </div>
-                </footer>
-              </>
-            ) : (
-              <div className="d-flex h-100 justify-content-center align-items-center">
-                <span
-                  className="text-secondary px-4 py-2 rounded-pill small"
-                  style={{ background: "#121212", border: "1px solid #262626" }}
-                >
-                  {t("chat.noChatSelected")}
-                </span>
+                  );
+                })}
+                <div ref={messagesEndRef} />
               </div>
-            )}
-          </section>
-        </div>
 
-        {/* Контекстне меню */}
-        {contextMenu && (
-          <div
-            className="custom-context-menu"
-            style={{ top: contextMenu.mouseY, left: contextMenu.mouseX }}
-          >
-            <div
-              className="context-menu-item"
-              onClick={() => {
-                setEditingMessage(contextMenu.msg);
-                setEditDraft(contextMenu.msg.text);
-              }}
-            >
-              <i className="bi bi-pencil"></i> {t("chat.edit")}
-            </div>
-            <div
-              className="context-menu-item text-danger"
-              onClick={() => handleDeleteMessage(contextMenu.msg.id)}
-            >
-              <i className="bi bi-trash"></i> {t("chat.delete")}
-            </div>
-          </div>
-        )}
+              <footer className="chat-input-area">
+                {editingMessage && (
+                  <div className="d-flex justify-content-between align-items-center mb-2 px-2 text-warning small">
+                    <span>
+                      <i className="bi bi-pencil me-1"></i>{" "}
+                      {t("chat.editMessage")}
+                    </span>
+                    <i
+                      className="bi bi-x-lg cursor-pointer"
+                      onClick={() => setEditingMessage(null)}
+                    ></i>
+                  </div>
+                )}
 
-        {/* Модалка друзів та запитів */}
-        {showSocialModal && (
-          <div
-            className="modal d-block"
-            style={{
-              backgroundColor: "rgba(0,0,0,0.75)",
-              backdropFilter: "blur(6px)",
-            }}
-            onClick={() => setShowSocialModal(false)}
-          >
-            <div
-              className="modal-dialog modal-dialog-centered"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div
-                className="modal-content"
+                <div className="chat-input-box">
+                  <label
+                    htmlFor="image-input"
+                    className="btn border-0 text-secondary p-0 d-flex align-items-center justify-content-center"
+                    style={{
+                      width: "34px",
+                      height: "34px",
+                      cursor: isUploading ? "not-allowed" : "pointer",
+                    }}
+                  >
+                    {isUploading ? (
+                      <div
+                        className="spinner-border spinner-border-sm text-light"
+                        role="status"
+                      ></div>
+                    ) : (
+                      <i className="bi bi-paperclip fs-5"></i>
+                    )}
+                    <input
+                      type="file"
+                      id="image-input"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={handleImageUpload}
+                      disabled={isUploading}
+                    />
+                  </label>
+
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    placeholder={
+                      editingMessage
+                        ? t("chat.editInputPlaceholder")
+                        : t("chat.inputPlaceholder")
+                    }
+                    value={
+                      editingMessage
+                        ? editDraft
+                        : drafts[activeChatUser.id] || ""
+                    }
+                    onChange={(e) => {
+                      const text = e.target.value;
+                      if (editingMessage) {
+                        setEditDraft(text);
+                      } else {
+                        setDrafts((prev) => {
+                          const newDrafts = {
+                            ...prev,
+                            [activeChatUser.id]: text,
+                          };
+                          localStorage.setItem(
+                            "chat_drafts",
+                            JSON.stringify(newDrafts),
+                          );
+                          return newDrafts;
+                        });
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        editingMessage ? handleSaveEdit() : handleSendMessage();
+                      }
+                    }}
+                  />
+
+                  <button
+                    className="btn-send"
+                    onClick={
+                      editingMessage ? handleSaveEdit : handleSendMessage
+                    }
+                    aria-label="Send"
+                  >
+                    {editingMessage ? (
+                      <i className="bi bi-check-lg fs-5"></i>
+                    ) : (
+                      <i className="bi bi-arrow-up fs-5"></i>
+                    )}
+                  </button>
+                </div>
+              </footer>
+            </>
+          ) : (
+            <div className="d-flex h-100 flex-column justify-content-center align-items-center text-center p-4">
+              <i className="bi bi-chat-dots fs-1 text-secondary mb-3 opacity-50"></i>
+              <span
+                className="text-secondary px-4 py-2 rounded-pill small"
                 style={{
-                  backgroundColor: "#121212",
-                  color: "#ffffff",
-                  border: "1px solid #262626",
-                  borderRadius: "16px",
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.08)",
                 }}
               >
-                <div className="modal-header border-0 pb-0">
-                  <h2 className="h5 fw-bold m-0">{t("chat.modalTitle")}</h2>
-                  <button
-                    type="button"
-                    className="btn-close btn-close-white"
-                    onClick={() => setShowSocialModal(false)}
-                  ></button>
+                {t("chat.noChatSelected")}
+              </span>
+            </div>
+          )}
+        </section>
+      </div>
+
+      {/* Контекстне меню */}
+      {contextMenu && (
+        <div
+          className="custom-context-menu"
+          style={{ top: contextMenu.mouseY, left: contextMenu.mouseX }}
+        >
+          <div
+            className="context-menu-item"
+            onClick={() => {
+              setEditingMessage(contextMenu.msg);
+              setEditDraft(contextMenu.msg.text);
+            }}
+          >
+            <i className="bi bi-pencil"></i> {t("chat.edit")}
+          </div>
+          <div
+            className="context-menu-item text-danger"
+            onClick={() => handleDeleteMessage(contextMenu.msg.id)}
+          >
+            <i className="bi bi-trash"></i> {t("chat.delete")}
+          </div>
+        </div>
+      )}
+
+      {/* Модалка друзів */}
+      {showSocialModal && (
+        <div
+          className="modal d-block"
+          style={{
+            backgroundColor: "rgba(0,0,0,0.8)",
+            backdropFilter: "blur(8px)",
+          }}
+          onClick={() => setShowSocialModal(false)}
+        >
+          <div
+            className="modal-dialog modal-dialog-centered"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              className="modal-content"
+              style={{
+                backgroundColor: "#111111",
+                color: "#ffffff",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                borderRadius: "18px",
+              }}
+            >
+              <div className="modal-header border-0 pb-0">
+                <h2 className="h5 fw-bold m-0">{t("chat.modalTitle")}</h2>
+                <button
+                  type="button"
+                  className="btn-close btn-close-white"
+                  onClick={() => setShowSocialModal(false)}
+                ></button>
+              </div>
+
+              <div
+                className="modal-body custom-scroll"
+                style={{ maxHeight: "380px", overflowY: "auto" }}
+              >
+                <div className="text-secondary small text-uppercase fw-semibold mb-3">
+                  {t("chat.requests")} ({incomingRequests.length})
                 </div>
+                {incomingRequests.length === 0 && (
+                  <p className="text-secondary small mb-4">
+                    {t("chat.noRequests")}
+                  </p>
+                )}
 
-                <div
-                  className="modal-body custom-scroll"
-                  style={{ maxHeight: "380px", overflowY: "auto" }}
-                >
-                  <div className="text-secondary small text-uppercase fw-semibold mb-3">
-                    {t("chat.requests")} ({incomingRequests.length})
-                  </div>
-                  {incomingRequests.length === 0 && (
-                    <p className="text-secondary small mb-4">
-                      {t("chat.noRequests")}
-                    </p>
-                  )}
-
-                  {incomingRequests.map((req) => (
-                    <div
-                      key={req.id}
-                      className="d-flex align-items-center justify-content-between mb-2 p-2 rounded-3"
-                      style={{
-                        border: "1px solid #262626",
-                        background: "#0a0a0a",
-                      }}
-                    >
-                      <div className="d-flex align-items-center overflow-hidden">
-                        <img
-                          src={req.senderData?.avatar || defaultUser}
-                          width="38"
-                          height="38"
-                          className="rounded-circle object-fit-cover flex-shrink-0"
-                          alt="avatar"
-                        />
-                        <div className="ms-3 overflow-hidden">
-                          <div className="fw-semibold text-truncate small">
-                            {req.senderData?.firstName}{" "}
-                            {req.senderData?.lastName}
-                          </div>
-                          <div
-                            className="text-secondary"
-                            style={{ fontSize: "11.5px" }}
-                          >
-                            @{req.senderData?.username}
-                          </div>
+                {incomingRequests.map((req) => (
+                  <div
+                    key={req.id}
+                    className="d-flex align-items-center justify-content-between mb-2 p-2 rounded-3"
+                    style={{
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      background: "#080808",
+                    }}
+                  >
+                    <div className="d-flex align-items-center overflow-hidden">
+                      <img
+                        src={req.senderData?.avatar || defaultUser}
+                        width="38"
+                        height="38"
+                        className="rounded-circle object-fit-cover flex-shrink-0"
+                        alt="avatar"
+                      />
+                      <div className="ms-3 overflow-hidden">
+                        <div className="fw-semibold text-truncate small">
+                          {req.senderData?.firstName} {req.senderData?.lastName}
                         </div>
-                      </div>
-
-                      <div className="ms-2 d-flex gap-2">
-                        <button
-                          className="btn btn-sm btn-light rounded-pill px-3"
-                          onClick={() =>
-                            acceptFriendRequest(req.id, req.senderId)
-                          }
-                          style={{ fontSize: "12px", fontWeight: 600 }}
+                        <div
+                          className="text-secondary"
+                          style={{ fontSize: "11.5px" }}
                         >
-                          {t("chat.accept")}
-                        </button>
-                        <button
-                          className="btn btn-sm btn-outline-secondary rounded-pill"
-                          onClick={() => rejectFriendRequest(req.id)}
-                          style={{ fontSize: "12px" }}
-                        >
-                          <i className="bi bi-trash"></i>
-                        </button>
+                          @{req.senderData?.username}
+                        </div>
                       </div>
                     </div>
-                  ))}
 
-                  <hr className="my-4" style={{ borderColor: "#262626" }} />
-
-                  <div className="text-secondary small text-uppercase fw-semibold mb-3">
-                    {t("chat.myFriends")} ({myFriends.length})
-                  </div>
-                  {myFriends.length === 0 && (
-                    <p className="text-secondary small mb-0">
-                      {t("chat.noFriends")}
-                    </p>
-                  )}
-
-                  {myFriends.map((friend) => (
-                    <div
-                      key={friend.id}
-                      className="d-flex align-items-center justify-content-between mb-2 p-2 rounded-3"
-                      style={{
-                        border: "1px solid #262626",
-                        background: "#0a0a0a",
-                      }}
-                    >
-                      <div className="d-flex align-items-center">
-                        <img
-                          src={friend.avatar || defaultUser}
-                          width="34"
-                          height="34"
-                          className="rounded-circle object-fit-cover"
-                          alt="avatar"
-                        />
-                        <div className="ms-2">
-                          <div className="fw-semibold small">
-                            {friend.firstName} {friend.lastName}
-                          </div>
-                          <div
-                            className="text-secondary"
-                            style={{ fontSize: "11.5px" }}
-                          >
-                            @{friend.username}
-                          </div>
-                        </div>
-                      </div>
-
+                    <div className="ms-2 d-flex gap-2">
                       <button
-                        className="btn btn-sm text-secondary border-0"
-                        onClick={() => removeFriend(friend.id)}
+                        className="btn btn-sm btn-light rounded-pill px-3"
+                        onClick={() =>
+                          acceptFriendRequest(req.id, req.senderId)
+                        }
+                        style={{ fontSize: "12px", fontWeight: 600 }}
                       >
-                        <i className="bi bi-person-x fs-5"></i>
+                        {t("chat.accept")}
+                      </button>
+                      <button
+                        className="btn btn-sm btn-outline-secondary rounded-pill"
+                        onClick={() => rejectFriendRequest(req.id)}
+                        style={{ fontSize: "12px" }}
+                      >
+                        <i className="bi bi-trash"></i>
                       </button>
                     </div>
-                  ))}
+                  </div>
+                ))}
+
+                <hr
+                  className="my-4"
+                  style={{ borderColor: "rgba(255,255,255,0.08)" }}
+                />
+
+                <div className="text-secondary small text-uppercase fw-semibold mb-3">
+                  {t("chat.myFriends")} ({myFriends.length})
                 </div>
+                {myFriends.length === 0 && (
+                  <p className="text-secondary small mb-0">
+                    {t("chat.noFriends")}
+                  </p>
+                )}
+
+                {myFriends.map((friend) => (
+                  <div
+                    key={friend.id}
+                    className="d-flex align-items-center justify-content-between mb-2 p-2 rounded-3"
+                    style={{
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      background: "#080808",
+                    }}
+                  >
+                    <div className="d-flex align-items-center">
+                      <img
+                        src={friend.avatar || defaultUser}
+                        width="34"
+                        height="34"
+                        className="rounded-circle object-fit-cover"
+                        alt="avatar"
+                      />
+                      <div className="ms-2">
+                        <div className="fw-semibold small">
+                          {friend.firstName} {friend.lastName}
+                        </div>
+                        <div
+                          className="text-secondary"
+                          style={{ fontSize: "11.5px" }}
+                        >
+                          @{friend.username}
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      className="btn btn-sm text-secondary border-0"
+                      onClick={() => removeFriend(friend.id)}
+                    >
+                      <i className="bi bi-person-x fs-5"></i>
+                    </button>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-        )}
-      </main>
-    </>
+        </div>
+      )}
+    </main>
   );
 };
 

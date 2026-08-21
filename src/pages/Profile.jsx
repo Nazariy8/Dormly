@@ -58,8 +58,8 @@ const Profile = () => {
   const [friendsActivity, setFriendsActivity] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
 
-  const [isHabitsOpen, setIsHabitsOpen] = useState(false);
-  const [isPhotosOpen, setIsPhotosOpen] = useState(false);
+  const [isHabitsOpen, setIsHabitsOpen] = useState(true);
+  const [isPhotosOpen, setIsPhotosOpen] = useState(true);
 
   const [imageToCrop, setImageToCrop] = useState(null);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
@@ -119,10 +119,8 @@ const Profile = () => {
     return () => unsubscribe();
   }, [location.state]);
 
-  // Функція для отримання локалізованого тексту відповіді за ключем/ID
   const getLocalizedAnswer = (questionId, value) => {
-    // Якщо збережено як ID ("1.1", "4.2")
-    if (value && value.includes(".")) {
+    if (value && typeof value === "string" && value.includes(".")) {
       return t(`test.questions.${questionId}.options.${value}`, {
         defaultValue: value,
       });
@@ -132,18 +130,20 @@ const Profile = () => {
 
   return (
     <div className="profile-page-wrapper">
-      <main className="profile-container mt-4">
-        {/* Заголовок і кнопка виходу */}
-        <header className="d-flex justify-content-between align-items-center mb-4">
+      <main className="profile-container">
+        {/* Заголовок і статус */}
+        <header className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
           <div>
-            <h1 className="h3 fw-bold text-white m-0">{t("profile.title")}</h1>
-            <p className="text-secondary small m-0 mt-1">
-              {t("profile.subtitle")}
-            </p>
+            <div className="profile-top-badge">
+              <span className="badge-dot"></span>
+              <span>Dormly 2.0 Profile</span>
+            </div>
+            <h1 className="page-main-title">{t("profile.title")}</h1>
+            <p className="page-main-subtitle">{t("profile.subtitle")}</p>
           </div>
           <button
             onClick={() => handleLogout(navigate)}
-            className="btn-outline-custom"
+            className="btn-outline-custom align-self-start align-self-sm-center"
           >
             {t("profile.logoutBtn")}
           </button>
@@ -185,7 +185,14 @@ const Profile = () => {
 
         {/* Особисті дані */}
         <section className="profile-card">
-          <h2 className="section-title">{t("profile.personalData")}</h2>
+          <div className="card-top-bar">
+            <h2 className="section-title">{t("profile.personalData")}</h2>
+            <div className="mac-dots">
+              <span className="dot dot-red"></span>
+              <span className="dot dot-yellow"></span>
+              <span className="dot dot-green"></span>
+            </div>
+          </div>
 
           <div className="row g-3">
             <div className="col-12 col-md-6">
@@ -346,7 +353,9 @@ const Profile = () => {
 
         {/* Контакти */}
         <section className="profile-card">
-          <h2 className="section-title">{t("profile.contactsTitle")}</h2>
+          <div className="card-top-bar">
+            <h2 className="section-title">{t("profile.contactsTitle")}</h2>
+          </div>
           <div className="row g-3">
             <div className="col-12 col-md-6">
               <div className="form-group-custom">
@@ -407,7 +416,7 @@ const Profile = () => {
         {/* Звички та Фото */}
         <div className="row g-4 mb-4">
           <div className="col-12 col-lg-6">
-            <section className="profile-card">
+            <section className="profile-card h-100">
               <div
                 className="accordion-custom-header"
                 onClick={() => setIsHabitsOpen(!isHabitsOpen)}
@@ -468,7 +477,7 @@ const Profile = () => {
           </div>
 
           <div className="col-12 col-lg-6">
-            <section className="profile-card">
+            <section className="profile-card h-100">
               <div
                 className="accordion-custom-header"
                 onClick={() => setIsPhotosOpen(!isPhotosOpen)}
@@ -545,7 +554,9 @@ const Profile = () => {
         <div className="row g-4">
           <div className="col-12 col-lg-6">
             <section className="profile-card h-100">
-              <h2 className="section-title">{t("profile.privacyTitle")}</h2>
+              <div className="card-top-bar">
+                <h2 className="section-title">{t("profile.privacyTitle")}</h2>
+              </div>
 
               <div className="setting-row">
                 <div>
@@ -626,9 +637,11 @@ const Profile = () => {
 
           <div className="col-12 col-lg-6">
             <section className="profile-card h-100">
-              <h2 className="section-title">
-                {t("profile.notificationsTitle")}
-              </h2>
+              <div className="card-top-bar">
+                <h2 className="section-title">
+                  {t("profile.notificationsTitle")}
+                </h2>
+              </div>
 
               <div className="setting-row">
                 <div>

@@ -23,7 +23,7 @@ const Main = ({ user }) => {
           }}
         >
           <span className="hero-subtitle mb-4 bg-warning text-black fw-bold p-2 px-3 rounded-pill fs-6">
-            Product is in beta testing. Full version coming soon!
+            ! Product is in beta testing. Full version coming soon !
           </span>
           {/* Акуратний бейдж Vercel */}
           <div className="hero-badge mb-4">

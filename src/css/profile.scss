@@ -2,37 +2,115 @@
 
 .profile-page-wrapper {
   min-height: 100vh;
-  background-color: var(--bg-main, #0a0a0a);
+  background:
+    radial-gradient(
+      circle at 50% 12%,
+      rgba(105, 48, 195, 0.16) 0%,
+      rgba(10, 10, 10, 0.95) 55%,
+      #000000 100%
+    ),
+    #000000;
   color: var(--text-primary, #ededed);
-  padding: 32px 16px 80px;
+  padding: 40px 16px 90px;
 
   .profile-container {
-    max-width: 1100px;
+    max-width: 980px;
     margin: 0 auto;
   }
 
-  /* Загальна картка секції */
+  /* Верхній бейдж */
+  .profile-top-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 14px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-secondary, #a1a1a1);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 50px;
+    margin-bottom: 12px;
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: #10b981;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+    }
+  }
+
+  /* Заголовки */
+  .page-main-title {
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: #ffffff;
+    margin: 0;
+  }
+
+  .page-main-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary, #a1a1a1);
+    margin-top: 6px;
+  }
+
+  /* Сучасна картка (Vercel Style) */
   .profile-card {
-    background-color: var(--bg-card, #121212);
-    border: 1px solid var(--border-subtle, #262626);
-    border-radius: 16px;
+    background: linear-gradient(
+      180deg,
+      rgba(20, 20, 20, 0.75) 0%,
+      rgba(13, 13, 13, 0.9) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
     padding: 24px;
     margin-bottom: 24px;
-    
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(16px);
+    transition: border-color 0.2s ease;
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.14);
+    }
+
     @media (min-width: 768px) {
       padding: 32px;
     }
   }
 
-  .section-title {
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    color: #ffffff;
-    margin-bottom: 20px;
+  .card-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: #ffffff;
+      margin: 0;
+    }
+
+    .mac-dots {
+      display: flex;
+      gap: 6px;
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        &.dot-red { background: #ef4444; }
+        &.dot-yellow { background: #eab308; }
+        &.dot-green { background: #22c55e; }
+      }
+    }
   }
 
-  /* Шапка профілю (Аватар + інфо) */
+  /* Шапка профілю (Аватар + Інфо) */
   .profile-header-card {
     display: flex;
     flex-wrap: wrap;
@@ -42,12 +120,13 @@
 
     .avatar-wrapper {
       position: relative;
-      width: 72px;
-      height: 72px;
+      width: 76px;
+      height: 76px;
       border-radius: 50%;
-      border: 1px solid var(--border-focus, #404040);
+      border: 2px solid rgba(255, 255, 255, 0.12);
       overflow: hidden;
       flex-shrink: 0;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 
       .profile-avatar-img {
         width: 100%;
@@ -58,20 +137,21 @@
 
     .user-meta {
       .user-handle {
-        font-size: 18px;
-        font-weight: 700;
+        font-size: 19px;
+        font-weight: 800;
         color: #ffffff;
-        letter-spacing: -0.01em;
+        letter-spacing: -0.02em;
       }
 
       .user-fullname {
-        font-size: 14px;
+        font-size: 13.5px;
         color: var(--text-secondary, #a1a1a1);
+        margin-top: 2px;
       }
     }
   }
 
-  /* Поля введення */
+  /* Кастомні поля вводу */
   .form-group-custom {
     display: flex;
     flex-direction: column;
@@ -87,21 +167,23 @@
     .custom-select,
     .custom-textarea {
       width: 100%;
-      background-color: var(--bg-main, #0a0a0a);
-      border: 1px solid var(--border-subtle, #262626);
-      border-radius: 8px;
+      background-color: #070707;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
       color: #ffffff;
       font-size: 14px;
       padding: 10px 14px;
       outline: none;
-      transition: border-color 0.15s ease;
+      transition: all 0.2s ease;
 
       &::placeholder {
-        color: #525252;
+        color: #4a4a4a;
       }
 
       &:focus {
-        border-color: var(--border-focus, #525252);
+        border-color: rgba(255, 255, 255, 0.25);
+        background-color: #0a0a0a;
+        box-shadow: 0 0 0 3px rgba(105, 48, 195, 0.15);
       }
     }
 
@@ -111,26 +193,28 @@
       background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23a1a1a1' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
       background-repeat: no-repeat;
       background-position: right 14px center;
-      background-size: 12px;
+      background-size: 11px;
     }
 
     .input-prefix-group {
       display: flex;
       align-items: center;
-      background-color: var(--bg-main, #0a0a0a);
-      border: 1px solid var(--border-subtle, #262626);
-      border-radius: 8px;
+      background-color: #070707;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
       overflow: hidden;
-      transition: border-color 0.15s ease;
+      transition: all 0.2s ease;
 
       &:focus-within {
-        border-color: var(--border-focus, #525252);
+        border-color: rgba(255, 255, 255, 0.25);
+        background-color: #0a0a0a;
+        box-shadow: 0 0 0 3px rgba(105, 48, 195, 0.15);
       }
 
       .prefix-icon {
         padding: 0 12px;
         color: var(--text-muted, #666666);
-        font-size: 15px;
+        font-size: 14px;
         display: flex;
         align-items: center;
       }
@@ -140,24 +224,26 @@
         border-radius: 0;
         background: transparent;
         padding-left: 0;
-
-        &:focus {
-          border-color: transparent;
-        }
+        box-shadow: none !important;
       }
     }
   }
 
-  /* Світч статусу та налаштувань */
+  /* Смуга налаштування зі світчем */
   .setting-row {
-    background-color: var(--bg-main, #0a0a0a);
-    border: 1px solid var(--border-subtle, #262626);
-    border-radius: 10px;
+    background-color: #080808;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
     padding: 14px 18px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
+    transition: border-color 0.15s ease;
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.1);
+    }
 
     .setting-title {
       font-size: 14px;
@@ -167,23 +253,23 @@
     }
 
     .setting-desc {
-      font-size: 12.5px;
+      font-size: 12px;
       color: var(--text-secondary, #a1a1a1);
     }
   }
 
-  /* Bootstrap Switch Restyle */
+  /* Мінімалістичний світч */
   .form-switch .form-check-input {
-    width: 2.4em;
-    height: 1.25em;
-    background-color: #262626;
-    border: 1px solid #404040;
+    width: 2.3em;
+    height: 1.2em;
+    background-color: #1f1f1f;
+    border: 1px solid rgba(255, 255, 255, 0.15);
     cursor: pointer;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23a1a1a1'/%3e%3c/svg%3e");
 
     &:focus {
       box-shadow: none;
-      border-color: #525252;
+      border-color: rgba(255, 255, 255, 0.3);
     }
 
     &:checked {
@@ -193,7 +279,7 @@
     }
   }
 
-  /* Складані блоки Звички та Фото */
+  /* Складані блоки */
   .accordion-custom-header {
     display: flex;
     justify-content: space-between;
@@ -202,53 +288,60 @@
     user-select: none;
 
     .accordion-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       color: #ffffff;
     }
 
     .toggle-icon-btn {
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: var(--bg-main, #0a0a0a);
-      border: 1px solid var(--border-subtle, #262626);
+      background-color: #0a0a0a;
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 50%;
       color: var(--text-secondary, #a1a1a1);
       transition: all 0.15s ease;
 
       &:hover {
-        border-color: var(--border-focus, #525252);
+        border-color: rgba(255, 255, 255, 0.25);
         color: #ffffff;
       }
     }
   }
 
+  /* Бейджі звичок (як теги на картці лендінгу) */
   .habit-pill {
-    background-color: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border-subtle, #262626);
-    color: var(--text-primary, #ededed);
-    font-size: 13px;
+    background-color: #151515;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #d1d5db;
+    font-size: 12.5px;
     padding: 6px 14px;
-    border-radius: 50px;
+    border-radius: 6px;
     display: inline-block;
+    transition: all 0.15s ease;
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+    }
   }
 
   /* Галерея */
   .gallery-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 10px;
 
     .gallery-item {
       position: relative;
-      width: 100px;
-      height: 100px;
+      width: 90px;
+      height: 90px;
       border-radius: 10px;
       overflow: hidden;
-      border: 1px solid var(--border-subtle, #262626);
+      border: 1px solid rgba(255, 255, 255, 0.08);
 
       img {
         width: 100%;
@@ -262,8 +355,8 @@
         right: 4px;
         width: 20px;
         height: 20px;
-        background-color: rgba(0, 0, 0, 0.7);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background-color: rgba(0, 0, 0, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 50%;
         color: #ffffff;
         display: flex;
@@ -281,13 +374,13 @@
     }
   }
 
-  /* Загальні кнопки */
+  /* Кнопки (як Take the test / How it works) */
   .btn-solid-light {
     background-color: #ffffff;
     color: #000000;
     font-weight: 600;
     font-size: 13.5px;
-    padding: 8px 18px;
+    padding: 8px 20px;
     border-radius: 8px;
     border: 1px solid #ffffff;
     transition: all 0.2s ease;
@@ -296,23 +389,26 @@
     &:hover {
       background-color: #e5e5e5;
       border-color: #e5e5e5;
+      transform: translateY(-1px);
     }
   }
 
   .btn-outline-custom {
-    background-color: transparent;
-    border: 1px solid var(--border-subtle, #262626);
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     color: var(--text-secondary, #a1a1a1);
     font-size: 13px;
     font-weight: 500;
-    padding: 6px 14px;
+    padding: 7px 16px;
     border-radius: 8px;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
+    cursor: pointer;
 
     &:hover {
-      border-color: var(--border-focus, #525252);
+      background-color: rgba(255, 255, 255, 0.07);
+      border-color: rgba(255, 255, 255, 0.2);
       color: #ffffff;
-      cursor: pointer;
+      transform: translateY(-1px);
     }
   }
 
@@ -321,7 +417,7 @@
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(10px);
     z-index: 99999;
     display: flex;
     flex-direction: column;
@@ -331,12 +427,12 @@
     .cropper-container {
       position: relative;
       width: 90%;
-      max-width: 500px;
-      height: 400px;
-      background: #121212;
-      border-radius: 12px;
+      max-width: 480px;
+      height: 380px;
+      background: #111111;
+      border-radius: 16px;
       overflow: hidden;
-      border: 1px solid #262626;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .cropper-controls {
