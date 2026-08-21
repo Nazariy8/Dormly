@@ -278,20 +278,6 @@
       }
     }
   },
-  "roommates": {
-    "tabRoom": "Room",
-    "tabSearch": "Find Roommate",
-    "searchTitle": "Candidate Compatibility",
-    "searchSubtitle": "Comparing living habits across 5 key categories",
-    "notPassedTest": "Test not completed yet",
-    "notPassedTestDesc": "Take a quick habit survey so our algorithm can match you with compatible roommates.",
-    "passTestBtn": "Take Test",
-    "loadingMatches": "Matching candidates...",
-    "noCandidates": "No other candidates have completed the test yet.",
-    "writeMessage": "Message",
-    "compatible": "Compatible",
-    "incompatible": "Different views"
-  },
   "profile": {
     "title": "Profile Settings",
     "subtitle": "Manage your personal details and account visibility",
@@ -409,5 +395,16 @@
     "myFriends": "My Friends",
     "noFriends": "List is empty",
     "deleteFriendConfirm": "Are you sure you want to remove this user from friends?"
+  },
+  "resetPass": {
+    "title": "Reset Password",
+    "subtitle": "Enter your email address and we'll send you a password reset link.",
+    "emailLabel": "Email address",
+    "placeholder": "name@example.com",
+    "sendBtn": "Send reset link",
+    "backBtn": "Back to login",
+    "alertEmpty": "Please enter your email!",
+    "alertSuccess": "Reset link sent to {{email}}. Check your inbox!",
+    "alertError": "Failed to send reset link. Please check your email address."
   }
 }

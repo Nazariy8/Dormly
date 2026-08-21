@@ -2,55 +2,82 @@ import React, { useState } from "react";
 import { auth } from "../firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import "../css/resetPass.scss"
-import Header from "../components/Header"
+import { useTranslation } from "react-i18next";
+import "../css/resetPass.scss";
+import Header from "../components/Header";
+
 const ResetPass = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
   const handleReset = async (e) => {
     e.preventDefault();
     if (!email) {
-      alert("Будь ласка, введіть Email!");
+      alert(t("resetPass.alertEmpty"));
       return;
     }
 
     try {
       await sendPasswordResetEmail(auth, email);
-      alert("Лист для відновлення надіслано на " + email + ". Перевірте пошту!");
-      navigate("/login"); // Повертаємо користувача на вхід
+      alert(t("resetPass.alertSuccess", { email }));
+      navigate("/login");
     } catch (error) {
       console.error("Помилка:", error.code);
-      alert("Не вдалося надіслати лист. Перевірте правильність Email.");
+      alert(t("resetPass.alertError"));
     }
   };
 
   return (
     <>
-    <Header />
-    <div className="container d-flex justify-content-center align-items-center">
-      <div className="resetPass-card rounded-4 p-4" style={{background: "var(--bg-main)"}}>
-        <h2>Відновлення пароля</h2>
-        <p>Введіть Email, на який ми надішлемо посилання для скидання пароля.</p>
-        <form onSubmit={handleReset}>
-          <input
-            type="email"
-            placeholder="Ваш Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="form-control mb-3"
-            required
-          />
-          <button type="submit" className="send-btn text-white w-100 py-2 rounded-2">
-            Надіслати лист
-          </button>
-        </form>
-        <button className="btn btn-primary text-white mt-3" onClick={() => navigate("/login")}>
-          Назад до входу
+      <main className="reset-pass-wrapper d-flex flex-column justify-content-center align-items-center">
+        <button
+          className="back-btn px-3 py-2 rounded-3 mb-3 d-flex gap-1"
+          onClick={() => navigate("/")}
+        >
+          <i className="bi bi-house"></i>
+          {t("test.backHome")}
         </button>
-      </div>
-    </div>
-  </>
+        <section className="reset-pass-card" aria-labelledby="reset-heading">
+          <header className="text-center">
+            <h1 id="reset-heading" className="reset-title">
+              {t("resetPass.title")}
+            </h1>
+            <p className="reset-subtitle">{t("resetPass.subtitle")}</p>
+          </header>
+
+          <form onSubmit={handleReset} noValidate>
+            <div className="form-group-custom">
+              <label className="form-label-custom" htmlFor="resetEmail">
+                {t("resetPass.emailLabel")}
+              </label>
+              <input
+                id="resetEmail"
+                type="email"
+                placeholder={t("resetPass.placeholder")}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="reset-input"
+                required
+                autoComplete="email"
+              />
+            </div>
+
+            <button type="submit" className="btn-reset-submit">
+              {t("resetPass.sendBtn")}
+            </button>
+          </form>
+
+          <button
+            type="button"
+            className="btn-back-login mt-3"
+            onClick={() => navigate("/login")}
+          >
+            <i className="bi bi-arrow-left"></i> {t("resetPass.backBtn")}
+          </button>
+        </section>
+      </main>
+    </>
   );
 };
 

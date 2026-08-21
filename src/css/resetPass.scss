@@ -1,14 +1,125 @@
-.container{
-    height: 80vh;
-}
+@use "sass:color";
 
-.send-btn{
-    background: var(--primary-puple);
-    transition: .6s;
-    &:hover{
-        filter:brightness(70%);
+.reset-pass-wrapper {
+  min-height: calc(100vh - 65px);
+  padding: 24px 16px;
+  background:
+    radial-gradient(
+      circle at 50% 20%,
+      rgba(105, 48, 195, 0.12) 0%,
+      rgba(10, 10, 10, 1) 70%
+    ),
+    #0a0a0a;
+
+    .back-btn {
+    background-color: var(--bg-card, #121212);
+    border: 1px solid var(--border-subtle, #262626);
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: #181818;
+      border-color: var(--border-focus, #404040);
+      color: #ffffff;
     }
-}
+  }
 
-/* .resetPass-card{
-} */
+  .reset-pass-card {
+    width: 100%;
+    max-width: 420px;
+    background-color: var(--bg-card, #121212);
+    border: 1px solid var(--border-subtle, #262626);
+    border-radius: 16px;
+    padding: 32px 28px;
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+
+    .reset-title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .reset-subtitle {
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: var(--text-secondary, #a1a1a1);
+      margin-bottom: 24px;
+    }
+
+    .form-group-custom {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+
+      .form-label-custom {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-secondary, #a1a1a1);
+        margin-bottom: 6px;
+      }
+
+      .reset-input {
+        width: 100%;
+        height: 44px;
+        background-color: var(--bg-main, #0a0a0a);
+        border: 1px solid var(--border-subtle, #262626);
+        border-radius: 8px;
+        color: #ffffff;
+        font-size: 14px;
+        padding: 0 14px;
+        outline: none;
+        transition: border-color 0.15s ease;
+
+        &::placeholder {
+          color: #525252;
+        }
+
+        &:focus {
+          border-color: var(--border-focus, #525252);
+        }
+      }
+    }
+
+    .btn-reset-submit {
+      width: 100%;
+      height: 44px;
+      background-color: #ffffff;
+      color: #000000;
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 8px;
+      border: 1px solid #ffffff;
+      transition: all 0.2s ease;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #e5e5e5;
+        border-color: #e5e5e5;
+      }
+    }
+
+    .btn-back-login {
+      width: 100%;
+      height: 44px;
+      background-color: transparent;
+      border: 1px solid var(--border-subtle, #262626);
+      border-radius: 8px;
+      color: var(--text-secondary, #a1a1a1);
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+
+      &:hover {
+        background-color: #181818;
+        border-color: var(--border-focus, #525252);
+        color: #ffffff;
+      }
+    }
+  }
+}

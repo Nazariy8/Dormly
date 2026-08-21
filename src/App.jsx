@@ -23,7 +23,13 @@ import "./css/main.scss";
 function App() {
   const location = useLocation();
 
-  const hideHeaderRoutes = ["/test", "/resultoftest", "/login", "/regist"];
+  const hideHeaderRoutes = [
+    "/test",
+    "/resultoftest",
+    "/login",
+    "/regist",
+    "/resetpass",
+  ];
   const shouldShowHeader = !hideHeaderRoutes.includes(
     location.pathname.toLowerCase(),
   );
